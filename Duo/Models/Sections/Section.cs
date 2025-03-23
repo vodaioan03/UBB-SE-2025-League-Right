@@ -4,23 +4,26 @@ namespace Duo.Models.Sections;
 
 public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
 {
-    public int Id { get; }
-    private Queue<TQuiz> quizzes;
-    private TExam finalExam;
+    public int Id { get; set; }
+    public string Title { get; set; }
+
+    private Queue<TQuiz> quizList;
+    private TExam exam;
 
     private const int MAX_QUIZZES = 5;
 
-    public Section(int id)
+    public Section(int id, string title)
     {
         Id = id;
-        quizzes = new Queue<TQuiz>();
+        Title = title;
+        quizList = new Queue<TQuiz>();
     }
 
     public bool AddQuiz(TQuiz quiz)
     {
-        if (quizzes.Count < MAX_QUIZZES)
+        if (quizList.Count < MAX_QUIZZES)
         {
-            quizzes.Enqueue(quiz);
+            quizList.Enqueue(quiz);
             return true;
         }
         return false;
@@ -28,9 +31,9 @@ public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
 
     public bool AddExam(TExam newExam)
     {
-        if (finalExam == null)
+        if (exam == null)
         {
-            finalExam = newExam;
+            exam = newExam;
             return true;
         }
         return false;
@@ -38,17 +41,17 @@ public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
 
     public bool IsValid()
     {
-        return quizzes.Count >= 2 && finalExam != null;
+        return quizList.Count >= 2 && exam != null;
     }
 
     public IEnumerable<TQuiz> GetAllQuizzes()
     {
-        return quizzes;
+        return quizList;
     }
 
 
     public TExam GetFinalExam()
     {
-        return finalExam;
+        return exam;
     }
 }
