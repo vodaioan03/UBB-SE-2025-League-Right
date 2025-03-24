@@ -11,6 +11,7 @@ public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
     private TExam exam;
 
     private const int MAX_QUIZZES = 5;
+    private const int MIN_QUIZZES = 2;
 
     public Section(int id, string title)
     {
@@ -41,7 +42,7 @@ public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
 
     public bool IsValid()
     {
-        return quizList.Count >= 2 && exam != null;
+        return quizList.Count >= MIN_QUIZZES && exam != null;
     }
 
     public IEnumerable<TQuiz> GetAllQuizzes()
