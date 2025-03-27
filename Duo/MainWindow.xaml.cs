@@ -12,6 +12,10 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI;
+using System.Diagnostics;
+using Microsoft.UI.Windowing;
+using Windows.Graphics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -23,14 +27,55 @@ namespace Duo
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+
+        private AppWindow _appWindow;
+
         public MainWindow()
         {
             this.InitializeComponent();
+            this.CustomizeTitleBar();
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+
+        private void CustomizeTitleBar()
         {
-            myButton.Content = "Clicked";
+            ExtendsContentIntoTitleBar = true;
+
+            try
+            {
+                if (AppWindowTitleBar.IsCustomizationSupported())
+                {
+                    var titleBar = AppWindow.TitleBar;
+                    titleBar.ExtendsContentIntoTitleBar = true;
+
+                    titleBar.ButtonBackgroundColor = Colors.Transparent;
+                    titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Titlebar customization not supported: {ex.Message}");
+            }
         }
+
+        private void setDefaultScreenSizeSettings()
+        {
+            var displayArea = DisplayArea.GetFromWindowId(_appWindow.Id, DisplayAreaFallback.Primary);
+
+            int desiredWidth = 1200;
+            int desiredHeight = 700;
+
+            var centerX = (displayArea.WorkArea.Width - desiredWidth) / 2;
+            var centerY = (displayArea.WorkArea.Height - desiredHeight) / 2;
+
+            _appWindow.MoveAndResize(new RectInt32(
+                    centerX,
+                    centerY,
+                    desiredWidth,
+                    desiredHeight));
+        }
+
     }
 }
