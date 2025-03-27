@@ -1,4 +1,6 @@
-﻿namespace Duo.Models.Exercises;
+﻿using System.Collections.Generic;
+
+namespace Duo.Models.Exercises;
 
 public class AssociationExercise : Exercise
 {
@@ -15,14 +17,14 @@ public class AssociationExercise : Exercise
 
     public bool ValidateAnswer(List<(string, string)> userPairs)
     {
-        if (userPairs == null || userPairs.Count != ColumnA.Count)
+        if (userPairs == null || userPairs.Count != FirstAnswersList.Count)
             return false;
 
         foreach (var (userA, userB) in userPairs)
         {
-            int index = ColumnA.IndexOf(userA);
+            int index = FirstAnswersList.IndexOf(userA);
 
-            if (index == -1 || ColumnB[index] != userB)
+            if (index == -1 || SecondAnswersList[index] != userB)
                 return false;
         }
 
