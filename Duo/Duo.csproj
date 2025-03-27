@@ -12,6 +12,9 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Views\Pages\AdminMainPage.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -41,6 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Components\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Pages\AdminMainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Pages\MainPage.xaml">
