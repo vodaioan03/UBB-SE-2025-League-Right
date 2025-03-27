@@ -26,7 +26,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="Community" Icon="Folder" ToolTipService.ToolTip="Community" Tag="CommunityParent">
                 </NavigationViewItem>
-                <NavigationViewItem Content="Quiz Admin" Icon="Admin" ToolTipService.ToolTip="Admin" Tag="QuizAdminParent">
+                <NavigationViewItem Content="Quiz Admin"  Icon="Admin" ToolTipService.ToolTip="Admin" Tag="QuizAdminParent">
                 </NavigationViewItem>
             </NavigationView.MenuItems>
 
