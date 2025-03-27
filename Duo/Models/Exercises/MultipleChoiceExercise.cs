@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Duo.Models.Exercises;
+﻿namespace Duo.Models.Exercises;
 
 public class MultipleChoiceExercise : Exercise
 {
@@ -14,4 +11,16 @@ public class MultipleChoiceExercise : Exercise
         Answers = answers;
         CorrectAnswer = correctAnswer;
     }
+
+    public bool ValidateAnswer(List<string> userAnswers)
+    {
+        if (userAnswers == null || userAnswers.Count == 0)
+            return false;
+
+        var correctAnswers = Answers.Where(a => a.IsCorrect).Select(a => a.Answer).OrderBy(a => a).ToList();
+        var userSelection = userAnswers.OrderBy(a => a).ToList();
+
+        return correctAnswers.SequenceEqual(userSelection);
+    }
 }
+
