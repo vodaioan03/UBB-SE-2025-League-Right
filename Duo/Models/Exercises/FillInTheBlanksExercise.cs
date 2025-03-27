@@ -1,4 +1,7 @@
-﻿namespace Duo.Models.Exercises;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Duo.Models.Exercises;
 public class FillInTheBlankExercise : Exercise
 {
     public List<string> PossibleCorrectAnswers { get; }

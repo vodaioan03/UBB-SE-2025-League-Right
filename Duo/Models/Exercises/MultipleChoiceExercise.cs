@@ -1,4 +1,7 @@
-﻿namespace Duo.Models.Exercises;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Duo.Models.Exercises;
 
 public class MultipleChoiceExercise : Exercise
 {
