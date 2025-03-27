@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platform>x64</Platform>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting> <!-- For SqlClient in macOS -->
   </PropertyGroup>
 
   <ItemGroup>
