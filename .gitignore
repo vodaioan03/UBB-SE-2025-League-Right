@@ -370,3 +370,4 @@ onnx-models
 .idea
 
 /Duo/appsettings.json
+/Duo.ConsoleTest/appsettings.json
