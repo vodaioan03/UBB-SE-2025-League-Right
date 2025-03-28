@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Duo.Core.Data;
-using Duo.Core.Models;
-using Duo.Core.Repositories;
+using Duo.Data;
+using Duo.Models;
+using Duo.Repositories;
 
-namespace Duo.ConsoleTest;
+// INFO: temporary file for tutorial purposes
+
+namespace Duo;
 
 class Program
 {
