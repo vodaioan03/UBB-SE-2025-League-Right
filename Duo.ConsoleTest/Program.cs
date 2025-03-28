@@ -1,5 +1,4 @@
-﻿// Duo.ConsoleTest/Program.cs
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Duo.Core.Data;
 
@@ -70,6 +69,7 @@ class Program
 
     private static async Task TestConnection(DatabaseConnection db)
     {
+        // INFO: using the "using" keyword to ensure the connection is disposed of after use
         using var connection = db.CreateConnection();
         await connection.OpenAsync();
         Console.WriteLine("Connection successful!");
