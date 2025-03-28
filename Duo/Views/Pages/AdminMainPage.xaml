@@ -26,11 +26,18 @@
                    FontWeight="SemiBold"  
                    FontSize="32"/>
 
+                <!-- Horizontal Line -->
+                <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                  Height="1" 
+                  Margin="0,0,0,6"
+                  Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" 
+                  HorizontalAlignment="Stretch"/>
+
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <components:QuizAdminButton Text="Create section"/>
                     <components:QuizAdminButton Text="Create quiz"/>
                     <components:QuizAdminButton Text="Create exam"/>
-                    <components:QuizAdminButton Text="Create exercise"/>
+                    <components:QuizAdminButton Text="Create exercise" Click="OpenCreateExamPage_Click"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="12">

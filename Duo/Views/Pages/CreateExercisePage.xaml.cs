@@ -21,16 +21,46 @@ namespace Duo.Views.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class AdminMainPage : Page
+    public sealed partial class CreateExercisePage : Page
     {
-        public AdminMainPage()
+        private string _questionText = string.Empty;
+        public CreateExercisePage()
         {
             this.InitializeComponent();
         }
 
-        public void OpenCreateExamPage_Click(object sender, RoutedEventArgs e)
+        public void ExerciseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Frame.Navigate(typeof(CreateExercisePage));
+
         }
+        public void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+        }
+
+        public string QuestionText
+        {
+            get => _questionText;
+            set
+            {
+                _questionText = value;
+            }
+        }
+
+        public void CancelButton_Click(object senderm, RoutedEventArgs e)
+        {
+
+        }
+
+
+        public void SaveButton_Click(object senderm, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }
+

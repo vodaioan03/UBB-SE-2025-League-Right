@@ -15,6 +15,7 @@
   <ItemGroup>
     <None Remove="Views\Components\QuizAdminButton.xaml" />
     <None Remove="Views\Pages\AdminMainPage.xaml" />
+    <None Remove="Views\Pages\CreateExercisePage.xaml" />
     <None Remove="Views\Pages\RoadmapMainPage.xaml" />
   </ItemGroup>
 
@@ -43,6 +44,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Pages\CreateExercisePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Components\QuizAdminButton.xaml">
