@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.CreateAssociationExercise"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="ListViewItemStretchStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid                     
+        MaxWidth="900"
+        ColumnDefinitions="auto,auto,*">
+
+        <StackPanel Grid.Column="0">
+                <TextBlock  Margin="0,0,16,0">Left side</TextBlock>
+            <ListView x:Name="LeftSideTextBoxList"  SelectionMode="None"  Padding="0" 
+                    ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding}" Width="200"                            
+                                     HorizontalAlignment="Left"
+                                    BorderThickness="0"></TextBox>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        <StackPanel  Grid.Column="1" HorizontalAlignment="Left">
+                <TextBlock Margin="0,0,16,0">Right side</TextBlock>
+                <ListView x:Name="RightSideTextBoxList"  SelectionMode="None"  Padding="0">
+                    <ListView.ItemTemplate >
+                    <DataTemplate>
+                        <TextBox Text="{Binding}" Width="200"                            
+                                     HorizontalAlignment="Left"
+                                    BorderThickness="0"></TextBox>
+                    </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        <StackPanel Grid.Column="2"
+                    VerticalAlignment="Top">
+            <Button   
+                x:Name="AddNewInputButton"
+                Content="Add new input"
+                Click="AddNewInputButton_Click"
+                Padding="16,8,16,8"
+                Margin="8,0,0,0"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

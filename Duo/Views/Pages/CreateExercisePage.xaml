@@ -26,9 +26,9 @@
                         Content="Back"
                         Click="BackButton_Click"
                         Margin="0,16,0,16"/>
-            
-            
-                <ComboBox SelectionChanged="ExerciseComboBox_SelectionChanged" Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
+
+
+                <ComboBox x:Name="ExerciseTypeComboBox" SelectionChanged="ExerciseComboBox_SelectionChanged" Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
                     <x:String>Association</x:String>
                     <x:String>Fill in the blank</x:String>
                     <x:String>Multiple Choice</x:String>
@@ -44,7 +44,6 @@
                             FontSize="12" 
                             HorizontalAlignment="Left"
                             BorderThickness="0"
-                            Background="Transparent"
                             Margin="0,0,8,0"
                             Text="{x:Bind QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap"
@@ -53,18 +52,24 @@
                         Width="400"/>
                 </StackPanel>
 
+                <ContentControl x:Name="ContentExerciseDisplayArea" />
+
                 <StackPanel
-                        Orientation="Horizontal" Spacing="12">
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal" Spacing="12" 
+                            Margin="0,16,0,16">
                         <Button 
                              x:Name="CancelButton"
                              Content="Cancel"
                              Click="CancelButton_Click"
-                             Margin="0,16,0,16"/>
+                             Padding="32,8,32,8"/>
                         <Button 
                             x:Name="SaveButton"
                             Content="Save"
                             Click="SaveButton_Click"
-                            Margin="0,16,0,16"/>
+                             Padding="32,8,32,8"
+                            Background="{ThemeResource AccentFillColorDefaultBrush}"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                     </StackPanel>
                 </StackPanel>
         </ScrollViewer>
