@@ -52,7 +52,6 @@ namespace Duo.Views.Pages
 
                 case "Multiple Choice":
                     Debug.WriteLine("Fill in the blank");
-
                     break;
 
                 case "Flashcard":
