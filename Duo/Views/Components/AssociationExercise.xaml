@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.AssociationExercise"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
+        <TextBlock 
+                Text="{x:Bind Question, Mode=OneWay}"
+                HorizontalAlignment="Center" 
+                FontSize="32"
+                Margin="100"
+                />
+        <Grid HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              ColumnSpacing="200">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <ItemsControl ItemsSource="{x:Bind FirstAnswersList, Mode=OneWay}" Grid.Column="0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Button Background="Transparent"
+                                BorderThickness="1"
+                                Padding="12"
+                                Content="{Binding}" 
+                                Click="LeftOption_Click" Width="150" Margin="5"/>
+                                <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black"  StrokeThickness="5" Name="FirstCircle"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid Grid.Column="1"/>
+
+            <ItemsControl ItemsSource="{x:Bind SecondAnswersList, Mode=OneWay}" Grid.Column="1">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black"  StrokeThickness="5" Name="SecondCircle"/>
+                                <Button Background="Transparent"
+                                BorderThickness="1"
+                                Padding="12" 
+                                Content="{Binding}" Click="RightOption_Click" Width="150" Margin="5"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+        <Button Background="Transparent"
+                HorizontalAlignment="Center"
+                BorderThickness="5"
+                Padding="12"  
+                Click="Send_Click" 
+                Width="150" Margin="40">Send</Button>
+    </StackPanel>
+    
+</UserControl>
