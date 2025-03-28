@@ -6,13 +6,13 @@
     xmlns:local="using:Duo.Views.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:components="using:Duo.Views.Components"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock Text="Quiz Page" 
+        <TextBlock Text="Quiz page" 
                    HorizontalAlignment="Center" 
-                   VerticalAlignment="Center"
                    FontSize="32"/>
     </Grid>
 </Page>

@@ -36,7 +36,6 @@ namespace Duo
             this.CustomizeTitleBar();
         }
 
-
         private void CustomizeTitleBar()
         {
             ExtendsContentIntoTitleBar = true;
