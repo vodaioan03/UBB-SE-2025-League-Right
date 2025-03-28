@@ -12,6 +12,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System.Reflection.Metadata;
+using System.Diagnostics;
+using Duo.Views.Components;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,6 +27,7 @@ namespace Duo.Views.Pages
     public sealed partial class CreateExercisePage : Page
     {
         private string _questionText = string.Empty;
+
         public CreateExercisePage()
         {
             this.InitializeComponent();
@@ -31,8 +35,34 @@ namespace Duo.Views.Pages
 
         public void ExerciseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ComboBox exerciseComboBox = sender as ComboBox;
+            Debug.WriteLine("This is a debug message.");
 
+            switch (exerciseComboBox.SelectedItem.ToString())
+            {
+                case "Association":
+                    ContentExerciseDisplayArea.Content = new CreateAssociationExercise();
+                    Debug.WriteLine("Association");
+                    break;
+
+                case "Fill in the blank":
+                    ContentExerciseDisplayArea.Content = new CreateFillInTheBlankExercise();
+                    Debug.WriteLine("Fill in the blank");
+                    break;
+
+                case "Multiple Choice":
+                    Debug.WriteLine("Fill in the blank");
+
+                    break;
+
+                case "Flashcard":
+                    break;
+                default:
+                    break;
+            }
         }
+
+
         public void BackButton_Click(object sender, RoutedEventArgs e)
         {
             if (this.Frame.CanGoBack)
