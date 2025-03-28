@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Duo.Views.Pages.AdminMainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:components="using:Duo.Views.Components"
+    HorizontalAlignment="Stretch">
+
+    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0">
+        <ScrollViewer 
+            HorizontalAlignment="Stretch" 
+            HorizontalContentAlignment="Stretch"
+            VerticalScrollBarVisibility="Auto"
+            Padding="0,16,0,16">
+           
+            <StackPanel
+                HorizontalAlignment="Stretch"
+                MaxWidth="900"
+                Spacing="16">
+
+                <TextBlock Text="Admin Page" 
+                   FontWeight="SemiBold"  
+                   FontSize="32"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <components:QuizAdminButton Text="Create section"/>
+                    <components:QuizAdminButton Text="Create quiz"/>
+                    <components:QuizAdminButton Text="Create exam"/>
+                    <components:QuizAdminButton Text="Create exercise"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <components:QuizAdminButton Text="Manage sections"/>
+                    <components:QuizAdminButton Text="Manage quizes"/>
+                    <components:QuizAdminButton Text="Manage exams"/>
+                    <components:QuizAdminButton Text="Manage exercises"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</Page>

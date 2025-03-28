@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="Duo.Views.Pages.BlankPage1"
+    x:Class="Duo.Views.Pages.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Duo.Views.Pages"
@@ -8,11 +8,36 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    
 
     <Grid>
-        <TextBlock Text="Main Page" 
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Center"
-                   FontSize="24"/>
+        <NavigationView x:Name="NavigationView"
+            Height="Auto"
+            PaneDisplayMode="Left"
+            PaneTitle="Duo"
+            IsTabStop="False"
+            ExpandedModeThresholdWidth="300"
+            SelectionChanged="NavigationView_SelectionChanged">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Courses" Icon="Library" ToolTipService.ToolTip="Courses" Tag="CoursesParent">
+                </NavigationViewItem>
+                <NavigationViewItem Content="Quiz" Icon="Help" ToolTipService.ToolTip="Quiz" Tag="QuizParent">
+                </NavigationViewItem>
+                <NavigationViewItem Content="Community" Icon="Folder" ToolTipService.ToolTip="Community" Tag="CommunityParent">
+                </NavigationViewItem>
+                <NavigationViewItem Content="Quiz Admin"  Icon="Admin" ToolTipService.ToolTip="Admin" Tag="QuizAdminParent">
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <NavigationView.PaneFooter>
+                <StackPanel Orientation="Horizontal" Margin="14,10" VerticalAlignment="Center">
+                    <PersonPicture ProfilePicture="/Assets/UserIcon.png" Width="24" Height="24" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="UsernameTextBlock" Text="username here" VerticalAlignment="Center" />
+                </StackPanel>
+            </NavigationView.PaneFooter>
+
+            <Frame x:Name="contentFrame" />
+        </NavigationView>
     </Grid>
 </Page>
