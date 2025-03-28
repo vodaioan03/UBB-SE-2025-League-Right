@@ -1,9 +1,9 @@
-using Duo.Data;
-using Duo.Models;
+using Duo.Core.Data;
+using Duo.Core.Models;
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace Duo.Repositories;
+namespace Duo.Core.Repositories;
 
 public class UserRepository
 {

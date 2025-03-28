@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Threading.Tasks;
 
-namespace Duo.Data;
+namespace Duo.Core.Data;
 
 public class DatabaseConnection
 {
