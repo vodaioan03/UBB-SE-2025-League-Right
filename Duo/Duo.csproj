@@ -46,11 +46,17 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\Components\FillInTheBlanksExercise.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\Pages\CreateExercisePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\Components\MultipleChoiceExercise.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\Components\QuizAdminButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
