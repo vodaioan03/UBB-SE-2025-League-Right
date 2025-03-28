@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Threading.Tasks;
 
 namespace Duo.Core.Data;
 
@@ -38,6 +39,12 @@ public class DatabaseConnection
     public SqlConnection CreateConnection()
     {
         return new SqlConnection(_connectionString);
+    }
+
+    public async Task<SqlConnection> CreateConnectionAsync()
+    {
+        var connection = new SqlConnection(_connectionString);
+        return connection;
     }
 
     // INFO: best approach is to return a new connection each time
