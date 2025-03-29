@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Duo.Views.Components.Modals;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,6 +27,35 @@ namespace Duo.Views.Pages
         public AdminMainPage()
         {
             this.InitializeComponent();
+
+            // Subscribe to modal events
+            CreateSectionModal.SectionCreated += CreateSectionModal_SectionCreated;
+            CreateSectionModal.ModalClosed += CreateSectionModal_ModalClosed;
+        }
+
+        private void CreateSection_Click(object sender, RoutedEventArgs e)
+        {
+            ModalOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void CreateSectionModal_SectionCreated(object sender, SectionCreatedEventArgs e)
+        {
+            // TODO: Handle the new section creation
+            // You can add your logic here to save the section to your data store
+            // For now, we'll just show a success message
+            var dialog = new ContentDialog
+            {
+                Title = "Success",
+                Content = $"Section '{e.Subject}' created successfully!",
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            dialog.ShowAsync();
+        }
+
+        private void CreateSectionModal_ModalClosed(object sender, EventArgs e)
+        {
+            ModalOverlay.Visibility = Visibility.Collapsed;
         }
 
         public void OpenCreateExamPage_Click(object sender, RoutedEventArgs e)
