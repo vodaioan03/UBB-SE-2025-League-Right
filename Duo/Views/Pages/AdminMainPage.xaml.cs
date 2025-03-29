@@ -12,6 +12,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Duo.Models.Quizzes;
+using Duo.Models.Exercises;
+using Duo.Views.Components.Modals;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,6 +29,29 @@ namespace Duo.Views.Pages
         public AdminMainPage()
         {
             this.InitializeComponent();
+            CreateExamModal.ExamCreated += CreateExamModal_ExamCreated;
+            CreateExamModal.ModalClosed += CreateExamModal_ModalClosed;
+        }
+
+        private void CreateExam_Click(object sender, RoutedEventArgs e)
+        {
+            ModalOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void CreateExamModal_ExamCreated(object sender, ExamCreatedEventArgs e)
+        {
+            // Handle the created exam
+            var exam = e.Exam;
+
+            // TODO: Save the exam to your data source
+
+            // Hide the modal
+            ModalOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void CreateExamModal_ModalClosed(object sender, EventArgs e)
+        {
+            ModalOverlay.Visibility = Visibility.Collapsed;
         }
 
         public void OpenCreateExamPage_Click(object sender, RoutedEventArgs e)
