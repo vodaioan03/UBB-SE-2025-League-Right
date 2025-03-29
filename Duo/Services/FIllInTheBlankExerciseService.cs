@@ -9,6 +9,8 @@ namespace Duo.Services
 {
     class FIllInTheBlankExerciseService
     {
+
+        // TODO: Move functionality up the architecture
         FIllInTheBlankExerciseService() { }
 
         public bool CreateExercise(string sentence, List<string> possibleAnswers)

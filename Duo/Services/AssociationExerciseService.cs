@@ -9,6 +9,8 @@ namespace Duo.Services
 {
     class AssociationExerciseService
     {
+
+        // TODO: Move functionality up the architecture
         public AssociationExerciseService() { }
         public bool CreateExercise(string question, List<string> firstAnswersList, List<string> secondAnswersList)
         {

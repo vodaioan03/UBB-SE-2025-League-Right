@@ -1,5 +1,6 @@
 ﻿using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
+using Duo.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +11,35 @@ namespace Duo.Services
 {
     class ExerciseService
     {
+        private readonly IExerciseRepository _exerciseRepository;
 
         public ExerciseService() {
-        
+            //_exerciseRepository = new ExerciseRepository();
         }
 
-        public List<IExercise> GetAllExercises()
+        public Task<List<IExercise>> GetAllExercises()
         {
-            return new List<IExercise>();
+            return _exerciseRepository.GetAllExercises();
         }
 
-        public IExercise GetExerciseById(int exerciseId)
+        public Task<IExercise> GetExerciseById(int exerciseId)
         {
-            return null;
+            return _exerciseRepository.GetById(exerciseId);
         }
 
-        public List<IExercise> GetAllExercisesFromQuiz(int quizId)
+        public Task<List<IExercise>> GetAllExercisesFromQuiz(int quizId)
         {
-            return new List<IExercise>();
+            return _exerciseRepository.GetQuizExercises(quizId);
         }
 
-        public bool DeleteExercise(int exerciseId)
+        public Task<bool> DeleteExercise(int exerciseId)
         {
-            return false;
+            return _exerciseRepository.DeleteExercise(exerciseId);
+        }
+
+        public Task<bool> UpdateExercise(IExercise exercise)
+        {
+            return _exerciseRepository.UpdateExercise(exercise);
         }
 
     }

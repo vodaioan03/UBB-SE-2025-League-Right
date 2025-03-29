@@ -1,4 +1,5 @@
 ﻿using Duo.Models.Exercises;
+using Duo.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace Duo.Services
 {
-    class MultipleChoiceExerciseService
+    class MultipleChoiceExerciseService : ExerciseService
     {
-        public MultipleChoiceExerciseService() { }
-
-        public bool CreateExercise(string question, List<string> possibleCorrectAnswers, string correctAnswer)
-        {
-            return false;
+        // TODO: Move functionality up the architecture
+        public MultipleChoiceExerciseService() {
+            //_exerciseRepository = new IExerciseRepository();
         }
+
 
         public bool VerifyIfAnswerIsCorrect(MultipleChoiceExercise exercise, List<string> userAnswer)
         {
