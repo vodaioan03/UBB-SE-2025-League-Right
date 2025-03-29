@@ -66,7 +66,7 @@ CREATE TABLE MultipleChoiceExercises (
     ExerciseId INT PRIMARY KEY,
     Question VARCHAR(500) NOT NULL,
     CorrectAnswer VARCHAR(500) NOT NULL,
-    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id)
+    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 
 -- Create MultipleChoiceOptions table
@@ -74,14 +74,14 @@ CREATE TABLE MultipleChoiceOptions (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     ExerciseId INT NOT NULL,
     OptionText VARCHAR(500) NOT NULL,
-    FOREIGN KEY (ExerciseId) REFERENCES MultipleChoiceExercises(ExerciseId)
+    FOREIGN KEY (ExerciseId) REFERENCES MultipleChoiceExercises(ExerciseId) ON DELETE CASCADE
 );
 
 -- Create FillInTheBlanksExercises table
 CREATE TABLE FillInTheBlanksExercises (
     ExerciseId INT PRIMARY KEY,
     Sentence VARCHAR(500) NOT NULL,
-    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id)
+    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 
 -- Create FillInTheBlanksAnswers table
@@ -89,15 +89,13 @@ CREATE TABLE FillInTheBlanksAnswers (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     ExerciseId INT NOT NULL,
     CorrectAnswer VARCHAR(100) NOT NULL,
-    Position INT NOT NULL,
-    FOREIGN KEY (ExerciseId) REFERENCES FillInTheBlanksExercises(ExerciseId),
-    CONSTRAINT UQ_FillInBlanks_Position UNIQUE (ExerciseId, Position)
+    FOREIGN KEY (ExerciseId) REFERENCES FillInTheBlanksExercises(ExerciseId) ON DELETE CASCADE,
 );
 
 -- Create AssociationExercises table
 CREATE TABLE AssociationExercises (
     ExerciseId INT PRIMARY KEY,
-    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id)
+    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 
 -- Create AssociationPairs table
@@ -106,7 +104,7 @@ CREATE TABLE AssociationPairs (
     ExerciseId INT NOT NULL,
     FirstAnswer VARCHAR(255) NOT NULL,
     SecondAnswer VARCHAR(255) NOT NULL,
-    FOREIGN KEY (ExerciseId) REFERENCES AssociationExercises(ExerciseId)
+    FOREIGN KEY (ExerciseId) REFERENCES AssociationExercises(ExerciseId) ON DELETE CASCADE
 );
 
 -- Create Quizzes table
@@ -124,8 +122,8 @@ CREATE TABLE QuizExercises (
     ExerciseId INT NOT NULL,
     OrderNumber INT NOT NULL,
     PRIMARY KEY (QuizId, ExerciseId),
-    FOREIGN KEY (QuizId) REFERENCES Quizzes(Id),
-    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id),
+    FOREIGN KEY (QuizId) REFERENCES Quizzes(Id) ON DELETE CASCADE,
+    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE,
     CONSTRAINT UQ_QuizExercise_Order UNIQUE (QuizId, OrderNumber)
 );
 
@@ -142,8 +140,8 @@ CREATE TABLE ExamExercises (
     ExerciseId INT NOT NULL,
     OrderNumber INT NOT NULL,
     PRIMARY KEY (ExamId, ExerciseId),
-    FOREIGN KEY (ExamId) REFERENCES Exams(Id),
-    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id),
+    FOREIGN KEY (ExamId) REFERENCES Exams(Id) ON DELETE CASCADE,
+    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE,
     CONSTRAINT UQ_ExamExercise_Order UNIQUE (ExamId, OrderNumber)
 );
 
