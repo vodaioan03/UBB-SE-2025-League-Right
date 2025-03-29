@@ -51,8 +51,8 @@ namespace Duo.Views.Pages
                     break;
 
                 case "Multiple Choice":
+                    ContentExerciseDisplayArea.Content = new CreateMultipleChoiceExercise();
                     Debug.WriteLine("Fill in the blank");
-
                     break;
 
                 case "Flashcard":
