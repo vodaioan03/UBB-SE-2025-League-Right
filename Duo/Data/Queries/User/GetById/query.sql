@@ -1,7 +1,14 @@
-CREATE OR ALTER PROCEDURE sp_GetUserById
-    @userId INT
+CREATE PROCEDURE sp_GetUserById
+    @Id INT
 AS
 BEGIN
-    SELECT * FROM Users
-    WHERE Id = @userId;
-END; 
+    SET NOCOUNT ON;
+    
+    SELECT 
+        Id,
+        Username,
+        LastCompletedSectionId,
+        LastCompletedQuizId
+    FROM Users
+    WHERE Id = @Id;
+END

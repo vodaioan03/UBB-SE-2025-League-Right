@@ -1,7 +1,14 @@
-CREATE OR ALTER PROCEDURE sp_GetUserByUsername
-    @username VARCHAR(100)
+CREATE PROCEDURE sp_GetUserByUsername
+    @Username VARCHAR(100)
 AS
 BEGIN
-    SELECT * FROM Users
-    WHERE Username = @username;
-END; 
+    SET NOCOUNT ON;
+    
+    SELECT 
+        Id,
+        Username,
+        LastCompletedSectionId,
+        LastCompletedQuizId
+    FROM Users
+    WHERE Username = @Username;
+END
