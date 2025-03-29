@@ -62,9 +62,4 @@ public abstract class BaseQuiz<T> : IQuiz<T>
     {
         numberOfAnswersGiven++;
     }
-
-    public int GetExerciseCount()
-    {
-        return exerciseList.Count;
-    }
 }
