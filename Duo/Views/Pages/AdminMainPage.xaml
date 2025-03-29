@@ -8,39 +8,48 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:components="using:Duo.Views.Components"
+    xmlns:modals="using:Duo.Views.Components.Modals"
     HorizontalAlignment="Stretch">
 
-    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0">
-        <ScrollViewer 
-            HorizontalAlignment="Stretch" 
+    <Grid  HorizontalAlignment="Stretch"
+           MaxWidth="900"
+           Margin="32,0,32,0">
+        <ScrollViewer
+            HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             VerticalScrollBarVisibility="Auto"
             Padding="0,16,0,16">
-           
+
             <StackPanel
                 HorizontalAlignment="Stretch"
                 MaxWidth="900"
                 Spacing="16">
 
-                <TextBlock Text="Admin Page" 
-                   FontWeight="SemiBold"  
-                   FontSize="32"/>
+                <TextBlock Text="Admin Page"
+                           FontWeight="SemiBold"
+                           FontSize="32"/>
 
                 <!-- Horizontal Line -->
-                <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                  Height="1" 
-                  Margin="0,0,0,6"
-                  Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" 
-                  HorizontalAlignment="Stretch"/>
+                <Rectangle Grid.Row="1"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Height="1"
+                           Margin="0,0,0,6"
+                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                           HorizontalAlignment="Stretch"/>
 
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <components:QuizAdminButton Text="Create section"/>
+                <StackPanel Orientation="Horizontal"
+                            Spacing="12">
+                    <components:QuizAdminButton Text="Create section"
+                                                Click="CreateSection_Click"/>
                     <components:QuizAdminButton Text="Create quiz"/>
                     <components:QuizAdminButton Text="Create exam"/>
-                    <components:QuizAdminButton Text="Create exercise" Click="OpenCreateExamPage_Click"/>
+                    <components:QuizAdminButton Text="Create exercise"
+                                                Click="OpenCreateExamPage_Click"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Spacing="12">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="12">
                     <components:QuizAdminButton Text="Manage sections"/>
                     <components:QuizAdminButton Text="Manage quizes"/>
                     <components:QuizAdminButton Text="Manage exams"/>
@@ -49,6 +58,12 @@
 
             </StackPanel>
         </ScrollViewer>
+
+        <!-- Modal overlay -->
+        <Grid x:Name="ModalOverlay"
+              Visibility="Collapsed">
+            <modals:CreateSectionModal x:Name="CreateSectionModal"/>
+        </Grid>
 
     </Grid>
 </Page>
