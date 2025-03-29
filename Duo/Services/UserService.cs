@@ -1,42 +1,56 @@
+using Duo.Data;
 using Duo.Models;
+using Duo.Repositories;
 using System;
+using System.Threading.Tasks;
 
 namespace Duo.Services;
 
 public class UserService
 {
-    public User GetById(int userId)
+    private readonly UserRepository _userRepository;
+
+    public UserService(DatabaseConnection databaseConnection)
     {
-        throw new NotImplementedException();
+        _userRepository = new UserRepository(databaseConnection);
     }
 
-    public User GetByUsername(string username)
+    public Task<User> GetById(int userId)
     {
-        throw new NotImplementedException();
+        return  _userRepository.GetByIdAsync(userId);
     }
 
-    public void CreateUser(User user)
+    public Task<User> GetByUsername(string username)
     {
-        throw new NotImplementedException();
+        return _userRepository.GetByUsernameAsync(username);
     }
 
-    public int GetLastCompletedSection(int userId)
+    public Task<bool> CreateUser(User user)
     {
-        throw new NotImplementedException();
+        return _userRepository.CreateUserAsync(user);
     }
 
-    public int GetLastCompletedQuiz(int userId)
+    public async Task<int> GetLastCompletedSection(int userId)
     {
-        throw new NotImplementedException();
+        User user = await _userRepository.GetByIdAsync(userId);
+        return user.LastCompletedSectionId;
     }
 
-    public void UpdateUserSectionProgress(int userId, int newLastCompletedId)
+    public async Task<int> GetLastCompletedQuiz(int userId)
     {
-        throw new NotImplementedException();
+        User user = await _userRepository.GetByIdAsync(userId);
+        return user.LastCompletedQuizId;
     }
 
-    public void UpdateUserQuizProgress(int userId, int newLastQuizCompleted)
+    public async void UpdateUserSectionProgress(int userId, int newLastCompletedId)
     {
-        throw new NotImplementedException();
+        User user = await _userRepository.GetByIdAsync(userId);
+        await _userRepository.UpdateUserSectionProgressAsync(user, newLastCompletedId);
+    }
+
+    public async void UpdateUserQuizProgress(int userId, int newLastQuizCompleted)
+    {
+        User user = await _userRepository.GetByIdAsync(userId);
+        await _userRepository.UpdateUserQuizProgressAsync(user, newLastQuizCompleted);
     }
 }
