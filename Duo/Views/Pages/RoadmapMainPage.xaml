@@ -19,6 +19,6 @@
         <!-- <components:MultipleChoiceExercise Question="Test question" Answers="{x:Bind Answers}" /> -->
         <!-- <components:FillInTheBlanksExercise Question="Test test {} Test {}" /> -->
         
-        <components:SectionRoadmapView Quizzes="{x:Bind Quizzes}" Exam="{x:Bind Exam}"/>
+        <components:SectionRoadmapView Section="Countries" Quizzes="{x:Bind Quizzes}" Exam="{x:Bind Exam}"/>
     </Grid>
 </Page>

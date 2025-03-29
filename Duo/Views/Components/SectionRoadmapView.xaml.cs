@@ -34,8 +34,8 @@ namespace Duo.Views.Components
         public static readonly DependencyProperty ExamProperty =
             DependencyProperty.Register(nameof(Exam), typeof(Exam), typeof(SectionRoadmapView), new PropertyMetadata(null));
 
-        private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-        private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Microsoft.UI.Colors.Coral);
+        public static readonly DependencyProperty SectionProperty =
+            DependencyProperty.Register(nameof(Section), typeof(Exam), typeof(SectionRoadmapView), new PropertyMetadata(null));
 
         public SectionRoadmapView()
         {
@@ -51,7 +51,16 @@ namespace Duo.Views.Components
         public Exam Exam
         {
             get => (Exam)GetValue(ExamProperty);
-            set => SetValue(ExamProperty, value);
+            set
+            {
+                SetValue(ExamProperty, value);
+
+            }
+        }
+        public string Section
+        {
+            get => (string)GetValue(SectionProperty);
+            set => SetValue(SectionProperty, value);
         }
 
         private void Quiz_Click(object sender, RoutedEventArgs e)
@@ -64,5 +73,26 @@ namespace Duo.Views.Components
         {
             // HANDLE EXAM CLICK
         }
+
+        public void OnQuizRoadmapButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is QuizRoadmapButton button)
+            {
+                Debug.WriteLine($"Quiz with ID {button.QuizId} clicked!");
+
+                // You can perform any additional logic here based on the button that was clicked
+            }
+        }
+
+        public void OnExamRoadmapButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is QuizRoadmapButton button)
+            {
+                Debug.WriteLine($"Exam with ID {button.QuizId} clicked!");
+
+                // You can perform any additional logic here based on the button that was clicked
+            }
+        }
+
     }
 }

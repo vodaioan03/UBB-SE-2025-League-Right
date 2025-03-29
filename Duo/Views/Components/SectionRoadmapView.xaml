@@ -10,34 +10,35 @@
     xmlns:quizmodels="using:Duo.Models.Quizzes"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
-        <TextBlock 
-                Text="Quizzes"
-                HorizontalAlignment="Center" 
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical" Spacing="0" HorizontalAlignment="Center" Margin="0">
+            <TextBlock 
+                Text="{x:Bind Section}"
+                HorizontalAlignment="Left" 
                 FontSize="32"
-                Margin="50"/>
+                Margin="50, 50, 0, 0"/>
 
-        <ItemsControl ItemsSource="{x:Bind Quizzes, Mode=OneWay}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="quizmodels:Quiz">
-                    <StackPanel Orientation="Vertical" Spacing="10">
-                        <local:QuizRoadmapButton Quiz="{Binding}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        
-        <TextBlock 
-                Text="Exam"
-                HorizontalAlignment="Center" 
-                FontSize="32"
-                Margin="50"/>
-        <Button Background="Transparent"
-                HorizontalAlignment="Center"
-                BorderThickness="5"
-                Padding="12"  
-                Click="Exam_Click" 
-                Width="150" Margin="40" Content="Take Exam"/>
-    </StackPanel>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Horizontal" Spacing="0" Margin="0">
+
+                    <ItemsControl ItemsSource="{x:Bind Quizzes, Mode=OneWay}" Margin="0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="quizmodels:Quiz">
+                                <local:QuizRoadmapButton ButtonClick="OnQuizRoadmapButtonClick" QuizId="{Binding Id}" Margin="0"/>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <local:QuizRoadmapButton ButtonClick="OnExamRoadmapButtonClick" QuizId="{x:Bind Exam.Id}" Margin="0" IsExam="True"/>
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>
