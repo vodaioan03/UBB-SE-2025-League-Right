@@ -45,7 +45,7 @@
 
         <!-- Modal content -->
         <Grid Width="600"
-              MaxHeight="500"
+              MaxHeight="800"
               VerticalAlignment="Center"
               Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
               BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
@@ -65,37 +65,64 @@
                        Margin="0,0,0,16"/>
 
             <!-- Content -->
-            <StackPanel Grid.Row="1"
-                        Spacing="16">
-                <TextBox x:Name="SubjectTextBox"
-                         Header="Subject"
-                         PlaceholderText="Enter section subject"/>
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="16">
+                    <TextBox x:Name="SubjectTextBox"
+                             Header="Subject"
+                             PlaceholderText="Enter section subject"/>
 
-                <!-- Quiz Management -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                    <!-- Quiz Management -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Selected Quizzes"
-                               Style="{ThemeResource SubtitleTextBlockStyle}"
-                               VerticalAlignment="Center"/>
+                        <TextBlock Text="Selected Quizzes"
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   VerticalAlignment="Center"/>
 
-                    <Button x:Name="AddQuizButton"
-                            Grid.Column="1"
-                            Content="Add Quiz"
-                            Style="{ThemeResource AccentButtonStyle}"
-                            Click="AddQuizButton_Click"/>
-                </Grid>
+                        <Button x:Name="AddQuizButton"
+                                Grid.Column="1"
+                                Content="Add Quiz"
+                                Style="{ThemeResource AccentButtonStyle}"
+                                Click="AddQuizButton_Click"/>
+                    </Grid>
 
-                <ListView x:Name="QuizUnassignedList"
-                          Height="200"
-                          BorderThickness="1"
-                          BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                          Padding="8"
-                          ItemTemplate="{StaticResource QuizItemTemplate}"/>
-            </StackPanel>
+                    <ListView x:Name="QuizUnassignedList"
+                              Height="200"
+                              BorderThickness="1"
+                              BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                              Padding="8"
+                              ItemTemplate="{StaticResource QuizItemTemplate}"/>
+
+                    <!-- Exam Selection -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Final Exam"
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   VerticalAlignment="Center"/>
+
+                        <Button x:Name="AddExamButton"
+                                Grid.Column="1"
+                                Content="Select Exam"
+                                Style="{ThemeResource AccentButtonStyle}"
+                                Click="AddExamButton_Click"/>
+                    </Grid>
+
+                    <ListView x:Name="SelectedExamList"
+                              Height="80"
+                              BorderThickness="1"
+                              BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                              Padding="8"
+                              ItemTemplate="{StaticResource QuizSelectionItemTemplate}"/>
+                </StackPanel>
+            </ScrollViewer>
 
             <!-- Buttons -->
             <StackPanel Grid.Row="2"

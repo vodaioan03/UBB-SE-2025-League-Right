@@ -14,7 +14,9 @@ namespace Duo.Views.Components.Modals
         public event EventHandler ModalClosed;
 
         private readonly List<Quiz<object>> _availableQuizzes;
+        private readonly List<Exam<object>> _availableExams;
         public ObservableCollection<Quiz<object>> UnassignedQuizzes { get; private set; }
+        public ObservableCollection<Exam<object>> SelectedExam { get; private set; }
 
         public CreateSectionModal()
         {
@@ -30,8 +32,19 @@ namespace Duo.Views.Components.Modals
                 new Quiz<object>(5) { /* Add some exercises if needed */ }
             };
 
+            // Initialize hardcoded available exams
+            _availableExams = new List<Exam<object>>
+            {
+                new Exam<object>(1) { /* Add some exercises if needed */ },
+                new Exam<object>(2) { /* Add some exercises if needed */ },
+                new Exam<object>(3) { /* Add some exercises if needed */ }
+            };
+
             UnassignedQuizzes = new ObservableCollection<Quiz<object>>();
+            SelectedExam = new ObservableCollection<Exam<object>>();
+
             QuizUnassignedList.ItemsSource = UnassignedQuizzes;
+            SelectedExamList.ItemsSource = SelectedExam;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -52,19 +65,86 @@ namespace Duo.Views.Components.Modals
                 return;
             }
 
+            if (!SelectedExam.Any())
+            {
+                // Show error message
+                var dialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "Please select a final exam for the section.",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+                dialog.ShowAsync();
+                return;
+            }
+
             // Raise the SectionCreated event with the new section data
             SectionCreated?.Invoke(this, new SectionCreatedEventArgs
             {
                 Subject = subject,
-                AssignedQuizzes = new List<Quiz<object>>(UnassignedQuizzes)
+                AssignedQuizzes = new List<Quiz<object>>(UnassignedQuizzes),
+                FinalExam = SelectedExam.First()
             });
 
             // Clear the form
             SubjectTextBox.Text = string.Empty;
             UnassignedQuizzes.Clear();
+            SelectedExam.Clear();
 
             // Close the modal
             ModalClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        private async void AddExamButton_Click(object sender, RoutedEventArgs e)
+        {
+            var availableExamsToAdd = _availableExams
+                .Where(e => !SelectedExam.Any(se => se.Id == e.Id))
+                .ToList();
+
+            if (!availableExamsToAdd.Any())
+            {
+                var noExamsDialog = new ContentDialog
+                {
+                    Title = "No Exams Available",
+                    Content = "All available exams have been assigned to sections.",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+                await noExamsDialog.ShowAsync();
+                return;
+            }
+
+            // Create the exam selection dialog
+            var dialog = new ContentDialog
+            {
+                Title = "Select Final Exam",
+                CloseButtonText = "Cancel",
+                PrimaryButtonText = "Add",
+                XamlRoot = this.XamlRoot
+            };
+
+            var examListView = new ListView
+            {
+                SelectionMode = ListViewSelectionMode.Single,
+                Height = 300,
+                Margin = new Thickness(0, 10, 0, 10),
+                ItemTemplate = (DataTemplate)Resources["QuizSelectionItemTemplate"],
+                ItemsSource = availableExamsToAdd
+            };
+
+            dialog.Content = examListView;
+
+            dialog.PrimaryButtonClick += (s, args) =>
+            {
+                if (examListView.SelectedItem is Exam<object> selectedExam)
+                {
+                    SelectedExam.Clear(); // Only allow one exam
+                    SelectedExam.Add(selectedExam);
+                }
+            };
+
+            await dialog.ShowAsync();
         }
 
         private async void AddQuizButton_Click(object sender, RoutedEventArgs e)
@@ -130,6 +210,7 @@ namespace Duo.Views.Components.Modals
             // Clear the form
             SubjectTextBox.Text = string.Empty;
             UnassignedQuizzes.Clear();
+            SelectedExam.Clear();
 
             ModalClosed?.Invoke(this, EventArgs.Empty);
         }
@@ -139,5 +220,6 @@ namespace Duo.Views.Components.Modals
     {
         public string Subject { get; set; }
         public List<Quiz<object>> AssignedQuizzes { get; set; }
+        public Exam<object> FinalExam { get; set; }
     }
 }
