@@ -56,7 +56,7 @@ CREATE TABLE Sections (
 -- Create Exercises table (base table for exercise types)
 CREATE TABLE Exercises (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Type VARCHAR(50) NOT NULL, -- 'MultipleChoice', 'FillInTheBlanks', 'Association'
+    Type VARCHAR(50) NOT NULL, -- 'MultipleChoice', 'FillInTheBlanks', 'Association', 'Flashcard'
     DifficultyId INT NOT NULL,
     FOREIGN KEY (DifficultyId) REFERENCES Difficulties(Id)
 );
@@ -143,6 +143,15 @@ CREATE TABLE ExamExercises (
     FOREIGN KEY (ExamId) REFERENCES Exams(Id) ON DELETE CASCADE,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE,
     CONSTRAINT UQ_ExamExercise_Order UNIQUE (ExamId, OrderNumber)
+);
+
+-- Create FlashcardExercises table
+CREATE TABLE FlashcardExercises (
+    ExerciseId INT PRIMARY KEY,
+    Sentence VARCHAR(500) NOT NULL,
+    Answer VARCHAR(100) NOT NULL,
+    TimeInSeconds INT NOT NULL,
+    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 
 -- Add foreign key constraints for Users table after all tables are created

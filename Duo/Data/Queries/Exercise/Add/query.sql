@@ -6,13 +6,17 @@ CREATE OR ALTER PROCEDURE sp_AddExercise
     @correctAnswer VARCHAR(500) = NULL,
     -- Fill in the Blanks parameters
     @sentence VARCHAR(500) = NULL,
+    -- Flashcard parameters
+    @flashcardSentence VARCHAR(500) = NULL,
+    @flashcardAnswer VARCHAR(100) = NULL,
+    @timeInSeconds INT = NULL,
     -- Output parameter
     @newId INT OUTPUT
 AS
 BEGIN
     BEGIN TRY
         -- Validate exercise type
-        IF @type NOT IN ('MultipleChoice', 'FillInTheBlanks', 'Association')
+        IF @type NOT IN ('MultipleChoice', 'FillInTheBlanks', 'Association', 'Flashcard')
         BEGIN
             THROW 50001, 'Invalid exercise type', 1;
         END
@@ -60,6 +64,18 @@ BEGIN
             -- Insert the association exercise (no additional data needed)
             INSERT INTO AssociationExercises (ExerciseId)
             VALUES (@newId);
+        END
+        ELSE IF @type = 'Flashcard'
+        BEGIN
+            -- Validate required parameters
+            IF @flashcardSentence IS NULL OR @flashcardAnswer IS NULL OR @timeInSeconds IS NULL
+            BEGIN
+                THROW 50005, 'Sentence, answer and time are required for Flashcard exercises', 1;
+            END
+
+            -- Insert the flashcard exercise
+            INSERT INTO FlashcardExercises (ExerciseId, Sentence, Answer, TimeInSeconds)
+            VALUES (@newId, @flashcardSentence, @flashcardAnswer, @timeInSeconds);
         END
     END TRY
     BEGIN CATCH
