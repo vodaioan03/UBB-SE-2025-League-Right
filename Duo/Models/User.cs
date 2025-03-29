@@ -8,17 +8,21 @@ namespace Duo.Models;
 
 public class User
 {
-    public int UserId { get; set; }
+    public int Id { get; set; }
     public string Username { get; set; }
-
-    public User(int userId, string username)
+    public int LastCompletedSectionId { get; set; }
+    public int LastCompletedQuizId { get; set; }
+    
+    public User(int id, string username, int lastCompletedSectionId = 0, int lastCompletedQuizId = 0)
     {
-        UserId = userId;
+        Id = id;
         Username = username;
+        LastCompletedSectionId = lastCompletedSectionId;
+        LastCompletedQuizId = lastCompletedQuizId;
     }
 
     public User(string username)
     {
         Username = username;
     }
-}
+} 
