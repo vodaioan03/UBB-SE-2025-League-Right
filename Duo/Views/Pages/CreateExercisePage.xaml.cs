@@ -82,13 +82,20 @@ namespace Duo.Views.Pages
 
         public void CancelButton_Click(object senderm, RoutedEventArgs e)
         {
-
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
 
         public void SaveButton_Click(object senderm, RoutedEventArgs e)
         {
 
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
     }
