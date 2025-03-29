@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.Modals.CreateQuizModal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components.Modals"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <!-- Template for exercises in the main list -->
+        <DataTemplate x:Key="ExerciseItemTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <TextBlock Text="Exercise #"/>
+                    <TextBlock Text="{Binding Id}"/>
+                    <TextBlock Text=" - "/>
+                    <TextBlock Text="{Binding Question}"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="Remove"
+                        Click="RemoveExercise_Click"
+                        Style="{ThemeResource TextBlockButtonStyle}"/>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template for exercise selection dialog -->
+        <DataTemplate x:Key="ExerciseSelectionItemTemplate">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock Text="Exercise #"/>
+                <TextBlock Text="{Binding Id}"/>
+                <TextBlock Text=" - "/>
+                <TextBlock Text="{Binding Question}"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Semi-transparent background -->
+        <Rectangle Fill="{ThemeResource SystemControlAcrylicElementBrush}"
+                   Opacity="0.8"/>
+
+        <!-- Modal content -->
+        <Grid Width="600"
+              MaxHeight="500"
+              VerticalAlignment="Center"
+              Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+              BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="24">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Text="Create New Quiz"
+                       Style="{ThemeResource TitleLargeTextBlockStyle}"
+                       Margin="0,0,0,16"/>
+
+            <!-- Content -->
+            <StackPanel Grid.Row="1"
+                        Spacing="16">
+                <TextBox x:Name="TitleTextBox"
+                         Header="Title"
+                         PlaceholderText="Enter quiz title"/>
+
+                <!-- Exercise Management -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Selected Exercises"
+                               Style="{ThemeResource SubtitleTextBlockStyle}"
+                               VerticalAlignment="Center"/>
+
+                    <Button Grid.Column="1"
+                            Content="Add Exercise"
+                            Style="{ThemeResource AccentButtonStyle}"
+                            Click="AddExercise_Click"/>
+                </Grid>
+
+                <ListView x:Name="ExerciseList"
+                          Height="200"
+                          BorderThickness="1"
+                          BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                          Padding="8"
+                          ItemTemplate="{StaticResource ExerciseItemTemplate}"/>
+            </StackPanel>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8"
+                        Margin="0,24,0,0">
+                <Button x:Name="CancelButton"
+                        Content="Cancel"
+                        Click="CancelButton_Click"/>
+                <Button x:Name="SaveButton"
+                        Content="Save"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Click="SaveButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl> 
