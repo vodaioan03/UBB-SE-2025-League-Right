@@ -61,6 +61,9 @@
     <Page Update="Views\Components\FillInTheBlanksExercise.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\Components\Section\SectionView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\Pages\CreateExercisePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

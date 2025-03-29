@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.SectionRoadmapView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Duo.Models.Exercises"
+    xmlns:quizmodels="using:Duo.Models.Quizzes"
+    mc:Ignorable="d">
+
+    <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
+        <TextBlock 
+                Text="Quizzes"
+                HorizontalAlignment="Center" 
+                FontSize="32"
+                Margin="50"/>
+
+        <ItemsControl ItemsSource="{x:Bind Quizzes, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="quizmodels:Quiz">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <local:QuizRoadmapButton Quiz="{Binding}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <TextBlock 
+                Text="Exam"
+                HorizontalAlignment="Center" 
+                FontSize="32"
+                Margin="50"/>
+        <Button Background="Transparent"
+                HorizontalAlignment="Center"
+                BorderThickness="5"
+                Padding="12"  
+                Click="Exam_Click" 
+                Width="150" Margin="40" Content="Take Exam"/>
+    </StackPanel>
+
+</UserControl>
