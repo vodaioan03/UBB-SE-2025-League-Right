@@ -26,7 +26,7 @@ ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                     <RadioButton GroupName="Answers"
                          IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext.SelectedAnswer, Mode=TwoWay}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Text="{Binding ., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" />
+                            <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
                         </StackPanel>
                     </RadioButton>
                 </DataTemplate>

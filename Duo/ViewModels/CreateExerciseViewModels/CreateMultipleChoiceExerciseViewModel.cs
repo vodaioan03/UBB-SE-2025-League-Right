@@ -18,12 +18,10 @@ namespace Duo.ViewModels.CreateExerciseViewModels
     {
         private string _selectedAnswer;
 
-        private ObservableCollection<string> _answers;
+        public ObservableCollection<Answer> Answers { get; set; } = new ObservableCollection<Answer>();
 
-        public CreateMultipleChoiceExerciseViewModel() 
+        public CreateMultipleChoiceExerciseViewModel()
         {
-            _answers = new ObservableCollection<string>();
-            _answers.Add("");
             AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
         }
 
@@ -36,33 +34,20 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         public List<MultipleChoiceAnswerModel> generateAnswerModelList()
         {
-            List<string> finalAnswers = Answers.ToList();
+            List<Answer> finalAnswers = Answers.ToList();
             List<MultipleChoiceAnswerModel> multipleChoiceAnswerModels = new List<MultipleChoiceAnswerModel>();
-            foreach(string answer in finalAnswers)
+            foreach(Answer answer in finalAnswers)
             {
-                Debug.WriteLine("test");
-                Debug.WriteLine(answer);
+                Debug.WriteLine(answer.Value);
                 multipleChoiceAnswerModels.Add(new()
                 {
-                    Answer = answer,
+                    Answer = answer.Value,
                     IsCorrect = true
                 });
             }
             return multipleChoiceAnswerModels;
         }
 
-        public ObservableCollection<string> Answers
-        {
-            get => _answers;
-            set
-            {
-                if (_answers != value)
-                {
-                    _answers = value;
-                    OnPropertyChanged(nameof(Answers));
-                }
-            }
-        }
         public string SelectedAnswer
         {
             get => _selectedAnswer;
@@ -79,9 +64,39 @@ namespace Duo.ViewModels.CreateExerciseViewModels
         private void AddNewAnswer()
         {
             Debug.WriteLine($"New answer");
-            _answers.Add("test");
+            Answers.Add(new Answer("", false));
         }
 
+        public class Answer : ViewModelBase
+        {
+            private string _value;
+            private bool _isCorrect;
+            public string Value
+            {
+                get => _value;
+                set
+                {
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                }
+            }
+
+            public bool isValid
+            {
+                get => _isCorrect;
+                set
+                {
+                    _isCorrect = isValid;
+                    OnPropertyChanged(nameof(isValid));
+                }
+            }
+
+            public Answer(string value, bool isCorrect)
+            {
+                _value = value;
+                _isCorrect = isCorrect;
+            }
+        }
 
     }
 }
