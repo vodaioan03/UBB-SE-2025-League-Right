@@ -208,7 +208,7 @@ namespace Duo.Views.Components
         private void SetupTimer()
         {
             // Get duration in seconds for this difficulty
-            _timerDuration = GetTimerDurationByDifficulty(_exerciseData?.ExerciseDifficulty ?? Duo.Models.Difficulty.Normal);
+            _timerDuration = GetTimerDurationByDifficulty(_exerciseData?.Difficulty ?? Duo.Models.Difficulty.Normal);
             
             // Initialize remaining time to full duration
             _remainingTime = TimeSpan.FromSeconds(_timerDuration);
@@ -426,7 +426,7 @@ namespace Duo.Views.Components
             StartTimer();
             
             // Update difficulty info on UI if needed
-            UpdateDifficultyIndicator(exercise.ExerciseDifficulty);
+            UpdateDifficultyIndicator(exercise.Difficulty);
         }
 
         // This is a temporary function that would be replaced with actual data from a database
