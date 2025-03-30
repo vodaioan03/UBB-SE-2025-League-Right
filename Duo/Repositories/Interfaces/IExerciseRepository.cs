@@ -10,14 +10,14 @@ namespace Duo.Repositories.Interfaces
 {
     internal interface IExerciseRepository
     {
-        Task<Exercise> GetById(int id);
+        Task<IExercise> GetById(int id);
 
-        Task<List<Exercise>> GetAllExercises();
+        Task<List<IExercise>> GetAllExercises();
 
-        Task<List<Exercise>> GetQuizExercises(int quizId);
+        Task<List<IExercise>> GetQuizExercises(int quizId);
 
         Task<bool> CreateExercise(IExercise exercise);
-        
+
         Task<bool> UpdateExercise(IExercise exercise);
 
         Task<bool> DeleteExercise(int id);

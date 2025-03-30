@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Services
 {
-    class ExerciseService
+    public class ExerciseService
     {
         private readonly IExerciseRepository _exerciseRepository;
 

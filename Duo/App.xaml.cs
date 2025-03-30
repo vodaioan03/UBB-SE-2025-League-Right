@@ -18,6 +18,9 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Duo.Data;
+using Duo.ViewModels.ExerciseViewModels;
+using Duo.Repositories.Interfaces;
+using Duo.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -45,13 +48,22 @@ namespace Duo
         private void ConfigureServices()
         {
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton<DatabaseConnection>();
+
+            services.AddSingleton<IExerciseRepository>(); // should not be interface but waiting for implementation
+            services.AddSingleton<ExerciseService>();
+
+            services.AddTransient<FillInTheBlankExerciseViewModel>();
+            services.AddTransient<MultipleChoiceExerciseViewModel>();
+            services.AddTransient<AssociationExerciseViewModel>();
+
+
             _serviceProvider = services.BuildServiceProvider();
         }
 
