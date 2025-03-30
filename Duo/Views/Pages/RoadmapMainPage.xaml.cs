@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
+using Duo.Models.Exercises;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -20,7 +21,7 @@ using System.Collections.ObjectModel;
 namespace Duo.Views.Pages
 {
     /// <summary>
-    /// Main quiz page for roadmap and quiz content
+    /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class RoadmapMainPage : Page
     {
@@ -29,6 +30,18 @@ namespace Duo.Views.Pages
             this.InitializeComponent();
         }
 
-        // Future quiz-related code can be added here
+        //public ObservableCollection<MultipleChoiceAnswerModel> Answers = new ObservableCollection<MultipleChoiceAnswerModel>
+        //{
+        //    new() { Answer = "Option A", IsCorrect = false },
+        //    new() { Answer = "Option B", IsCorrect = true }
+        //};
+        //public ObservableCollection<string> FirstAnswersList = new ObservableCollection<string>
+        //{
+        //    "Romania", "Bulgaria", "Moldova"
+        //};
+        //public ObservableCollection<string> SecondAnswersList = new ObservableCollection<string>
+        //{
+        //    "Bucharest", "Sofia", "Chisinau"
+        //};
     }
 }
