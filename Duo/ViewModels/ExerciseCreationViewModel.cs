@@ -34,7 +34,8 @@ namespace Duo.ViewModels
         public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; } = new();
         public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; } = new();
         public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; } = new();
-
+        
+        public event EventHandler RequestGoBack;
         public ExerciseCreationViewModel(ExerciseService exerciseService) 
         {
             _exerciseService = exerciseService;
@@ -160,7 +161,9 @@ namespace Duo.ViewModels
 
         public void CreateMultipleChoiceExercise()
         {
-            CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, Models.Difficulty.Easy);
+            Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, Models.Difficulty.Easy);
+            //_exerciseService.CreateExercise(newExercise);
+            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
 
         public void CreateAssocitationExercise()

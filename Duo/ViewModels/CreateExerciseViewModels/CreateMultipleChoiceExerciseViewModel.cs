@@ -23,13 +23,22 @@ namespace Duo.ViewModels.CreateExerciseViewModels
         public CreateMultipleChoiceExerciseViewModel()
         {
             AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
+            UpdateSelectedAnswerComand = new RelayCommandWithParameter<string>(UpdateSelectedAnswer);
         }
 
         public override Exercise CreateExercise(string questionText, Difficulty difficulty)
         {
-            List<MultipleChoiceAnswerModel> multipleChoiceAnswerModelList = generateAnswerModelList();
-            Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, questionText, difficulty, multipleChoiceAnswerModelList);
-            return newExercise;
+            try
+            {
+                List<MultipleChoiceAnswerModel> multipleChoiceAnswerModelList = generateAnswerModelList();
+                Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, questionText, difficulty, multipleChoiceAnswerModelList);
+                return newExercise;
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
         }
 
         public List<MultipleChoiceAnswerModel> generateAnswerModelList()
@@ -39,10 +48,11 @@ namespace Duo.ViewModels.CreateExerciseViewModels
             foreach(Answer answer in finalAnswers)
             {
                 Debug.WriteLine(answer.Value);
+                Debug.WriteLine(answer.isCorrect);
                 multipleChoiceAnswerModels.Add(new()
                 {
                     Answer = answer.Value,
-                    IsCorrect = true
+                    IsCorrect = answer.isCorrect
                 });
             }
             return multipleChoiceAnswerModels;
@@ -60,11 +70,22 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
 
         public ICommand AddNewAnswerCommand { get; }
+        public ICommand UpdateSelectedAnswerComand { get; }
 
         private void AddNewAnswer()
         {
             Debug.WriteLine($"New answer");
             Answers.Add(new Answer("", false));
+        }
+        private void UpdateSelectedAnswer(string selectedValue)
+        {
+            foreach (var answer in Answers)
+            {
+                answer.isCorrect = answer.Value == selectedValue;
+            }
+
+            SelectedAnswer = selectedValue; // Update the selected answer reference
+            OnPropertyChanged(nameof(Answers)); // Notify UI
         }
 
         public class Answer : ViewModelBase
@@ -81,13 +102,16 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 }
             }
 
-            public bool isValid
+            public bool isCorrect
             {
                 get => _isCorrect;
                 set
                 {
-                    _isCorrect = isValid;
-                    OnPropertyChanged(nameof(isValid));
+                    if (_isCorrect != value) // Prevent unnecessary updates
+                    {
+                        _isCorrect = value;
+                        OnPropertyChanged(nameof(isCorrect));
+                    }
                 }
             }
 
