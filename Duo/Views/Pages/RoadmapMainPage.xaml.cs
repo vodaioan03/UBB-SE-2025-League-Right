@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,5 +44,19 @@ namespace Duo.Views.Pages
         //{
         //    "Bucharest", "Sofia", "Chisinau"
         //};
+
+        public ObservableCollection<Quiz> Quizzes = new ObservableCollection<Quiz>
+        {
+            new Quiz(1),
+            new Quiz(1),
+            new Quiz(1),
+            new Quiz(1),
+            new Quiz(1),
+            new Quiz(1),
+            new Quiz(2)
+        };
+
+
+        public Exam Exam = new Exam(2);
     }
 }

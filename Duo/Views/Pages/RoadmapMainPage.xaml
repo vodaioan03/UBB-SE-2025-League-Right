@@ -18,5 +18,7 @@
         <!-- <components:AssociationExercise Question="Connect the countries to their capital" FirstAnswersList="{x:Bind FirstAnswersList}" SecondAnswersList="{x:Bind SecondAnswersList}"/> -->
         <!-- <components:MultipleChoiceExercise Question="Test question" Answers="{x:Bind Answers}" /> -->
         <!-- <components:FillInTheBlanksExercise Question="Test test {} Test {}" /> -->
+        
+        <components:SectionRoadmapView Section="Countries" Quizzes="{x:Bind Quizzes}" Exam="{x:Bind Exam}"/>
     </Grid>
 </Page>
