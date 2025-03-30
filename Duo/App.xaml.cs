@@ -50,7 +50,7 @@ namespace Duo
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("C:\\Programare\\LeagueRight\\Duo\\appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
             var services = new ServiceCollection();
