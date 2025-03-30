@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Duo.Models.Sections;
 using Duo.Repositories;
@@ -47,3 +44,4 @@ namespace Duo.Services
             return _sectionRepository.UpdateAsync(section);
         }
     }
+}

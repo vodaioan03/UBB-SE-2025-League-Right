@@ -56,8 +56,20 @@ namespace Duo
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton<DatabaseConnection>();
 
-            services.AddSingleton<ExerciseRepository>(); // should not be interface but waiting for implementation
+            services.AddSingleton<UserRepository>();
+            services.AddSingleton<UserService>();
+
+            services.AddSingleton<ExerciseRepository>();
             services.AddSingleton<ExerciseService>();
+
+            services.AddSingleton<QuizRepository>();
+            services.AddSingleton<QuizService>();
+
+            services.AddSingleton<SectionRepository>();
+            services.AddSingleton<SectionService>();
+
+            services.AddSingleton<RoadmapRepository>();
+            services.AddSingleton<RoadmapService>();
 
             services.AddTransient<FillInTheBlankExerciseViewModel>();
             services.AddTransient<MultipleChoiceExerciseViewModel>();

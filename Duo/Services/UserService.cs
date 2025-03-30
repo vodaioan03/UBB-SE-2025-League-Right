@@ -10,9 +10,9 @@ public class UserService
 {
     private readonly UserRepository _userRepository;
 
-    public UserService(DatabaseConnection databaseConnection)
+    public UserService(UserRepository userRepository)
     {
-        _userRepository = new UserRepository(databaseConnection);
+        _userRepository = userRepository;
     }
 
     public Task<User> GetById(int userId)
