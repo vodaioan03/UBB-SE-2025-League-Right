@@ -28,12 +28,10 @@ namespace Duo.Views.Pages
     /// </summary>
     public sealed partial class CreateExercisePage : Page
     {
-        private string _questionText = string.Empty;
 
         public CreateExercisePage()
         {
             this.InitializeComponent();
-            this.DataContext = App.serviceProvider.GetService<ExerciseCreationViewModel>();
         }
 
         public void ExerciseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -74,15 +72,6 @@ namespace Duo.Views.Pages
             }
         }
 
-        public string QuestionText
-        {
-            get => _questionText;
-            set
-            {
-                _questionText = value;
-            }
-        }
-
         public void CancelButton_Click(object senderm, RoutedEventArgs e)
         {
             if (this.Frame.CanGoBack)
@@ -91,15 +80,11 @@ namespace Duo.Views.Pages
             }
         }
 
-
+        /*
         public void SaveButton_Click(object senderm, RoutedEventArgs e)
         {
-
-            if (this.Frame.CanGoBack)
-            {
-                this.Frame.GoBack();
-            }
-        }
+            ViewModel.CreateExercise();
+        }*/
 
     }
 }
