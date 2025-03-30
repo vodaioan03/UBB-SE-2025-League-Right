@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Duo.Views.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:createexerciseviewmodels="using:Duo.ViewModels.CreateExerciseViewModels" d:DataContext="{d:DesignInstance Type=createexerciseviewmodels:CreateAssociationExerciseViewModel}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -18,15 +18,17 @@
 
     <Grid                     
         MaxWidth="900"
-        ColumnDefinitions="auto,auto,*">
+        ColumnDefinitions="auto,auto,*"
+        DataContext="{Binding CreateAssociationExerciseViewModel}">
 
         <StackPanel Grid.Column="0">
                 <TextBlock  Margin="0,0,16,0">Left side</TextBlock>
-            <ListView x:Name="LeftSideTextBoxList"  SelectionMode="None"  Padding="0" 
+            <ListView SelectionMode="None"  Padding="0" 
+                      ItemsSource="{Binding LeftSideAnswers, Mode=TwoWay}"
                     ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                 <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding}" Width="200"                            
+                        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"                            
                                      HorizontalAlignment="Left"
                                     BorderThickness="0"></TextBox>
                         </DataTemplate>
@@ -35,10 +37,11 @@
             </StackPanel>
         <StackPanel  Grid.Column="1" HorizontalAlignment="Left">
                 <TextBlock Margin="0,0,16,0">Right side</TextBlock>
-                <ListView x:Name="RightSideTextBoxList"  SelectionMode="None"  Padding="0">
+                <ListView  SelectionMode="None"  Padding="0"
+                      ItemsSource="{Binding RightSideAnswers, Mode=TwoWay}">
                     <ListView.ItemTemplate >
                     <DataTemplate>
-                        <TextBox Text="{Binding}" Width="200"                            
+                        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"                            
                                      HorizontalAlignment="Left"
                                     BorderThickness="0"></TextBox>
                     </DataTemplate>
@@ -50,7 +53,7 @@
             <Button   
                 x:Name="AddNewInputButton"
                 Content="Add new input"
-                Click="AddNewInputButton_Click"
+                Command="{Binding AddNewAnswerCommand}"
                 Padding="16,8,16,8"
                 Margin="8,0,0,0"/>
         </StackPanel>

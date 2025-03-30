@@ -32,6 +32,7 @@ namespace Duo.Views.Pages
         public CreateExercisePage()
         {
             this.InitializeComponent();
+            ViewModel.RequestGoBack += ViewModel_RequestGoBack;
         }
 
 
@@ -51,11 +52,16 @@ namespace Duo.Views.Pages
             }
         }
 
-        /*
-        public void SaveButton_Click(object senderm, RoutedEventArgs e)
+        public void ViewModel_RequestGoBack(object sender, EventArgs e)
         {
-            ViewModel.CreateExercise();
-        }*/
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+        }
+
+
+
 
     }
 }

@@ -2,6 +2,7 @@
 using Duo.Models.Exercises;
 using Duo.Services;
 using Duo.ViewModels.Base;
+using Duo.ViewModels.CreateExerciseViewModels;
 using Duo.Views.Components;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -27,8 +28,14 @@ namespace Duo.ViewModels
         // Selected exercise type
         private string _selectedExerciseType;
 
-        private ObservableCollection<string> _answers;
+        private object _currentExerciseViewModel;
 
+
+        public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; } = new();
+        public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; } = new();
+        public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; } = new();
+        
+        public event EventHandler RequestGoBack;
         public ExerciseCreationViewModel(ExerciseService exerciseService) 
         {
             _exerciseService = exerciseService;
@@ -55,6 +62,7 @@ namespace Duo.ViewModels
             };
 
             SelectedExerciseContent = new TextBlock { Text = "Select an exercise type." };
+            _currentExerciseViewModel = CreateAssociationExerciseViewModel;
         }
 
 
@@ -97,16 +105,13 @@ namespace Duo.ViewModels
             }
         }
 
-        public ObservableCollection<string> Answers
+        public object CurrentExerciseViewModel
         {
-            get => _answers;
+            get => _currentExerciseViewModel;
             set
             {
-                if (_answers != value)
-                {
-                    _answers = value;
-                    OnPropertyChanged(nameof(Answers));
-                }
+                _currentExerciseViewModel = value;
+                OnPropertyChanged(nameof(CurrentExerciseViewModel));
             }
         }
 
@@ -116,12 +121,15 @@ namespace Duo.ViewModels
             {
                 case "Association":
                     SelectedExerciseContent = new CreateAssociationExercise();
+                    CurrentExerciseViewModel = CreateAssociationExerciseViewModel;
                     break;
                 case "Fill in the blank":
                     SelectedExerciseContent = new CreateFillInTheBlankExercise();
+                    CurrentExerciseViewModel = CreateFillInTheBlankExerciseViewModel;
                     break;
                 case "Multiple Choice":
                     SelectedExerciseContent = new CreateMultipleChoiceExercise();
+                    CurrentExerciseViewModel = CreateMultipleChoiceExerciseViewModel;
                     break;
                 case "Flashcard":
                     // You can set Flashcard content here, or leave it as null
@@ -153,20 +161,18 @@ namespace Duo.ViewModels
 
         public void CreateMultipleChoiceExercise()
         {
-            Debug.WriteLine(Answers);
-            List<MultipleChoiceAnswerModel> multipleChoiceAnswerModels = new List<MultipleChoiceAnswerModel>();
-            Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, QuestionText, Models.Difficulty.Easy, multipleChoiceAnswerModels);
+            Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, Models.Difficulty.Easy);
             //_exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
+            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
 
         public void CreateAssocitationExercise()
         {
-            List<string> firstAnswersList = new List<string>();
-            List<string> secondAnswersList = new List<string>();
-            Exercise newExercise = new Models.Exercises.AssociationExercise(0, QuestionText, Models.Difficulty.Easy, secondAnswersList, firstAnswersList);
+            Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText,Models.Difficulty.Easy);
             //_exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
+            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
 
 

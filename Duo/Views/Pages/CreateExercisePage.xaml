@@ -9,13 +9,31 @@
     mc:Ignorable="d"
     xmlns:components="using:Duo.Views.Components"
     xmlns:viewmodels="using:Duo.ViewModels"
+    xmlns:exerciseviewmodels="using:Duo.ViewModels.CreateExerciseViewModels"
     HorizontalAlignment="Stretch">
 
     <Page.DataContext>
         <viewmodels:ExerciseCreationViewModel x:Name="ViewModel"/>
     </Page.DataContext>
 
+    <Page.Resources>
+        <DataTemplate x:Key="AssociationExerciseTemplate">
+            <TextBlock Text="Association Exercise View Loaded!" />
+        </DataTemplate>
 
+        <DataTemplate x:Key="FillInTheBlankExerciseTemplate">
+            <TextBlock Text="Fill in the Blank Exercise View Loaded!" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="MultipleChoiceExerciseTemplate">
+            <TextBlock Text="Multiple Choice Exercise View Loaded!" />
+        </DataTemplate>
+
+        <exerciseviewmodels:ExerciseTemplateSelector x:Key="ExerciseTemplateSelector"
+            AssociationExerciseTemplate="{StaticResource AssociationExerciseTemplate}"
+            FillInTheBlankExerciseTemplate="{StaticResource FillInTheBlankExerciseTemplate}"
+            MultipleChoiceExerciseTemplate="{StaticResource MultipleChoiceExerciseTemplate}" />
+    </Page.Resources>
 
     <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0"> 
         <ScrollViewer
@@ -59,7 +77,11 @@
                     </ComboBox>
                 </StackPanel>
 
-                <ContentControl Content="{Binding SelectedExerciseContent}"/>
+                <ContentControl Content="{Binding SelectedExerciseContent}">
+                    <ContentControl.ContentTemplateSelector>
+                        <exerciseviewmodels:ExerciseTemplateSelector />
+                    </ContentControl.ContentTemplateSelector>
+                </ContentControl>
 
                 <StackPanel
                         HorizontalAlignment="Right"
