@@ -88,9 +88,5 @@ namespace Duo.Views.Pages
             ModalOverlay.Visibility = Visibility.Collapsed;
         }
 
-        public void OpenCreateExamPage_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(CreateExercisePage));
-        }
     }
 }

@@ -64,10 +64,8 @@
         <Grid x:Name="ModalOverlay"
               Visibility="Collapsed">
             <modals:CreateExamModal x:Name="CreateExamModal"/>
-        </Grid>
-<Grid x:Name="ModalOverlay"
-              Visibility="Collapsed">
             <modals:CreateSectionModal x:Name="CreateSectionModal"/>
+
         </Grid>
     </Grid>
 </Page>
