@@ -144,7 +144,7 @@ namespace Duo.Views.Components.Modals
                 return;
             }
 
-            var exam = new Exam<Exercise>(new Random().Next(1000)); // Using random ID for demo
+            var exam = new Exam(new Random().Next(1000)); // Using random ID for demo
 
             foreach (var exercise in SelectedExercises)
             {
@@ -176,9 +176,9 @@ namespace Duo.Views.Components.Modals
 
     public class ExamCreatedEventArgs : EventArgs
     {
-        public Exam<Exercise> Exam { get; }
+        public Exam Exam { get; }
 
-        public ExamCreatedEventArgs(Exam<Exercise> exam)
+        public ExamCreatedEventArgs(Exam exam)
         {
             Exam = exam;
         }

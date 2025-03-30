@@ -60,12 +60,15 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Modal overlay -->
-        <Grid x:Name="ModalOverlay"
+        <!-- Modal overlays -->
+        <Grid x:Name="ExamModalOverlay"
               Visibility="Collapsed">
             <modals:CreateExamModal x:Name="CreateExamModal"/>
-            <modals:CreateSectionModal x:Name="CreateSectionModal"/>
+        </Grid>
 
+        <Grid x:Name="SectionModalOverlay"
+              Visibility="Collapsed">
+            <modals:CreateSectionModal x:Name="CreateSectionModal"/>
         </Grid>
     </Grid>
 </Page>
