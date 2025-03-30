@@ -25,11 +25,5 @@
         <!-- <components:MultipleChoiceExercise Question="Test question" Answers="{x:Bind Answers}" /> -->
         <!-- <components:FillInTheBlanksExercise Question="Test test {} Test {}" /> -->
         
-        <TextBlock Grid.Row="1"
-                  Text="Quiz content will be displayed here"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  FontSize="20"
-                  Foreground="Gray"/>
     </Grid>
 </Page>
