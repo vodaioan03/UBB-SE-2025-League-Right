@@ -25,19 +25,19 @@ namespace Duo.Views.Components.Modals
             // Initialize hardcoded available quizzes
             _availableQuizzes = new List<Quiz>
             {
-                new Quiz(1) { /* Add some exercises if needed */ },
-                new Quiz(2) { /* Add some exercises if needed */ },
-                new Quiz(3) { /* Add some exercises if needed */ },
-                new Quiz(4) { /* Add some exercises if needed */ },
-                new Quiz(5) { /* Add some exercises if needed */ }
+                new Quiz(1, null, null) { /* Add some exercises if needed */ },
+                new Quiz(2, null, null) { /* Add some exercises if needed */ },
+                new Quiz(3, null, null) { /* Add some exercises if needed */ },
+                new Quiz(4, null, null) { /* Add some exercises if needed */ },
+                new Quiz(5, null, null) { /* Add some exercises if needed */ }
             };
 
             // Initialize hardcoded available exams
             _availableExams = new List<Exam>
             {
-                new Exam(1) { /* Add some exercises if needed */ },
-                new Exam(2) { /* Add some exercises if needed */ },
-                new Exam(3) { /* Add some exercises if needed */ }
+                new Exam(1, null) { /* Add some exercises if needed */ },
+                new Exam(2, null) { /* Add some exercises if needed */ },
+                new Exam(3, null) { /* Add some exercises if needed */ }
             };
 
             UnassignedQuizzes = new ObservableCollection<Quiz>();

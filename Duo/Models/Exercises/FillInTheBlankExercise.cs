@@ -6,7 +6,7 @@ namespace Duo.Models.Exercises;
 
 public class FillInTheBlankExercise : Exercise
 {
-    public required List<string> PossibleCorrectAnswers { get; set; }
+    public List<string> PossibleCorrectAnswers { get; set; }
 
     public FillInTheBlankExercise(int id, string question, Difficulty difficulty, List<string> possibleCorrectAnswers)
         : base(id, question, difficulty)

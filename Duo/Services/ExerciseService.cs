@@ -17,17 +17,17 @@ namespace Duo.Services
             //_exerciseRepository = new ExerciseRepository();
         }
 
-        public Task<List<IExercise>> GetAllExercises()
+        public Task<List<Exercise>> GetAllExercises()
         {
             return _exerciseRepository.GetAllExercises();
         }
 
-        public Task<IExercise> GetExerciseById(int exerciseId)
+        public Task<Exercise> GetExerciseById(int exerciseId)
         {
             return _exerciseRepository.GetById(exerciseId);
         }
 
-        public Task<List<IExercise>> GetAllExercisesFromQuiz(int quizId)
+        public Task<List<Exercise>> GetAllExercisesFromQuiz(int quizId)
         {
             return _exerciseRepository.GetQuizExercises(quizId);
         }
@@ -37,7 +37,7 @@ namespace Duo.Services
             return _exerciseRepository.DeleteExercise(exerciseId);
         }
 
-        public Task<bool> UpdateExercise(IExercise exercise)
+        public Task<bool> UpdateExercise(Exercise exercise)
         {
             return _exerciseRepository.UpdateExercise(exercise);
         }

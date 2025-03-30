@@ -33,7 +33,7 @@ namespace Duo.ViewModels.ExerciseViewModels
 
         public async Task GetExercise(int id)
         {
-            IExercise exercise = await _exerciseService.GetExerciseById(id);
+            Exercise exercise = await _exerciseService.GetExerciseById(id);
             if (exercise is MultipleChoiceExercise multipleChoiceExercise)
                 _exercise = multipleChoiceExercise;
             else

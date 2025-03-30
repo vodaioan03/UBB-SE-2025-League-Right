@@ -6,7 +6,7 @@ namespace Duo.Models.Quizzes;
 public abstract class BaseQuiz
 {
     public int Id { get; set; }
-    public int SectionId { get; set; }
+    public int? SectionId { get; set; }
     public List<Exercise> ExerciseList { get; set; } = new();
     private int numberOfAnswersGiven = 0;
     private int numberOfCorrectAnswers = 0;
@@ -14,7 +14,7 @@ public abstract class BaseQuiz
     protected int maxExercises;
     protected double passingThreshold;
 
-    protected BaseQuiz(int id, int sectionId, int maxExercises, double passingThreshold)
+    protected BaseQuiz(int id, int? sectionId, int maxExercises, double passingThreshold)
     {
         Id = id;
         SectionId = sectionId;

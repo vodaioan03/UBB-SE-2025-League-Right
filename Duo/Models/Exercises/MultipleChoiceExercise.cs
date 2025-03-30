@@ -6,7 +6,7 @@ namespace Duo.Models.Exercises;
 
 public class MultipleChoiceExercise : Exercise
 {
-    public required List<MultipleChoiceAnswerModel> Choices { get; set; }
+    public List<MultipleChoiceAnswerModel> Choices { get; set; }
 
     public MultipleChoiceExercise(int id, string question, Difficulty difficulty, List<MultipleChoiceAnswerModel> choices)
         : base(id, question, difficulty)
