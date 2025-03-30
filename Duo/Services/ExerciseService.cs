@@ -13,8 +13,6 @@ namespace Duo.Services
         private readonly ExerciseRepository _exerciseRepository;
 
         public ExerciseService(ExerciseRepository exerciseRepository) {
-            _exerciseRepository = exerciseRepository;
-        {
             _exerciseRepository = exerciseRepository ?? throw new ArgumentNullException(nameof(exerciseRepository));
         }
 

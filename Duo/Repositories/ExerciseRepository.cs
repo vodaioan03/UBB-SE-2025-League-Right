@@ -12,7 +12,6 @@ namespace Duo.Repositories;
 public class ExerciseRepository
 {
     private readonly DatabaseConnection _databaseConnection;
-    public class ExerciseRepository
 
     public ExerciseRepository(DatabaseConnection databaseConnection)
     {
