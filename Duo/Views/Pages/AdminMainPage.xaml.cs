@@ -29,10 +29,34 @@ namespace Duo.Views.Pages
         public AdminMainPage()
         {
             this.InitializeComponent();
+
+            // Subscribe to modal events
+            CreateSectionModal.SectionCreated += CreateSectionModal_SectionCreated;
+            CreateSectionModal.ModalClosed += CreateSectionModal_ModalClosed;
             CreateExamModal.ExamCreated += CreateExamModal_ExamCreated;
             CreateExamModal.ModalClosed += CreateExamModal_ModalClosed;
         }
 
+        private void CreateSection_Click(object sender, RoutedEventArgs e)
+        {
+            ModalOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void CreateSectionModal_SectionCreated(object sender, SectionCreatedEventArgs e)
+        {
+            // TODO: Handle the new section creation
+            // You can add your logic here to save the section to your data store
+            // For now, we'll just show a success message
+            var dialog = new ContentDialog
+            {
+                Title = "Success",
+                Content = $"Section '{e.Subject}' created successfully!",
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            dialog.ShowAsync();
+        }
+        
         private void CreateExam_Click(object sender, RoutedEventArgs e)
         {
             ModalOverlay.Visibility = Visibility.Visible;
@@ -50,6 +74,16 @@ namespace Duo.Views.Pages
         }
 
         private void CreateExamModal_ModalClosed(object sender, EventArgs e)
+        {
+            ModalOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        public void OpenCreateExamPage_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(CreateExercisePage));
+        }
+
+        private void CreateSectionModal_ModalClosed(object sender, EventArgs e)
         {
             ModalOverlay.Visibility = Visibility.Collapsed;
         }

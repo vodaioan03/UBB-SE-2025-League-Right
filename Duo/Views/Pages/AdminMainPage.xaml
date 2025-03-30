@@ -40,7 +40,8 @@
 
                 <StackPanel Orientation="Horizontal"
                             Spacing="12">
-                    <components:QuizAdminButton Text="Create section"/>
+                    <components:QuizAdminButton Text="Create section"
+                                                Click="CreateSection_Click"/>
                     <components:QuizAdminButton Text="Create quiz"/>
                     <components:QuizAdminButton Text="Create exam"
                                                 Click="CreateExam_Click"/>
@@ -64,6 +65,9 @@
               Visibility="Collapsed">
             <modals:CreateExamModal x:Name="CreateExamModal"/>
         </Grid>
-
+<Grid x:Name="ModalOverlay"
+              Visibility="Collapsed">
+            <modals:CreateSectionModal x:Name="CreateSectionModal"/>
+        </Grid>
     </Grid>
 </Page>
