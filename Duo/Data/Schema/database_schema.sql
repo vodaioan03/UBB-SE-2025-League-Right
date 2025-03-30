@@ -120,11 +120,9 @@ CREATE TABLE Quizzes (
 CREATE TABLE QuizExercises (
     QuizId INT NOT NULL,
     ExerciseId INT NOT NULL,
-    OrderNumber INT NOT NULL,
     PRIMARY KEY (QuizId, ExerciseId),
     FOREIGN KEY (QuizId) REFERENCES Quizzes(Id) ON DELETE CASCADE,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE,
-    CONSTRAINT UQ_QuizExercise_Order UNIQUE (QuizId, OrderNumber)
 );
 
 -- Create Exams table
@@ -138,11 +136,9 @@ CREATE TABLE Exams (
 CREATE TABLE ExamExercises (
     ExamId INT NOT NULL,
     ExerciseId INT NOT NULL,
-    OrderNumber INT NOT NULL,
     PRIMARY KEY (ExamId, ExerciseId),
     FOREIGN KEY (ExamId) REFERENCES Exams(Id) ON DELETE CASCADE,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE,
-    CONSTRAINT UQ_ExamExercise_Order UNIQUE (ExamId, OrderNumber)
 );
 
 -- Create FlashcardExercises table

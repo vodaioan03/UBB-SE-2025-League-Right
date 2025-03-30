@@ -34,8 +34,8 @@ public class QuizRepository
             {
                 quizzes.Add(new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.GetInt32(reader.GetOrdinal("SectionId")),
-                    reader.GetInt32(reader.GetOrdinal("OrderNumber"))
+                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId")),
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 ));
             }
             
@@ -70,8 +70,8 @@ public class QuizRepository
             {
                 return new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.GetInt32(reader.GetOrdinal("SectionId")),
-                    reader.GetInt32(reader.GetOrdinal("OrderNumber"))
+                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId")),
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 );
             }
             
@@ -107,8 +107,8 @@ public class QuizRepository
             {
                 quizzes.Add(new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.GetInt32(reader.GetOrdinal("SectionId")),
-                    reader.GetInt32(reader.GetOrdinal("OrderNumber"))
+                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId")),
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 ));
             }
             
@@ -120,6 +120,37 @@ public class QuizRepository
         }
     }
 
+    public async Task<IEnumerable<Quiz>> GetUnassignedAsync()
+    {
+        try
+        {
+            var quizzes = new List<Quiz>();
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_GetUnassignedQuizzes";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            
+            await connection.OpenAsync();
+            using var reader = await command.ExecuteReaderAsync();
+            
+            while (await reader.ReadAsync())
+            {
+                quizzes.Add(new Quiz(
+                    reader.GetInt32(reader.GetOrdinal("Id")),
+                    null,
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
+                ));
+            }
+            
+            return quizzes;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while retrieving unassigned quizzes: {ex.Message}", ex);
+        }
+    }
+
     public async Task<int> AddAsync(Quiz quiz)
     {
         if (quiz == null)
@@ -127,12 +158,12 @@ public class QuizRepository
             throw new ArgumentNullException(nameof(quiz));
         }
 
-        if (quiz.SectionId <= 0)
+        if (quiz.SectionId.HasValue && quiz.SectionId.Value <= 0)
         {
             throw new ArgumentException("Section ID must be greater than 0.", nameof(quiz));
         }
 
-        if (quiz.OrderNumber < 0)
+        if (quiz.OrderNumber.HasValue && quiz.OrderNumber.Value < 0)
         {
             throw new ArgumentException("Order number cannot be negative.", nameof(quiz));
         }
@@ -144,8 +175,24 @@ public class QuizRepository
             
             command.CommandText = "sp_AddQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@sectionId", quiz.SectionId);
-            command.Parameters.AddWithValue("@orderNumber", quiz.OrderNumber);
+            
+            if (quiz.SectionId.HasValue)
+            {
+                command.Parameters.AddWithValue("@sectionId", quiz.SectionId.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@sectionId", DBNull.Value);
+            }
+
+            if (quiz.OrderNumber.HasValue)
+            {
+                command.Parameters.AddWithValue("@orderNumber", quiz.OrderNumber.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@orderNumber", DBNull.Value);
+            }
             
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
@@ -183,12 +230,12 @@ public class QuizRepository
             throw new ArgumentException("Quiz ID must be greater than 0.", nameof(quiz));
         }
 
-        if (quiz.SectionId <= 0)
+        if (quiz.SectionId.HasValue && quiz.SectionId.Value <= 0)
         {
             throw new ArgumentException("Section ID must be greater than 0.", nameof(quiz));
         }
 
-        if (quiz.OrderNumber < 0)
+        if (quiz.OrderNumber.HasValue && quiz.OrderNumber.Value < 0)
         {
             throw new ArgumentException("Order number cannot be negative.", nameof(quiz));
         }
@@ -201,8 +248,24 @@ public class QuizRepository
             command.CommandText = "sp_UpdateQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quiz.Id);
-            command.Parameters.AddWithValue("@sectionId", quiz.SectionId);
-            command.Parameters.AddWithValue("@orderNumber", quiz.OrderNumber);
+            
+            if (quiz.SectionId.HasValue)
+            {
+                command.Parameters.AddWithValue("@sectionId", quiz.SectionId.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@sectionId", DBNull.Value);
+            }
+
+            if (quiz.OrderNumber.HasValue)
+            {
+                command.Parameters.AddWithValue("@orderNumber", quiz.OrderNumber.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@orderNumber", DBNull.Value);
+            }
             
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();

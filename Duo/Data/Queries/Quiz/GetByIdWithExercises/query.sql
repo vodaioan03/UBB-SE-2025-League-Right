@@ -1,8 +1,9 @@
-CREATE OR ALTER PROCEDURE sp_GetExerciseById
-    @exerciseId INT
+CREATE OR ALTER PROCEDURE sp_GetQuizByIdWithExercises
+    @quizId INT
 AS
 BEGIN
     SELECT 
+        q.*,
         e.*,
         d.Name as DifficultyName,
         -- Multiple Choice Exercise data
@@ -19,7 +20,9 @@ BEGIN
         fe.Sentence as FlashcardSentence,
         fe.Answer as FlashcardAnswer,
         fe.TimeInSeconds as FlashcardTimeInSeconds
-    FROM Exercises e
+    FROM Quizzes q
+    LEFT JOIN QuizExercises qe ON q.Id = qe.QuizId
+    LEFT JOIN Exercises e ON qe.ExerciseId = e.Id
     LEFT JOIN Difficulties d ON e.DifficultyId = d.Id
     -- Multiple Choice Exercise joins
     LEFT JOIN MultipleChoiceExercises mce ON e.Id = mce.ExerciseId
@@ -32,5 +35,5 @@ BEGIN
     LEFT JOIN AssociationPairs ap ON ae.ExerciseId = ap.ExerciseId
     -- Flashcard Exercise joins
     LEFT JOIN FlashcardExercises fe ON e.Id = fe.ExerciseId
-    WHERE e.Id = @exerciseId;
+    WHERE q.Id = @quizId;
 END; 
