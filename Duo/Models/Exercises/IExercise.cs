@@ -1,5 +1,5 @@
 ﻿namespace Duo.Models.Exercises;
 
-internal interface IExercise
+public interface IExercise
 {
 }

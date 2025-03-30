@@ -1,6 +1,6 @@
 ﻿using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
-using Duo.Repositories.Interfaces;
+using Duo.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Duo.Services
 {
     public class ExerciseService
     {
-        private readonly IExerciseRepository _exerciseRepository;
+        private readonly ExerciseRepository _exerciseRepository;
 
         public ExerciseService() {
             //_exerciseRepository = new ExerciseRepository();

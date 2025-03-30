@@ -19,8 +19,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Duo.Data;
 using Duo.ViewModels.ExerciseViewModels;
-using Duo.Repositories.Interfaces;
 using Duo.Services;
+using Duo.Repositories;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -56,7 +56,7 @@ namespace Duo
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton<DatabaseConnection>();
 
-            services.AddSingleton<IExerciseRepository>(); // should not be interface but waiting for implementation
+            services.AddSingleton<ExerciseRepository>(); // should not be interface but waiting for implementation
             services.AddSingleton<ExerciseService>();
 
             services.AddTransient<FillInTheBlankExerciseViewModel>();
