@@ -51,8 +51,8 @@ namespace Duo.Views.Pages
                     break;
 
                 case "Multiple Choice":
+                    ContentExerciseDisplayArea.Content = new CreateMultipleChoiceExercise();
                     Debug.WriteLine("Fill in the blank");
-
                     break;
 
                 case "Flashcard":
@@ -82,13 +82,20 @@ namespace Duo.Views.Pages
 
         public void CancelButton_Click(object senderm, RoutedEventArgs e)
         {
-
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
 
         public void SaveButton_Click(object senderm, RoutedEventArgs e)
         {
 
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
     }
