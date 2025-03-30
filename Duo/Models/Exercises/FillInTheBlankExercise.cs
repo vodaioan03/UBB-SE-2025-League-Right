@@ -33,4 +33,10 @@ public class FillInTheBlankExercise : Exercise
         }
         return true;
     }
+
+    public override string ToString()
+    {
+        var answers = string.Join(", ", PossibleCorrectAnswers);
+        return $"{base.ToString()} [Fill in the Blank] Correct Answers: {answers}";
+    }
 }

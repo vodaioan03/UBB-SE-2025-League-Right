@@ -61,4 +61,12 @@ public abstract class BaseQuiz
     {
         numberOfAnswersGiven++;
     }
+
+    public override string ToString()
+    {
+        var progress = numberOfAnswersGiven > 0 
+            ? $"Progress: {numberOfCorrectAnswers}/{numberOfAnswersGiven} ({((double)numberOfCorrectAnswers/numberOfAnswersGiven)*100:F1}%)"
+            : "Not started";
+        return $"Quiz {Id} (Section: {SectionId ?? 0}) - {ExerciseList.Count}/{maxExercises} exercises - {progress}";
+    }
 }

@@ -11,4 +11,9 @@ public class Quiz : BaseQuiz
     {
         OrderNumber = orderNumber;
     }
+
+    public override string ToString()
+    {
+        return $"{base.ToString()} - Order: {OrderNumber ?? 0}";
+    }
 }

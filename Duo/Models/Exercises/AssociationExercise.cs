@@ -35,4 +35,10 @@ public class AssociationExercise : Exercise
 
         return true;
     }
+
+    public override string ToString()
+    {
+        var pairs = string.Join(", ", FirstAnswersList.Zip(SecondAnswersList, (a, b) => $"{a} ↔ {b}"));
+        return $"{base.ToString()} [Association] Pairs: {pairs}";
+    }
 }

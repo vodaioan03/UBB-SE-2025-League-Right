@@ -14,4 +14,9 @@ public abstract class Exercise
         Question = question;
         Difficulty = difficulty;
     }
+
+    public override string ToString()
+    {
+        return $"Exercise {Id}: {Question} (Difficulty: {Difficulty})";
+    }
 }

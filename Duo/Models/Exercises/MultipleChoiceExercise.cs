@@ -29,5 +29,11 @@ public class MultipleChoiceExercise : Exercise
 
         return correctAnswers.SequenceEqual(userSelection);
     }
+
+    public override string ToString()
+    {
+        var choices = string.Join(", ", Choices.Select(c => $"{c.Answer}{(c.IsCorrect ? " (Correct)" : "")}"));
+        return $"{base.ToString()} [Multiple Choice] Choices: {choices}";
+    }
 }
 

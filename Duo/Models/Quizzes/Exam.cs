@@ -7,4 +7,9 @@ public class Exam : BaseQuiz
 
     public Exam(int id, int? sectionId) 
         : base(id, sectionId, MAX_EXERCISES, PASSING_THRESHOLD) { }
+
+    public override string ToString()
+    {
+        return $"{base.ToString()} [Final Exam]";
+    }
 }

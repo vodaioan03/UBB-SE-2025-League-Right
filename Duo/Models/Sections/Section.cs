@@ -57,4 +57,10 @@ public class Section
     {
         return Exam;
     }
+
+    public override string ToString()
+    {
+        var examStatus = Exam != null ? "with Exam" : "without Exam";
+        return $"Section {Id}: {Title} - {Quizzes.Count} quizzes {examStatus}";
+    }
 }
