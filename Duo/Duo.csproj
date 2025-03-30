@@ -15,6 +15,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="TutorialDatabaseSetup.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Views\Components\CreateAssociationExercise.xaml" />
     <None Remove="Views\Components\CreateFillInTheBlankExercise.xaml" />
     <None Remove="Views\Components\CreateMultipleChoiceExercise.xaml" />
@@ -64,7 +67,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\Components\FillInTheBlanksExercise.xaml">
+    <Page Update="Views\Components\FillInTheBlankExercise.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Components\Section\SectionView.xaml">
