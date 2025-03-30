@@ -5,14 +5,12 @@ namespace Duo.Models.Exercises;
 
 public class MultipleChoiceExercise : Exercise
 {
-    public List<MultipleChoiceAnswerModel> Answers { get; }
-    public string CorrectAnswer { get; }
+    public List<MultipleChoiceAnswerModel> Choices { get; }
 
-    public MultipleChoiceExercise(int id, string question, Difficulty difficulty, List<MultipleChoiceAnswerModel> answers, string correctAnswer)
+    public MultipleChoiceExercise(int id, string question, Difficulty difficulty, List<MultipleChoiceAnswerModel> choices, string correctAnswer)
         : base(id, question, difficulty)
     {
-        Answers = answers;
-        CorrectAnswer = correctAnswer;
+        Choices = choices;
     }
 
     public bool ValidateAnswer(List<string> userAnswers)
@@ -20,7 +18,7 @@ public class MultipleChoiceExercise : Exercise
         if (userAnswers == null || userAnswers.Count == 0)
             return false;
 
-        var correctAnswers = Answers.Where(a => a.IsCorrect).Select(a => a.Answer).OrderBy(a => a).ToList();
+        var correctAnswers = Choices.Where(a => a.IsCorrect).Select(a => a.Answer).OrderBy(a => a).ToList();
         var userSelection = userAnswers.OrderBy(a => a).ToList();
 
         return correctAnswers.SequenceEqual(userSelection);

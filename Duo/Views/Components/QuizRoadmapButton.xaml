@@ -11,12 +11,9 @@
     mc:Ignorable="d">
 
     <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
-
-        <TextBlock 
-                Text="{x:Bind QuizId}"
-                HorizontalAlignment="Center" 
-                FontSize="32"
-                Margin="50"/>
+        
     </StackPanel>
 
 </UserControl>
+
+        

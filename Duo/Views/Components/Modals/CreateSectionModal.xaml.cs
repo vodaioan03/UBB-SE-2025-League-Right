@@ -13,35 +13,35 @@ namespace Duo.Views.Components.Modals
         public event EventHandler<SectionCreatedEventArgs> SectionCreated;
         public event EventHandler ModalClosed;
 
-        private readonly List<Quiz<object>> _availableQuizzes;
-        private readonly List<Exam<object>> _availableExams;
-        public ObservableCollection<Quiz<object>> UnassignedQuizzes { get; private set; }
-        public ObservableCollection<Exam<object>> SelectedExam { get; private set; }
+        private readonly List<Quiz> _availableQuizzes;
+        private readonly List<Exam> _availableExams;
+        public ObservableCollection<Quiz> UnassignedQuizzes { get; private set; }
+        public ObservableCollection<Exam> SelectedExam { get; private set; }
 
         public CreateSectionModal()
         {
             this.InitializeComponent();
 
             // Initialize hardcoded available quizzes
-            _availableQuizzes = new List<Quiz<object>>
+            _availableQuizzes = new List<Quiz>
             {
-                new Quiz<object>(1) { /* Add some exercises if needed */ },
-                new Quiz<object>(2) { /* Add some exercises if needed */ },
-                new Quiz<object>(3) { /* Add some exercises if needed */ },
-                new Quiz<object>(4) { /* Add some exercises if needed */ },
-                new Quiz<object>(5) { /* Add some exercises if needed */ }
+                new Quiz(1) { /* Add some exercises if needed */ },
+                new Quiz(2) { /* Add some exercises if needed */ },
+                new Quiz(3) { /* Add some exercises if needed */ },
+                new Quiz(4) { /* Add some exercises if needed */ },
+                new Quiz(5) { /* Add some exercises if needed */ }
             };
 
             // Initialize hardcoded available exams
-            _availableExams = new List<Exam<object>>
+            _availableExams = new List<Exam>
             {
-                new Exam<object>(1) { /* Add some exercises if needed */ },
-                new Exam<object>(2) { /* Add some exercises if needed */ },
-                new Exam<object>(3) { /* Add some exercises if needed */ }
+                new Exam(1) { /* Add some exercises if needed */ },
+                new Exam(2) { /* Add some exercises if needed */ },
+                new Exam(3) { /* Add some exercises if needed */ }
             };
 
-            UnassignedQuizzes = new ObservableCollection<Quiz<object>>();
-            SelectedExam = new ObservableCollection<Exam<object>>();
+            UnassignedQuizzes = new ObservableCollection<Quiz>();
+            SelectedExam = new ObservableCollection<Exam>();
 
             QuizUnassignedList.ItemsSource = UnassignedQuizzes;
             SelectedExamList.ItemsSource = SelectedExam;
@@ -83,7 +83,7 @@ namespace Duo.Views.Components.Modals
             SectionCreated?.Invoke(this, new SectionCreatedEventArgs
             {
                 Subject = subject,
-                AssignedQuizzes = new List<Quiz<object>>(UnassignedQuizzes),
+                AssignedQuizzes = new List<Quiz>(UnassignedQuizzes),
                 FinalExam = SelectedExam.First()
             });
 
@@ -137,7 +137,7 @@ namespace Duo.Views.Components.Modals
 
             dialog.PrimaryButtonClick += (s, args) =>
             {
-                if (examListView.SelectedItem is Exam<object> selectedExam)
+                if (examListView.SelectedItem is Exam selectedExam)
                 {
                     SelectedExam.Clear(); // Only allow one exam
                     SelectedExam.Add(selectedExam);
@@ -188,7 +188,7 @@ namespace Duo.Views.Components.Modals
 
             dialog.PrimaryButtonClick += (s, args) =>
             {
-                if (quizListView.SelectedItem is Quiz<object> selectedQuiz)
+                if (quizListView.SelectedItem is Quiz selectedQuiz)
                 {
                     UnassignedQuizzes.Add(selectedQuiz);
                 }
@@ -199,7 +199,7 @@ namespace Duo.Views.Components.Modals
 
         private void RemoveQuiz_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is Quiz<object> quizToRemove)
+            if (sender is Button button && button.DataContext is Quiz quizToRemove)
             {
                 UnassignedQuizzes.Remove(quizToRemove);
             }
@@ -219,7 +219,7 @@ namespace Duo.Views.Components.Modals
     public class SectionCreatedEventArgs : EventArgs
     {
         public string Subject { get; set; }
-        public List<Quiz<object>> AssignedQuizzes { get; set; }
-        public Exam<object> FinalExam { get; set; }
+        public List<Quiz> AssignedQuizzes { get; set; }
+        public Exam FinalExam { get; set; }
     }
 }
