@@ -4,7 +4,6 @@ using Duo.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Duo.Services
@@ -13,39 +12,35 @@ namespace Duo.Services
     {
         private readonly ExerciseRepository _exerciseRepository;
 
-        public ExerciseService() {
-            //_exerciseRepository = new ExerciseRepository();
+        public ExerciseService(ExerciseRepository exerciseRepository) {
+            _exerciseRepository = exerciseRepository ?? throw new ArgumentNullException(nameof(exerciseRepository));
         }
 
-        public Task<List<Exercise>> GetAllExercises()
+        public async Task<List<Exercise>> GetAllExercises()
         {
-            return _exerciseRepository.GetAllExercises();
+            var exercises = await _exerciseRepository.GetAllExercisesAsync();
+            return exercises.ToList();
         }
 
-        public Task<Exercise> GetExerciseById(int exerciseId)
+        public async Task<Exercise> GetExerciseById(int exerciseId)
         {
-            return _exerciseRepository.GetById(exerciseId);
+            return await _exerciseRepository.GetByIdAsync(exerciseId);
         }
 
-        public Task<List<Exercise>> GetAllExercisesFromQuiz(int quizId)
+        public async Task<List<Exercise>> GetAllExercisesFromQuiz(int quizId)
         {
-            return _exerciseRepository.GetQuizExercises(quizId);
+            var exercises = await _exerciseRepository.GetQuizExercisesAsync(quizId);
+            return exercises.ToList();
         }
 
-        public Task<bool> DeleteExercise(int exerciseId)
+        public async Task DeleteExercise(int exerciseId)
         {
-            return _exerciseRepository.DeleteExercise(exerciseId);
+            await _exerciseRepository.DeleteExerciseAsync(exerciseId);
         }
 
-        public Task<bool> UpdateExercise(Exercise exercise)
+        public async Task<int> CreateExercise(Exercise exercise)
         {
-            return _exerciseRepository.UpdateExercise(exercise);
+            return await _exerciseRepository.AddExerciseAsync(exercise);
         }
-
-        public Task<bool> CreateExercise(Exercise exercise)
-        {
-            return _exerciseRepository.CreateExercise(exercise);
-        }
-
     }
 }

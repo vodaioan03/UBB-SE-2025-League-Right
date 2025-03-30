@@ -34,7 +34,7 @@ public class ExamRepository
             {
                 exams.Add(new Exam(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.GetInt32(reader.GetOrdinal("SectionId"))
+                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId"))
                 ));
             }
             
@@ -69,7 +69,7 @@ public class ExamRepository
             {
                 return new Exam(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.GetInt32(reader.GetOrdinal("SectionId"))
+                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId"))
                 );
             }
             
@@ -104,7 +104,7 @@ public class ExamRepository
             {
                 return new Exam(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.GetInt32(reader.GetOrdinal("SectionId"))
+                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId"))
                 );
             }
             
@@ -116,6 +116,36 @@ public class ExamRepository
         }
     }
 
+    public async Task<IEnumerable<Exam>> GetUnassignedAsync()
+    {
+        try
+        {
+            var exams = new List<Exam>();
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_GetUnassignedExams";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            
+            await connection.OpenAsync();
+            using var reader = await command.ExecuteReaderAsync();
+            
+            while (await reader.ReadAsync())
+            {
+                exams.Add(new Exam(
+                    reader.GetInt32(reader.GetOrdinal("Id")),
+                    null
+                ));
+            }
+            
+            return exams;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while retrieving unassigned exams: {ex.Message}", ex);
+        }
+    }
+
     public async Task<int> AddAsync(Exam exam)
     {
         if (exam == null)
@@ -123,7 +153,7 @@ public class ExamRepository
             throw new ArgumentNullException(nameof(exam));
         }
 
-        if (exam.SectionId <= 0)
+        if (exam.SectionId.HasValue && exam.SectionId.Value <= 0)
         {
             throw new ArgumentException("Section ID must be greater than 0.", nameof(exam));
         }
@@ -135,7 +165,15 @@ public class ExamRepository
             
             command.CommandText = "sp_AddExam";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@sectionId", exam.SectionId);
+            
+            if (exam.SectionId.HasValue)
+            {
+                command.Parameters.AddWithValue("@sectionId", exam.SectionId.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@sectionId", DBNull.Value);
+            }
             
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
@@ -173,7 +211,7 @@ public class ExamRepository
             throw new ArgumentException("Exam ID must be greater than 0.", nameof(exam));
         }
 
-        if (exam.SectionId <= 0)
+        if (exam.SectionId.HasValue && exam.SectionId.Value <= 0)
         {
             throw new ArgumentException("Section ID must be greater than 0.", nameof(exam));
         }
@@ -186,7 +224,15 @@ public class ExamRepository
             command.CommandText = "sp_UpdateExam";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@examId", exam.Id);
-            command.Parameters.AddWithValue("@sectionId", exam.SectionId);
+            
+            if (exam.SectionId.HasValue)
+            {
+                command.Parameters.AddWithValue("@sectionId", exam.SectionId.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@sectionId", DBNull.Value);
+            }
             
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
