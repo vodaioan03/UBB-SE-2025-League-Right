@@ -5,7 +5,9 @@
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>Duo</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platform>x64</Platform>
     <Platforms>x86;x64;ARM64</Platforms>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
@@ -13,8 +15,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="TutorialDatabaseSetup.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Views\Components\CreateAssociationExercise.xaml" />
     <None Remove="Views\Components\CreateFillInTheBlankExercise.xaml" />
+    <None Remove="Views\Components\CreateMultipleChoiceExercise.xaml" />
     <None Remove="Views\Components\QuizAdminButton.xaml" />
     <None Remove="Views\Pages\AdminMainPage.xaml" />
     <None Remove="Views\Pages\CreateExercisePage.xaml" />
@@ -44,6 +50,9 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
   </ItemGroup>
@@ -58,7 +67,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\Components\FillInTheBlanksExercise.xaml">
+    <Page Update="Views\Components\FillInTheBlankExercise.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Components\Section\SectionView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Pages\CreateExercisePage.xaml">
@@ -105,4 +117,13 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Page Update="Views\Components\CreateMultipleChoiceExercise.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 </Project>

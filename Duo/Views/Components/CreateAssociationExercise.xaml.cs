@@ -21,25 +21,9 @@ namespace Duo.Views.Components
 {
     public sealed partial class CreateAssociationExercise : UserControl
     {
-        public ObservableCollection<string> LeftSideItems { get; set; } = new();
-        public ObservableCollection<string> RightSideItems { get; set; } = new();
-
         public CreateAssociationExercise()
         {
             this.InitializeComponent();
-            LeftSideTextBoxList.ItemsSource = RightSideItems;
-            LeftSideItems.Add("");
-
-            RightSideTextBoxList.ItemsSource = RightSideItems;
-            RightSideItems.Add("");
-        }
-
-
-
-        public void AddNewInputButton_Click(object sender, RoutedEventArgs e)
-        {
-            LeftSideItems.Add("");
-            RightSideItems.Add("");
         }
 
     }

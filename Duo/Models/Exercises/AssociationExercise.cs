@@ -1,16 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Duo.Models.Exercises;
 
 public class AssociationExercise : Exercise
 {
-    public List<string> FirstAnswersList { get; set;  }
+    public List<string> FirstAnswersList { get; set; }
     public List<string> SecondAnswersList { get; set; }
-
 
     public AssociationExercise(int id, string question, Difficulty difficulty, List<string> firstAnswers, List<string> secondAnswers)
         : base(id, question, difficulty)
     {
+        if (firstAnswers == null || secondAnswers == null || firstAnswers.Count != secondAnswers.Count)
+        {
+            throw new ArgumentException("Answer lists must have the same length");
+        }
+
         FirstAnswersList = firstAnswers;
         SecondAnswersList = secondAnswers;
     }
@@ -23,11 +29,16 @@ public class AssociationExercise : Exercise
         foreach (var (userA, userB) in userPairs)
         {
             int index = FirstAnswersList.IndexOf(userA);
-
             if (index == -1 || SecondAnswersList[index] != userB)
                 return false;
         }
 
         return true;
+    }
+
+    public override string ToString()
+    {
+        var pairs = string.Join(", ", FirstAnswersList.Zip(SecondAnswersList, (a, b) => $"{a} ↔ {b}"));
+        return $"{base.ToString()} [Association] Pairs: {pairs}";
     }
 }

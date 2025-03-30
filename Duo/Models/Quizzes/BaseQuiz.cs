@@ -1,41 +1,40 @@
 ﻿using System.Collections.Generic;
+using Duo.Models.Exercises;
 
 namespace Duo.Models.Quizzes;
 
-public abstract class BaseQuiz<T> : IQuiz<T>
+public abstract class BaseQuiz
 {
     public int Id { get; set; }
-    protected List<T> exerciseList;
+    public int? SectionId { get; set; }
+    public List<Exercise> ExerciseList { get; set; } = new();
     private int numberOfAnswersGiven = 0;
     private int numberOfCorrectAnswers = 0;
 
     protected int maxExercises;
     protected double passingThreshold;
 
-
-    public BaseQuiz(int id, int maxExercises, double passingThreshold)
+    protected BaseQuiz(int id, int? sectionId, int maxExercises, double passingThreshold)
     {
         Id = id;
+        SectionId = sectionId;
         this.maxExercises = maxExercises;
         this.passingThreshold = passingThreshold;
-        exerciseList = new List<T>();
     }
 
-    public bool AddExercise(T exercise)
+    public bool AddExercise(Exercise exercise)
     {
-        if (exerciseList.Count < maxExercises)
+        if (ExerciseList.Count < maxExercises)
         {
-            exerciseList.Add(exercise);
-
+            ExerciseList.Add(exercise);
             return true;
         }
-
         return false;
     }
 
     public bool IsValid()
     {
-        return exerciseList.Count == maxExercises;
+        return ExerciseList.Count == maxExercises;
     }
 
     public double GetPassingThreshold()
@@ -61,5 +60,13 @@ public abstract class BaseQuiz<T> : IQuiz<T>
     public void IncrementNumberOfAnswersGiven()
     {
         numberOfAnswersGiven++;
+    }
+
+    public override string ToString()
+    {
+        var progress = numberOfAnswersGiven > 0 
+            ? $"Progress: {numberOfCorrectAnswers}/{numberOfAnswersGiven} ({((double)numberOfCorrectAnswers/numberOfAnswersGiven)*100:F1}%)"
+            : "Not started";
+        return $"Quiz {Id} (Section: {SectionId ?? 0}) - {ExerciseList.Count}/{maxExercises} exercises - {progress}";
     }
 }

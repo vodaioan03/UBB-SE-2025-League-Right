@@ -1,23 +1,37 @@
 ﻿using System.Collections.Generic;
+using Duo.Models.Sections;
 
 namespace Duo.Models.Roadmap;
 
-public class Roadmap <T>: IRoadmap<T>
+
+public class Roadmap
 {
-    private List<T> sectionList;
+    public required int Id { get; set; }
+    public required string Name { get; set; }
+    public List<Section> Sections { get; set; }
 
     public Roadmap()
     {
-        sectionList = new List<T>();
+        Sections = new List<Section>();
     }
 
-    public void AddSection(T section)
+    public void AddSection(Section section)
     {
-        sectionList.Add(section);
+        Sections.Add(section);
     }
 
-    public IEnumerable<T> GetAllSections()
+    public void RemoveSection(Section section)
     {
-        return sectionList;
+        Sections.Remove(section);
+    }
+
+    public IEnumerable<Section> GetAllSections()
+    {
+        return Sections;
+    }
+
+    public override string ToString()
+    {
+        return $"Roadmap {Id}: {Name} - {Sections.Count} sections";
     }
 }
