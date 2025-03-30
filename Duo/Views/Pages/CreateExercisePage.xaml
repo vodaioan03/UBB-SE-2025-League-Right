@@ -8,9 +8,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:components="using:Duo.Views.Components"
+    xmlns:local1="using:Duo.ViewModels"
     HorizontalAlignment="Stretch">
+   
 
-    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0">
+    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0"> 
         <ScrollViewer
             HorizontalAlignment="Stretch" 
             HorizontalContentAlignment="Stretch"

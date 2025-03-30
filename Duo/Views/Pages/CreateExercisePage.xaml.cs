@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Navigation;
 using System.Reflection.Metadata;
 using System.Diagnostics;
 using Duo.Views.Components;
+using Duo.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,6 +33,7 @@ namespace Duo.Views.Pages
         public CreateExercisePage()
         {
             this.InitializeComponent();
+            this.DataContext = App.serviceProvider.GetService<ExerciseCreationViewModel>();
         }
 
         public void ExerciseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
