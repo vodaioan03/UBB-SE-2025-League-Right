@@ -60,9 +60,9 @@ namespace Duo.Views.Components.Modals
                 // Multiple choice exercise
                 var choices = new List<Duo.Models.Exercises.MultipleChoiceAnswerModel>
                 {
-                    new Duo.Models.Exercises.MultipleChoiceAnswerModel { Answer = "Mercury", IsCorrect = true },
-                    new Duo.Models.Exercises.MultipleChoiceAnswerModel { Answer = "Venus", IsCorrect = false },
-                    new Duo.Models.Exercises.MultipleChoiceAnswerModel { Answer = "Mars", IsCorrect = false }
+                    new Duo.Models.Exercises.MultipleChoiceAnswerModel("Mercury", true),
+                    new Duo.Models.Exercises.MultipleChoiceAnswerModel("Venus", false),
+                    new Duo.Models.Exercises.MultipleChoiceAnswerModel("Mars", false)
                 };
                 exercises.Add(new Duo.Models.Exercises.MultipleChoiceExercise(4, "Which is the closest planet to the Sun?", Duo.Models.Difficulty.Normal, choices));
             }

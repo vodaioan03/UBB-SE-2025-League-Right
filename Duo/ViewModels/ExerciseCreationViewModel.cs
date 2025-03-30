@@ -155,7 +155,7 @@ namespace Duo.ViewModels
         {
             Debug.WriteLine(Answers);
             List<MultipleChoiceAnswerModel> multipleChoiceAnswerModels = new List<MultipleChoiceAnswerModel>();
-            Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, QuestionText, Models.Difficulty.Easy, multipleChoiceAnswerModels, "correct answer");
+            Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, QuestionText, Models.Difficulty.Easy, multipleChoiceAnswerModels);
             //_exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
         }

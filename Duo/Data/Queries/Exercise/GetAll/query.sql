@@ -1,5 +1,4 @@
-CREATE OR ALTER PROCEDURE sp_GetExerciseById
-    @exerciseId INT
+CREATE OR ALTER PROCEDURE sp_GetAllExercises
 AS
 BEGIN
     SELECT 
@@ -32,5 +31,4 @@ BEGIN
     LEFT JOIN AssociationPairs ap ON ae.ExerciseId = ap.ExerciseId
     -- Flashcard Exercise joins
     LEFT JOIN FlashcardExercises fe ON e.Id = fe.ExerciseId
-    WHERE e.Id = @exerciseId;
 END; 
