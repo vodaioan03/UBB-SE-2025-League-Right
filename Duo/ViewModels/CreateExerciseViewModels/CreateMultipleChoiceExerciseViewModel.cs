@@ -16,6 +16,9 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 {
     class CreateMultipleChoiceExerciseViewModel : CreateExerciseViewModelBase
     {
+        private const int MINIMUM_ANSWERS = 2;
+        private const int MAXIMUM_ANSWERS = 5;
+
         private string _selectedAnswer;
 
         public ObservableCollection<Answer> Answers { get; set; } = new ObservableCollection<Answer>();

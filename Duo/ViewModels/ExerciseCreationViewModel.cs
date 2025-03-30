@@ -163,16 +163,16 @@ namespace Duo.ViewModels
         {
             Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, Models.Difficulty.Easy);
             //_exerciseService.CreateExercise(newExercise);
+            Debug.WriteLine(newExercise);
             RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
 
         public void CreateAssocitationExercise()
         {
-            List<string> firstAnswersList = new List<string>();
-            List<string> secondAnswersList = new List<string>();
-            Exercise newExercise = new Models.Exercises.AssociationExercise(0, QuestionText, Models.Difficulty.Easy, secondAnswersList, firstAnswersList);
+            Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText,Models.Difficulty.Easy);
             //_exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
+            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
 
 
