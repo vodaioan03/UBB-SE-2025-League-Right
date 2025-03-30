@@ -1,40 +1,43 @@
 using System.Collections.Generic;
+using Duo.Models.Quizzes;
+using Duo.Models.Exercises;
 
 namespace Duo.Models.Sections;
 
-public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
+public class Section
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
-
-    private Queue<TQuiz> quizList;
-    private TExam exam;
+    public required int Id { get; set; }
+    public required int SubjectId { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public required int RoadmapId { get; set; }
+    public required int OrderNumber { get; set; }
+    public List<Quiz<Exercise>> Quizzes { get; set; }
+    public Exam<Exercise>? Exam { get; set; }
 
     private const int MAX_QUIZZES = 5;
     private const int MIN_QUIZZES = 2;
 
-    public Section(int id, string title)
+    public Section()
     {
-        Id = id;
-        Title = title;
-        quizList = new Queue<TQuiz>();
+        Quizzes = new List<Quiz<Exercise>>();
     }
 
-    public bool AddQuiz(TQuiz quiz)
+    public bool AddQuiz(Quiz<Exercise> quiz)
     {
-        if (quizList.Count < MAX_QUIZZES)
+        if (Quizzes.Count < MAX_QUIZZES)
         {
-            quizList.Enqueue(quiz);
+            Quizzes.Add(quiz);
             return true;
         }
         return false;
     }
 
-    public bool AddExam(TExam newExam)
+    public bool AddExam(Exam<Exercise> newExam)
     {
-        if (exam == null)
+        if (Exam == null)
         {
-            exam = newExam;
+            Exam = newExam;
             return true;
         }
         return false;
@@ -42,17 +45,16 @@ public class Section<TQuiz, TExam>: ISection<TQuiz, TExam>
 
     public bool IsValid()
     {
-        return quizList.Count >= MIN_QUIZZES && exam != null;
+        return Quizzes.Count >= MIN_QUIZZES && Exam != null;
     }
 
-    public IEnumerable<TQuiz> GetAllQuizzes()
+    public IEnumerable<Quiz<Exercise>> GetAllQuizzes()
     {
-        return quizList;
+        return Quizzes;
     }
 
-
-    public TExam GetFinalExam()
+    public Exam<Exercise>? GetFinalExam()
     {
-        return exam;
+        return Exam;
     }
 }
