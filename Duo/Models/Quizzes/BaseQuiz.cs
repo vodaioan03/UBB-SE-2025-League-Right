@@ -5,7 +5,7 @@ namespace Duo.Models.Quizzes;
 public abstract class BaseQuiz<T> : IQuiz<T>
 {
     public int Id { get; set; }
-    protected List<T> exerciseList;
+    public List<T> exerciseList { get; set; }
     private int numberOfAnswersGiven = 0;
     private int numberOfCorrectAnswers = 0;
 

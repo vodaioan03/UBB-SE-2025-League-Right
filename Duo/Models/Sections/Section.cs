@@ -12,18 +12,18 @@ public class Section
     public required string Description { get; set; }
     public required int RoadmapId { get; set; }
     public required int OrderNumber { get; set; }
-    public List<Quiz<Exercise>> Quizzes { get; set; }
-    public Exam<Exercise>? Exam { get; set; }
+    public List<Quiz> Quizzes { get; set; }
+    public Exam? Exam { get; set; }
 
     private const int MAX_QUIZZES = 5;
     private const int MIN_QUIZZES = 2;
 
     public Section()
     {
-        Quizzes = new List<Quiz<Exercise>>();
+        Quizzes = new List<Quiz>();
     }
 
-    public bool AddQuiz(Quiz<Exercise> quiz)
+    public bool AddQuiz(Quiz quiz)
     {
         if (Quizzes.Count < MAX_QUIZZES)
         {
@@ -33,7 +33,7 @@ public class Section
         return false;
     }
 
-    public bool AddExam(Exam<Exercise> newExam)
+    public bool AddExam(Exam newExam)
     {
         if (Exam == null)
         {
@@ -48,12 +48,12 @@ public class Section
         return Quizzes.Count >= MIN_QUIZZES && Exam != null;
     }
 
-    public IEnumerable<Quiz<Exercise>> GetAllQuizzes()
+    public IEnumerable<Quiz> GetAllQuizzes()
     {
         return Quizzes;
     }
 
-    public Exam<Exercise>? GetFinalExam()
+    public Exam? GetFinalExam()
     {
         return Exam;
     }

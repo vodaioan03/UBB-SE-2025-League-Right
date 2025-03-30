@@ -18,6 +18,8 @@ namespace Duo.Views.Pages
             CreateSectionModal.ModalClosed += CreateSectionModal_ModalClosed;
             CreateExamModal.ExamCreated += CreateExamModal_ExamCreated;
             CreateExamModal.ModalClosed += CreateExamModal_ModalClosed;
+            CreateQuizModal.QuizCreated += CreateQuizModal_QuizCreated;
+            CreateQuizModal.ModalClosed += CreateQuizModal_ModalClosed;
         }
 
         private void CreateSection_Click(object sender, RoutedEventArgs e)
@@ -62,5 +64,29 @@ namespace Duo.Views.Pages
         {
             SectionModalOverlay.Visibility = Visibility.Collapsed;
         }
+
+
+        private void CreateQuiz_Click(object sender, RoutedEventArgs e)
+        {
+            QuizModalOverlay.Visibility = Visibility.Visible;
+        }
+
+        private async void CreateQuizModal_QuizCreated(object sender, QuizCreatedEventArgs e)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Success",
+                Content = $"Quiz '{e.Title}' created successfully with {e.Quiz.exerciseList.Count} exercises!",
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+
+        private void CreateQuizModal_ModalClosed(object sender, EventArgs e)
+        {
+            QuizModalOverlay.Visibility = Visibility.Collapsed;
+        }
+
     }
 }

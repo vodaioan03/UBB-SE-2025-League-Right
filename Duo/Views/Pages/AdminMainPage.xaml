@@ -42,7 +42,8 @@
                             Spacing="12">
                     <components:QuizAdminButton Text="Create section"
                                                 Click="CreateSection_Click"/>
-                    <components:QuizAdminButton Text="Create quiz"/>
+                    <components:QuizAdminButton Text="Create quiz"
+                                                Click="CreateQuiz_Click"/>
                     <components:QuizAdminButton Text="Create exam"
                                                 Click="CreateExam_Click"/>
                     <components:QuizAdminButton Text="Create exercise"
@@ -69,6 +70,11 @@
         <Grid x:Name="SectionModalOverlay"
               Visibility="Collapsed">
             <modals:CreateSectionModal x:Name="CreateSectionModal"/>
+        </Grid>
+
+        <Grid x:Name="QuizModalOverlay"
+              Visibility="Collapsed">
+            <modals:CreateQuizModal x:Name="CreateQuizModal"/>
         </Grid>
     </Grid>
 </Page>
