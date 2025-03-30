@@ -51,15 +51,15 @@
                             MaxHeight="100"
                         Width="400"/>
                     </StackPanel>
-                    <ComboBox x:Name="ExerciseTypeComboBox" SelectionChanged="ExerciseComboBox_SelectionChanged" Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
-                        <x:String>Association</x:String>
-                        <x:String>Fill in the blank</x:String>
-                        <x:String>Multiple Choice</x:String>
-                        <x:String>Flashcard</x:String>
+                    <ComboBox x:Name="ExerciseTypeComboBox"          
+                              ItemsSource="{Binding ExerciseTypes}" 
+                              SelectedItem="{Binding SelectedExerciseType, Mode=TwoWay}" 
+                              x:DefaultBindMode="TwoWay"
+                              Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
                     </ComboBox>
                 </StackPanel>
 
-                <ContentControl x:Name="ContentExerciseDisplayArea" />
+                <ContentControl Content="{Binding SelectedExerciseContent}"/>
 
                 <StackPanel
                         HorizontalAlignment="Right"

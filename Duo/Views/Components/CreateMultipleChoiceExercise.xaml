@@ -21,7 +21,7 @@
                 <DataTemplate>
                     <RadioButton GroupName="Answers">
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Text="{Binding}" Width="300" />
+                            <TextBox Text="{Binding Answers}" Width="300" />
                         </StackPanel>
                     </RadioButton>
                 </DataTemplate>

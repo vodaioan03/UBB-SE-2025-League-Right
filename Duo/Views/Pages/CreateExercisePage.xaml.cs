@@ -34,35 +34,6 @@ namespace Duo.Views.Pages
             this.InitializeComponent();
         }
 
-        public void ExerciseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox exerciseComboBox = sender as ComboBox;
-            Debug.WriteLine("This is a debug message.");
-
-            switch (exerciseComboBox.SelectedItem.ToString())
-            {
-                case "Association":
-                    ContentExerciseDisplayArea.Content = new CreateAssociationExercise();
-                    Debug.WriteLine("Association");
-                    break;
-
-                case "Fill in the blank":
-                    ContentExerciseDisplayArea.Content = new CreateFillInTheBlankExercise();
-                    Debug.WriteLine("Fill in the blank");
-                    break;
-
-                case "Multiple Choice":
-                    ContentExerciseDisplayArea.Content = new CreateMultipleChoiceExercise();
-                    Debug.WriteLine("Fill in the blank");
-                    break;
-
-                case "Flashcard":
-                    break;
-                default:
-                    break;
-            }
-        }
-
 
         public void BackButton_Click(object sender, RoutedEventArgs e)
         {
