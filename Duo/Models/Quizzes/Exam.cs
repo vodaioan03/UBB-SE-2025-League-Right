@@ -1,15 +1,10 @@
-﻿using Duo.Models.Exercises;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Duo.Models.Quizzes;
 
-namespace Duo.Models.Quizzes;
-public class Exam : BaseQuiz<Exercise>
+public class Exam : BaseQuiz
 {
     private const int MAX_EXERCISES = 25;
     private const double PASSING_THRESHOLD = 90;
 
-    public Exam(int id) : base(id, MAX_EXERCISES, PASSING_THRESHOLD) { }
+    public Exam(int id, int sectionId) 
+        : base(id, sectionId, MAX_EXERCISES, PASSING_THRESHOLD) { }
 }

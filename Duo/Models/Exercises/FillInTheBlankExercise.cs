@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Duo.Models.Exercises;
+
 public class FillInTheBlankExercise : Exercise
 {
-    public List<string> PossibleCorrectAnswers { get; }
+    public required List<string> PossibleCorrectAnswers { get; set; }
 
     public FillInTheBlankExercise(int id, string question, Difficulty difficulty, List<string> possibleCorrectAnswers)
         : base(id, question, difficulty)
     {
+        if (possibleCorrectAnswers == null || possibleCorrectAnswers.Count == 0)
+        {
+            throw new ArgumentException("Answers cannot be empty", nameof(possibleCorrectAnswers));
+        }
+
         PossibleCorrectAnswers = possibleCorrectAnswers;
     }
 
@@ -26,5 +33,4 @@ public class FillInTheBlankExercise : Exercise
         }
         return true;
     }
-
 }

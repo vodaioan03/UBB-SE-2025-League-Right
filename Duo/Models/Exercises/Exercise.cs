@@ -2,16 +2,16 @@
 
 namespace Duo.Models.Exercises;
 
-public abstract class Exercise: IExercise
+public abstract class Exercise
 {
-    public int Id { get; }
-    public string Question { get; }
-    public Difficulty ExerciseDifficulty { get; } = Difficulty.Normal;
+    public required int Id { get; set; }
+    public required string Question { get; set; }
+    public required Difficulty Difficulty { get; set; }
 
     protected Exercise(int id, string question, Difficulty difficulty)
     {
         Id = id;
         Question = question;
-        ExerciseDifficulty = difficulty;
+        Difficulty = difficulty;
     }
 }
