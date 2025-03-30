@@ -47,16 +47,16 @@ namespace Duo.Views.Pages
 
         public ObservableCollection<Quiz> Quizzes = new ObservableCollection<Quiz>
         {
-            new Quiz(1),
-            new Quiz(1),
-            new Quiz(1),
-            new Quiz(1),
-            new Quiz(1),
-            new Quiz(1),
-            new Quiz(2)
+            new Quiz(1, null, null),
+            new Quiz(2, null, null),
+            new Quiz(3, null, null),
+            new Quiz(4, null, null),
+            new Quiz(5, null, null),
+            new Quiz(6, null, null),
+            new Quiz(7, null, null)
         };
 
 
-        public Exam Exam = new Exam(2);
+        public Exam Exam = new Exam(2, null);
     }
 }

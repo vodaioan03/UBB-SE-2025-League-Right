@@ -133,7 +133,7 @@ namespace Duo.Views.Components.Modals
                 return;
             }
 
-            var quiz = new Quiz(new Random().Next(1000)); // Using random ID for demo
+            var quiz = new Quiz(new Random().Next(1000), null, null); // Using random ID for demo
             foreach (var exercise in SelectedExercises)
             {
                 quiz.AddExercise(exercise);

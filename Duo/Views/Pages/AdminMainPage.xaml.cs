@@ -76,7 +76,7 @@ namespace Duo.Views.Pages
             var dialog = new ContentDialog
             {
                 Title = "Success",
-                Content = $"Quiz '{e.Title}' created successfully with {e.Quiz.exerciseList.Count} exercises!",
+                Content = $"Quiz '{e.Title}' created successfully with {e.Quiz.ExerciseList.Count} exercises!",
                 CloseButtonText = "OK",
                 XamlRoot = this.XamlRoot
             };

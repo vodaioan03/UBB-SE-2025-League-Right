@@ -29,4 +29,9 @@ public class Roadmap
     {
         return Sections;
     }
+
+    public override string ToString()
+    {
+        return $"Roadmap {Id}: {Name} - {Sections.Count} sections";
+    }
 }

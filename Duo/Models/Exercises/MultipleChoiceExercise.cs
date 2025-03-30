@@ -1,15 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Duo.Models.Exercises;
 
 public class MultipleChoiceExercise : Exercise
 {
-    public List<MultipleChoiceAnswerModel> Choices { get; }
+    public List<MultipleChoiceAnswerModel> Choices { get; set; }
 
-    public MultipleChoiceExercise(int id, string question, Difficulty difficulty, List<MultipleChoiceAnswerModel> choices, string correctAnswer)
+    public MultipleChoiceExercise(int id, string question, Difficulty difficulty, List<MultipleChoiceAnswerModel> choices)
         : base(id, question, difficulty)
     {
+        if (choices == null || !choices.Any(c => c.IsCorrect))
+        {
+            throw new ArgumentException("At least one choice must be correct", nameof(choices));
+        }
+
         Choices = choices;
     }
 
@@ -22,6 +28,12 @@ public class MultipleChoiceExercise : Exercise
         var userSelection = userAnswers.OrderBy(a => a).ToList();
 
         return correctAnswers.SequenceEqual(userSelection);
+    }
+
+    public override string ToString()
+    {
+        var choices = string.Join(", ", Choices.Select(c => $"{c.Answer}{(c.IsCorrect ? " (Correct)" : "")}"));
+        return $"{base.ToString()} [Multiple Choice] Choices: {choices}";
     }
 }
 

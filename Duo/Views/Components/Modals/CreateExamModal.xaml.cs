@@ -64,7 +64,7 @@ namespace Duo.Views.Components.Modals
                     new Duo.Models.Exercises.MultipleChoiceAnswerModel { Answer = "Venus", IsCorrect = false },
                     new Duo.Models.Exercises.MultipleChoiceAnswerModel { Answer = "Mars", IsCorrect = false }
                 };
-                exercises.Add(new Duo.Models.Exercises.MultipleChoiceExercise(4, "Which is the closest planet to the Sun?", Duo.Models.Difficulty.Normal, choices, "Mercury"));
+                exercises.Add(new Duo.Models.Exercises.MultipleChoiceExercise(4, "Which is the closest planet to the Sun?", Duo.Models.Difficulty.Normal, choices));
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace Duo.Views.Components.Modals
                 return;
             }
 
-            var exam = new Exam(new Random().Next(1000)); // Using random ID for demo
+            var exam = new Exam(new Random().Next(1000), null); // Using random ID for demo
 
             foreach (var exercise in SelectedExercises)
             {

@@ -9,7 +9,7 @@ namespace Duo.Repositories
 {
     internal class ExerciseRepository
     {
-        public Task<bool> CreateExercise(IExercise exercise)
+        public Task<bool> CreateExercise(Exercise exercise)
         {
             throw new NotImplementedException();
         }
@@ -19,22 +19,22 @@ namespace Duo.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<IExercise>> GetAllExercises()
+        public Task<List<Exercise>> GetAllExercises()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IExercise> GetById(int id)
+        public Task<Exercise> GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<IExercise>> GetQuizExercises(int quizId)
+        public Task<List<Exercise>> GetQuizExercises(int quizId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateExercise(IExercise exercise)
+        public Task<bool> UpdateExercise(Exercise exercise)
         {
             throw new NotImplementedException();
         }
