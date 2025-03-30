@@ -7,7 +7,7 @@ using Duo.Models.Exercises;
 
 namespace Duo.Repositories
 {
-    internal class ExerciseRepository
+    public class ExerciseRepository
     {
         public Task<bool> CreateExercise(Exercise exercise)
         {

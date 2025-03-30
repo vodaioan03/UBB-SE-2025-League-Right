@@ -13,8 +13,8 @@ namespace Duo.Services
     {
         private readonly ExerciseRepository _exerciseRepository;
 
-        public ExerciseService() {
-            //_exerciseRepository = new ExerciseRepository();
+        public ExerciseService(ExerciseRepository exerciseRepository) {
+            _exerciseRepository = exerciseRepository;
         }
 
         public Task<List<Exercise>> GetAllExercises()
