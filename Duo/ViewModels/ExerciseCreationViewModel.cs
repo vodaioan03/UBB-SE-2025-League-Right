@@ -136,8 +136,19 @@ namespace Duo.ViewModels
 
         public void CreateExercise()
         {
-            if (SelectedExerciseType == "Multiple Choice")
-                CreateMultipleChoiceExercise();
+            switch (SelectedExerciseType)
+            {
+                case "Multiple Choice":
+                    CreateMultipleChoiceExercise();
+                    break;
+                case "Association":
+                    CreateAssocitationExercise();
+                    break;
+                default:
+                    break;
+
+            }
+      
         }
 
         public void CreateMultipleChoiceExercise()
@@ -146,6 +157,16 @@ namespace Duo.ViewModels
             List<MultipleChoiceAnswerModel> multipleChoiceAnswerModels = new List<MultipleChoiceAnswerModel>();
             Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, QuestionText, Models.Difficulty.Easy, multipleChoiceAnswerModels, "correct answer");
             //_exerciseService.CreateExercise(newExercise);
+            Debug.WriteLine(newExercise);
+        }
+
+        public void CreateAssocitationExercise()
+        {
+            List<string> firstAnswersList = new List<string>();
+            List<string> secondAnswersList = new List<string>();
+            Exercise newExercise = new Models.Exercises.AssociationExercise(0, QuestionText, Models.Difficulty.Easy, secondAnswersList, firstAnswersList);
+            //_exerciseService.CreateExercise(newExercise);
+            Debug.WriteLine(newExercise);
         }
 
 
