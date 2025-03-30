@@ -22,7 +22,6 @@ namespace Duo.Views.Components
 {
     public sealed partial class CreateMultipleChoiceExercise : UserControl
     {
-        public ObservableCollection<string> AnswerItems { get; set; } = new();
         private const int MINIMUM_ANSWERS = 2;
         private const int MAXIMUM_ANSWERS = 5;
 
@@ -30,10 +29,9 @@ namespace Duo.Views.Components
         public CreateMultipleChoiceExercise()
         {
             this.InitializeComponent();
-            AnswersTextBoxList.ItemsSource = AnswerItems;
-            AnswerItems.Add("");
         }
 
+        /*
         public async void AddNewAnswerButton_Click(object sender, RoutedEventArgs e)
         {
             if(AnswerItems.Count == MAXIMUM_ANSWERS)
@@ -42,7 +40,7 @@ namespace Duo.Views.Components
                 return;
             }
             AnswerItems.Add("");
-        }
+        }*/
 
         private async Task ShowErrorMessage(string title, string message)
         {

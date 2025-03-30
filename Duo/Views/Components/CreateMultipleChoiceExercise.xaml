@@ -6,7 +6,9 @@
     xmlns:local="using:Duo.Views.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:Duo.ViewModels.CreateExerciseViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:CreateMultipleChoiceExerciseViewModel}"
     mc:Ignorable="d">
+
     <UserControl.Resources>
         <Style x:Key="ListViewItemStretchStyle" TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -14,14 +16,17 @@
             <Setter Property="Padding" Value="0" />
         </Style>
     </UserControl.Resources>
-    <StackPanel Spacing="12">
-        <ListView x:Name="AnswersTextBoxList"  SelectionMode="None"  Padding="0" 
-        ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+    <StackPanel Spacing="12" DataContext="{Binding CreateMultipleChoiceExerciseViewModel}">
+
+        <ListView x:Name="AnswersTextBoxList"  SelectionMode="None"  Padding="0"                   
+      ItemsSource="{Binding Answers, Mode=TwoWay}"
+ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <RadioButton GroupName="Answers">
+                    <RadioButton GroupName="Answers"
+                         IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext.SelectedAnswer, Mode=TwoWay}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Text="{Binding Answers}" Width="300" />
+                            <TextBox Text="{Binding ., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300" />
                         </StackPanel>
                     </RadioButton>
                 </DataTemplate>
@@ -30,7 +35,7 @@
         <Button   
                 x:Name="AddNewAnswerButton"
                 Content="Add new input"
-                Click="AddNewAnswerButton_Click"
+                Command="{Binding AddNewAnswerCommand}"
                 Padding="16,8,16,8"
                 Margin="8,0,0,0"/>
     </StackPanel>

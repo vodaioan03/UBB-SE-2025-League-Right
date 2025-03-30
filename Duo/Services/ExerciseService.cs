@@ -42,7 +42,7 @@ namespace Duo.Services
             return _exerciseRepository.UpdateExercise(exercise);
         }
 
-        public Task<bool> CreateExercise(IExercise exercise)
+        public Task<bool> CreateExercise(Exercise exercise)
         {
             return _exerciseRepository.CreateExercise(exercise);
         }
