@@ -8,9 +8,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:components="using:Duo.Views.Components"
+    xmlns:viewmodels="using:Duo.ViewModels"
     HorizontalAlignment="Stretch">
 
-    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0">
+    <Page.DataContext>
+        <viewmodels:ExerciseCreationViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
+
+
+
+    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0"> 
         <ScrollViewer
             HorizontalAlignment="Stretch" 
             HorizontalContentAlignment="Stretch"
@@ -38,21 +45,21 @@
                             HorizontalAlignment="Left"
                             BorderThickness="0"
                             Margin="0,0,8,0"
-                            Text="{x:Bind QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding QuestionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap"
                             AcceptsReturn="True"
                             MaxHeight="100"
                         Width="400"/>
                     </StackPanel>
-                    <ComboBox x:Name="ExerciseTypeComboBox" SelectionChanged="ExerciseComboBox_SelectionChanged" Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
-                        <x:String>Association</x:String>
-                        <x:String>Fill in the blank</x:String>
-                        <x:String>Multiple Choice</x:String>
-                        <x:String>Flashcard</x:String>
+                    <ComboBox x:Name="ExerciseTypeComboBox"          
+                              ItemsSource="{Binding ExerciseTypes}" 
+                              SelectedItem="{Binding SelectedExerciseType, Mode=TwoWay}" 
+                              x:DefaultBindMode="TwoWay"
+                              Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
                     </ComboBox>
                 </StackPanel>
 
-                <ContentControl x:Name="ContentExerciseDisplayArea" />
+                <ContentControl Content="{Binding SelectedExerciseContent}"/>
 
                 <StackPanel
                         HorizontalAlignment="Right"
@@ -66,7 +73,7 @@
                         <Button 
                             x:Name="SaveButton"
                             Content="Save"
-                            Click="SaveButton_Click"
+                            Command="{Binding SaveButtonCommand}"
                              Padding="32,8,32,8"
                             Background="{ThemeResource AccentFillColorDefaultBrush}"
                             Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>

@@ -21,6 +21,7 @@ using Duo.Data;
 using Duo.ViewModels.ExerciseViewModels;
 using Duo.Services;
 using Duo.Repositories;
+using Duo.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,7 +33,7 @@ namespace Duo
     /// </summary>
     public partial class App : Application
     {
-        private IServiceProvider? _serviceProvider;
+        public static IServiceProvider? serviceProvider;
         private Window? m_window;
 
         /// <summary>
@@ -62,9 +63,10 @@ namespace Duo
             services.AddTransient<FillInTheBlankExerciseViewModel>();
             services.AddTransient<MultipleChoiceExerciseViewModel>();
             services.AddTransient<AssociationExerciseViewModel>();
+            services.AddTransient<ExerciseCreationViewModel>();
 
 
-            _serviceProvider = services.BuildServiceProvider();
+            serviceProvider = services.BuildServiceProvider();
         }
 
         /// <summary>
