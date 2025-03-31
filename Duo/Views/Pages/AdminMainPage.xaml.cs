@@ -94,5 +94,10 @@ namespace Duo.Views.Pages
             Frame.Navigate(typeof(ManageExercisesPage));
         }
 
+        public void OpenManageQuizesPage_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ManageQuizesPage));
+        }
+
     }
 }
