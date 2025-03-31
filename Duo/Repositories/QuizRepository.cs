@@ -292,4 +292,66 @@ public class QuizRepository
             throw new Exception($"Database error while deleting quiz with ID {quizId}: {ex.Message}", ex);
         }
     }
+
+    public async Task AddExerciseToQuiz(int quizId, int exerciseId)
+    {
+        if (quizId <= 0)
+        {
+            throw new ArgumentException("Quiz ID must be greater than 0.", nameof(quizId));
+        }
+
+        if (exerciseId <= 0)
+        {
+            throw new ArgumentException("Exercise ID must be greater than 0.", nameof(exerciseId));
+        }
+
+        try
+        {
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_AddExerciseToQuiz";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@quizId", quizId);
+            command.Parameters.AddWithValue("@exerciseId", exerciseId);
+            
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while adding exercise to quiz: {ex.Message}", ex);
+        }
+    }
+
+    public async Task RemoveExerciseFromQuiz(int quizId, int exerciseId)
+    {
+        if (quizId <= 0)
+        {
+            throw new ArgumentException("Quiz ID must be greater than 0.", nameof(quizId));
+        }
+
+        if (exerciseId <= 0)
+        {
+            throw new ArgumentException("Exercise ID must be greater than 0.", nameof(exerciseId));
+        }
+
+        try
+        {
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_RemoveExerciseFromQuiz";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@quizId", quizId);
+            command.Parameters.AddWithValue("@exerciseId", exerciseId);
+            
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while removing exercise from quiz: {ex.Message}", ex);
+        }
+    }
 } 
