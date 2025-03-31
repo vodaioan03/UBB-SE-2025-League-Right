@@ -14,7 +14,9 @@ namespace Duo.ViewModels
         private readonly ExerciseService _exerciseService;
         private readonly QuizService _quizService;
         private int _quizId;
+        private int _examId;
         private Quiz _currentQuiz;
+        private Exam _currentExam;
         private List<Exercise> _exercises;
         private Exercise _currentExercise;
         private int _currentExerciseIndex;
@@ -26,8 +28,24 @@ namespace Duo.ViewModels
             set
             {
                 _quizId = value;
+                _examId = -1;
+
                 LoadQuiz();
                 OnPropertyChanged(nameof(QuizId));
+                LoadExercises();
+            }
+        }
+
+        public int ExamId
+        {
+            get => _examId;
+            set
+            {
+                _examId = value;
+                _quizId = -1;
+
+                LoadExam();
+                OnPropertyChanged(nameof(ExamId));
                 LoadExercises();
             }
         }
@@ -59,6 +77,16 @@ namespace Duo.ViewModels
             {
                 _currentQuiz = value;
                 OnPropertyChanged(nameof(CurrentQuiz));
+            }
+        }
+
+        public Exam CurrentExam
+        {
+            get => _currentExam;
+            set
+            {
+                _currentExam = value;
+                OnPropertyChanged(nameof(CurrentExam));
             }
         }
 
@@ -104,8 +132,23 @@ namespace Duo.ViewModels
         {
             try
             {
-                //CurrentQuiz = await _quizService.GetExerciseById(_quizId);
+                //CurrentQuiz = await _quizService.GetQuizById(_quizId);
                 CurrentQuiz = new Quiz(1, 1, 1);
+
+                //WHEN DB IS WORKING UNCOMMENT QUERY AND DELETE CONSTRUCTOR
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading Quiz: {ex.Message}");
+            }
+        }
+
+        public async Task LoadExam()
+        {
+            try
+            {
+                //CurrentQuiz = await _quizService.GetExamById(_quizId);
+                CurrentExam = new Exam(1, 1);
 
                 //WHEN DB IS WORKING UNCOMMENT QUERY AND DELETE CONSTRUCTOR
             }
@@ -119,16 +162,31 @@ namespace Duo.ViewModels
         {
             try
             {
-                //Exercises = await _exerciseService.GetAllExercisesFromQuiz(QuizId);
-                Exercises = new List<Exercise>()
+                if (QuizId != -1)
                 {
-                    new AssociationExercise(1, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
-                    //new MultipleChoiceExercise(2, "What is uhh", Models.Difficulty.Easy, new List<MultipleChoiceAnswerModel>{new MultipleChoiceAnswerModel { Answer="hi", IsCorrect=false }, new MultipleChoiceAnswerModel { Answer="hi", IsCorrect=true } }),
-                    //new FillInTheBlankExercise(3, "Hi {} insert there {}", Models.Difficulty.Easy, new List<string>{"hi", "hi"}),
-                    //new AssociationExercise(4, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
-                    //new AssociationExercise(5, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
-                }; 
-                
+                    //Exercises = await _exerciseService.GetAllExercisesFromQuiz(QuizId);
+                    Exercises = new List<Exercise>()
+                    {
+                        new AssociationExercise(1, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
+                        //new MultipleChoiceExercise(2, "What is uhh", Models.Difficulty.Easy, new List<MultipleChoiceAnswerModel>{new MultipleChoiceAnswerModel { Answer="hi", IsCorrect=false }, new MultipleChoiceAnswerModel { Answer="hi", IsCorrect=true } }),
+                        //new FillInTheBlankExercise(3, "Hi {} insert there {}", Models.Difficulty.Easy, new List<string>{"hi", "hi"}),
+                        //new AssociationExercise(4, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
+                        //new AssociationExercise(5, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
+                    };
+                }
+                else
+                {
+                    //Exercises = await _exerciseService.GetAllExercisesFromExam(ExamId);
+                    Exercises = new List<Exercise>()
+                    {
+                        new AssociationExercise(1, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
+                        //new MultipleChoiceExercise(2, "What is uhh", Models.Difficulty.Easy, new List<MultipleChoiceAnswerModel>{new MultipleChoiceAnswerModel { Answer="hi", IsCorrect=false }, new MultipleChoiceAnswerModel { Answer="hi", IsCorrect=true } }),
+                        //new FillInTheBlankExercise(3, "Hi {} insert there {}", Models.Difficulty.Easy, new List<string>{"hi", "hi"}),
+                        //new AssociationExercise(4, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
+                        //new AssociationExercise(5, "Match these things", Models.Difficulty.Normal ,new List<string>{"ameroicaaaa", "asmakdjskjdh", "hjdiahsd"}, new List<string>{"dnchuksgf", "shndus", "snhdajhvjdh"}),
+                    };
+                }
+
                 //WHEN DB IS WORKING UNCOMMENT QUERY AND DELETE CONSTRUCTOR
 
                 CurrentExerciseIndex = 0;
@@ -154,6 +212,17 @@ namespace Duo.ViewModels
                 CurrentQuiz.IncrementNumberOfAnswersGiven();
         }
 
+        private void UpdateExam(bool? isExerciseValid)
+        {
+            if (isExerciseValid == true)
+            {
+                CurrentExam.IncrementCorrectAnswers();
+                CurrentExam.IncrementNumberOfAnswersGiven();
+            }
+            else
+                CurrentExam.IncrementNumberOfAnswersGiven();
+        }
+
         public bool? ValidateCurrentExercise(object responses)
         {
             if (ValidatedCurrent is not null)
@@ -175,7 +244,10 @@ namespace Duo.ViewModels
                 isValid = multipleChoiceExercise.ValidateAnswer((List<string>)responses);
             }
             ValidatedCurrent = isValid;
-            UpdateQuiz(ValidatedCurrent);
+            if (QuizId != -1)
+                UpdateQuiz(ValidatedCurrent);
+            else
+                UpdateExam(ValidatedCurrent);
 
             return isValid;
         }

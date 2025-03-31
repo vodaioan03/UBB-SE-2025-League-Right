@@ -47,8 +47,8 @@ namespace Duo.Views.Pages
 
             if (e.Parameter is int quizId)
             {
-                Debug.WriteLine($"QuizPage received QuizId: {quizId}");
-                ViewModel.QuizId = quizId;
+                Debug.WriteLine($"ExamPage received ExamId: {quizId}");
+                ViewModel.ExamId = quizId;
 
                 await ViewModel.LoadExercises();
                 LoadCurrentExercise();
