@@ -1,4 +1,5 @@
-﻿using Duo.Models.Quizzes;
+﻿using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
 using Duo.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -51,9 +52,27 @@ namespace Duo.Services
             await _quizRepository.UpdateAsync(quiz);
         }
 
-        public Task CreateQuiz(Quiz quiz)
+        public Task<int> CreateQuiz(Quiz quiz)
         {
             return _quizRepository.AddAsync(quiz);
+        }
+
+        public async Task AddExercisesToQuiz(int quizId, List<Exercise> exercises)
+        {
+            foreach (Exercise exercise in exercises)
+            {
+                await _quizRepository.AddExerciseToQuiz(quizId, exercise.Id);
+            }
+        }
+
+        public Task AddExerciseToQuiz(int quizId, int exerciseId)
+        {
+            return _quizRepository.AddExerciseToQuiz(quizId, exerciseId);
+        }
+
+        public Task RemoveExerciseFromQuiz(int quizId, int exerciseId)
+        {
+            return _quizRepository.RemoveExerciseFromQuiz(quizId, exerciseId);
         }
 
         public async Task DeleteExam(int examId)
