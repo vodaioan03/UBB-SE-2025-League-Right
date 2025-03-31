@@ -322,4 +322,43 @@ public class ExamRepository
             throw new Exception($"Database error while removing exercise from exam: {ex.Message}", ex);
         }
     }
+
+    public async Task UpdateExamSection(int examId, int? sectionId)
+    {
+        if (examId <= 0)
+        {
+            throw new ArgumentException("Exam ID must be greater than 0.", nameof(examId));
+        }
+
+        if (sectionId.HasValue && sectionId.Value <= 0)
+        {
+            throw new ArgumentException("Section ID must be greater than 0.", nameof(sectionId));
+        }
+
+        try
+        {
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_UpdateExam";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@examId", examId);
+            
+            if (sectionId.HasValue)
+            {
+                command.Parameters.AddWithValue("@sectionId", sectionId.Value);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@sectionId", DBNull.Value);
+            }
+            
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while updating exam section: {ex.Message}", ex);
+        }
+    }
 } 
