@@ -55,7 +55,8 @@
                     <components:QuizAdminButton Text="Manage sections"/>
                     <components:QuizAdminButton Text="Manage quizes"/>
                     <components:QuizAdminButton Text="Manage exams"/>
-                    <components:QuizAdminButton Text="Manage exercises"/>
+                    <components:QuizAdminButton Text="Manage exercises"
+                                                Click="OpenManageExercisesPage_Click"/>
                 </StackPanel>
 
             </StackPanel>
