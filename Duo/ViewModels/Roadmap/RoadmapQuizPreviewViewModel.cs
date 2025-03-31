@@ -43,12 +43,13 @@ namespace Duo.ViewModels.Roadmap
         }
         public ICommand StartQuizCommand { get; }
 
-        public RoadmapQuizPreviewViewModel(QuizService quizService, SectionService sectionService)
+        public RoadmapQuizPreviewViewModel(QuizService quizService, SectionService sectionService, ICommand startQuizCommand)
         {
             _quizService = quizService;
             _sectionService = sectionService;
             _isPreviewVisible = false;
-            StartQuizCommand = new RelayCommand(OnStartQuiz);
+
+            StartQuizCommand = startQuizCommand;
         }
 
         private void OnStartQuiz()
