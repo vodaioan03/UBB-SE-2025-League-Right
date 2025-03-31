@@ -100,6 +100,30 @@ namespace Duo.Services
             }
         }
 
+        static public void ValidateGenericExercise(Exercise exercise)
+        {
+            if (exercise == null)
+                throw new ValidationException("Exercise cannot be null");
+
+            switch (exercise)
+            {
+                case MultipleChoiceExercise mcEx:
+                    ValidateMultipleChoiceExercise(mcEx);
+                    break;
+                case AssociationExercise assocEx:
+                    ValidateAssociationExercise(assocEx);
+                    break;
+                case FillInTheBlankExercise fibEx:
+                    ValidateFillInTheBlankExercise(fibEx);
+                    break;
+                case FlashcardExercise flashEx:
+                    ValidateFlashCardExercise(flashEx);
+                    break;
+                default:
+                    throw new ValidationException($"Unsupported exercise type: {exercise.GetType().Name}");
+            }
+        }
+
         static public void ValidateMultipleChoiceExercise(MultipleChoiceExercise ex)
         {
             if (ex.Question.Length > 200)
