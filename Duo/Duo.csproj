@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\Components\CreateAssociationExercise.xaml" />
+    <None Remove="Views\Components\CreateExerciseComponents\CreateFlashcardExercise.xaml" />
     <None Remove="Views\Components\CreateFillInTheBlankExercise.xaml" />
     <None Remove="Views\Components\CreateMultipleChoiceExercise.xaml" />
     <None Remove="Views\Components\QuizAdminButton.xaml" />
@@ -129,6 +130,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Components\CreateExerciseComponents\CreateFlashcardExercise.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Pages\ManageExercisesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

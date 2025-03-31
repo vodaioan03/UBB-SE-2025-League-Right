@@ -29,10 +29,15 @@
             <TextBlock Text="Multiple Choice Exercise View Loaded!" />
         </DataTemplate>
 
+        <DataTemplate x:Key="FlashcardExerciseTemplate">
+            <TextBlock Text="Flashcard Exercise View Loaded!" />
+        </DataTemplate>
+
         <exerciseviewmodels:ExerciseTemplateSelector x:Key="ExerciseTemplateSelector"
             AssociationExerciseTemplate="{StaticResource AssociationExerciseTemplate}"
             FillInTheBlankExerciseTemplate="{StaticResource FillInTheBlankExerciseTemplate}"
-            MultipleChoiceExerciseTemplate="{StaticResource MultipleChoiceExerciseTemplate}" />
+            MultipleChoiceExerciseTemplate="{StaticResource MultipleChoiceExerciseTemplate}" 
+            FlashcardExerciseTemplate="{StaticResource FlashcardExerciseTemplate}"/>
     </Page.Resources>
 
     <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0"> 
