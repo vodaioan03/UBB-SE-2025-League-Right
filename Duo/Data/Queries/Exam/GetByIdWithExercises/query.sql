@@ -4,8 +4,10 @@ AS
 BEGIN
     SELECT 
         ex.*,
-        e.*,
-        d.Name as DifficultyName,
+        e.Id as ExerciseId,
+        e.Type as Type,
+        e.Question as Question,
+        e.DifficultyId as DifficultyId,
         -- Multiple Choice Exercise data
         mce.CorrectAnswer as MultipleChoiceCorrectAnswer,
         mco.OptionText as MultipleChoiceOption,
@@ -19,7 +21,6 @@ BEGIN
     FROM Exams ex
     LEFT JOIN ExamExercises ee ON ex.Id = ee.ExamId
     LEFT JOIN Exercises e ON ee.ExerciseId = e.Id
-    LEFT JOIN Difficulties d ON e.DifficultyId = d.Id
     -- Multiple Choice Exercise joins
     LEFT JOIN MultipleChoiceExercises mce ON e.Id = mce.ExerciseId
     LEFT JOIN MultipleChoiceOptions mco ON mce.ExerciseId = mco.ExerciseId

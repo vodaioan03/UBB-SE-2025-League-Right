@@ -1,7 +1,6 @@
 CREATE OR ALTER PROCEDURE sp_AddExerciseToQuiz
     @quizId INT,
-    @exerciseId INT,
-    @newId INT OUTPUT
+    @exerciseId INT
 AS
 BEGIN
     -- Check if quiz exists
@@ -19,5 +18,4 @@ BEGIN
     INSERT INTO QuizExercises (QuizId, ExerciseId)
     VALUES (@quizId, @exerciseId);
 
-    SET @newId = SCOPE_IDENTITY();
-END; 
+END;

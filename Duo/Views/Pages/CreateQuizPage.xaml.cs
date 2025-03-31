@@ -31,6 +31,15 @@ namespace Duo.Views.Pages
         {
             this.InitializeComponent();
             ViewModel.ShowListViewModal += ViewModel_openSelectExercises;
+            ViewModel.RequestGoBack += ViewModel_RequestGoBack;
+        }
+
+        public void ViewModel_RequestGoBack(object sender, EventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
         private async void ViewModel_openSelectExercises(List<Exercise> exercises)

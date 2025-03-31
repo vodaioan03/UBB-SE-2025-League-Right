@@ -26,6 +26,7 @@ namespace Duo.ViewModels
 
 
         public event Action<List<Exercise>> ShowListViewModal;
+        public event EventHandler RequestGoBack;
 
         private Quiz _selectedQuiz;
 
@@ -43,7 +44,7 @@ namespace Duo.ViewModels
             DeleteQuizCommand = new RelayCommandWithParameter<Quiz>(DeleteQuiz);
             OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
             RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(RemoveExerciseFromQuiz);
-            GetAvailableExercises();
+            LoadExercisesAsync();
             initializeViewModel();
         }
 
@@ -85,7 +86,7 @@ namespace Duo.ViewModels
 
             try
             {
-                List<Quiz> quizes = await _quizService.GetAllQuizzesFromSection(1);
+                List<Quiz> quizes = await _quizService.Get();
                 foreach (var quiz in quizes)
                 {
                     Quizes.Add(quiz);
@@ -104,17 +105,13 @@ namespace Duo.ViewModels
             QuizExercises.Clear();
             if (SelectedQuiz==null)
                 return;
-            foreach (var exercise in selectedQuiz.ExerciseList)
-            {
-                QuizExercises.Add(exercise);
-            }
 
-            /*List<Exercise> exercisesOfSelectedQuiz = await _exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
+            List<Exercise> exercisesOfSelectedQuiz = await _exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
             foreach (var exercise in exercisesOfSelectedQuiz)
             {
                 Debug.WriteLine(exercise);
                 QuizExercises.Add(exercise);
-            }*/
+            }
         }
 
         public void openSelectExercises()
@@ -122,28 +119,35 @@ namespace Duo.ViewModels
             Debug.WriteLine("Opening select exercises...");
             ShowListViewModal?.Invoke(AvailableExercises.ToList());
         }
-
-        public void GetAvailableExercises()
+        private async void LoadExercisesAsync()
         {
-            AvailableExercises.Add(new FillInTheBlankExercise(1, "The sky is ___.", Difficulty.Normal, new List<string> { "blue" }));
-            AvailableExercises.Add(new FillInTheBlankExercise(2, "Water boils at ___ degrees Celsius.", Difficulty.Normal, new List<string> { "100" }));
-            AvailableExercises.Add(new AssociationExercise(3, "Match animals with their sounds", Difficulty.Hard, new List<string> { "Dog", "Cat" }, new List<string> { "Bark", "Meow" }));
-            AvailableExercises.Add(new AssociationExercise(4, "Match the capitals to their countries.", Difficulty.Easy, new List<string> { "Paris", "London", "Berlin" }, new List<string> { "France", "England", "Germany" }));
+            AvailableExercises.Clear(); // Clear the ObservableCollection
+            var exercises = await _exerciseService.GetAllExercises();
+            foreach (var exercise in exercises)
+            {
+                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                AvailableExercises.Add(exercise);
+            }
         }
-        public void AddExercise(Exercise selectedExercise)
+        public async void AddExercise(Exercise selectedExercise)
         {
             Debug.WriteLine("Adding exercise...");
+            if(SelectedQuiz == null)
+            {
+                Debug.WriteLine("No quiz selected.");
+                return;
+            }
             SelectedQuiz.AddExercise(selectedExercise);
+            await _quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
             UpdateQuizExercises(SelectedQuiz);
-            AvailableExercises.Remove(selectedExercise);
         }
 
-        public void RemoveExerciseFromQuiz(Exercise selectedExercise)
+        public async void RemoveExerciseFromQuiz(Exercise selectedExercise)
         {
             Debug.WriteLine("Removing exercise...");
             SelectedQuiz.RemoveExercise(selectedExercise);
+            await _quizService.RemoveExerciseFromQuiz(SelectedQuiz.Id, selectedExercise.Id);
             UpdateQuizExercises(SelectedQuiz);
-            AvailableExercises.Add(selectedExercise);
         }
 
     }

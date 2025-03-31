@@ -259,4 +259,67 @@ public class ExamRepository
             throw new Exception($"Database error while deleting exam with ID {examId}: {ex.Message}", ex);
         }
     }
+
+    public async Task AddExerciseToExam(int examId, int exerciseId)
+    {
+        if (examId <= 0)
+        {
+            throw new ArgumentException("Exam ID must be greater than 0.", nameof(examId));
+        }
+
+        if (exerciseId <= 0)
+        {
+            throw new ArgumentException("Exercise ID must be greater than 0.", nameof(exerciseId));
+        }
+
+        try
+        {
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_AddExerciseToExam";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@examId", examId);
+            command.Parameters.AddWithValue("@exerciseId", exerciseId);
+            
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while adding exercise to exam: {ex.Message}", ex);
+        }
+    }
+    
+
+    public async Task RemoveExerciseFromExam(int examId, int exerciseId)
+    {
+        if (examId <= 0)
+        {
+            throw new ArgumentException("Exam ID must be greater than 0.", nameof(examId));
+        }
+
+        if (exerciseId <= 0)
+        {
+            throw new ArgumentException("Exercise ID must be greater than 0.", nameof(exerciseId));
+        }
+
+        try
+        {
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_RemoveExerciseFromExam";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@examId", examId);
+            command.Parameters.AddWithValue("@exerciseId", exerciseId);
+            
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while removing exercise from exam: {ex.Message}", ex);
+        }
+    }
 } 

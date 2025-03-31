@@ -20,6 +20,7 @@ namespace Duo.ViewModels
     internal class CreateQuizViewModel: ViewModelBase
     {
         private readonly QuizService _quizService;
+        private readonly ExerciseService _exerciseService;
         private readonly List<Exercise> _availableExercises;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
         public ObservableCollection<Exercise> SelectedExercises { get; private set; } = new ObservableCollection<Exercise>();
@@ -34,20 +35,34 @@ namespace Duo.ViewModels
         public ICommand RemoveExerciseCommand { get; }
         public ICommand SaveButtonCommand { get; }
         public ICommand OpenSelectExercisesCommand { get; }
+
+        public event EventHandler RequestGoBack;
         public CreateQuizViewModel()
         {
             try
             {
                 _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
-            CreateSampleExercises();
+            LoadExercisesAsync();
             SaveButtonCommand = new RelayCommand(CreateQuiz);
             OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
+        }
+
+        private async void LoadExercisesAsync()
+        {
+            Exercises.Clear(); // Clear the ObservableCollection
+            var exercises = await _exerciseService.GetAllExercises();
+            foreach (var exercise in exercises)
+            {
+                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                Exercises.Add(exercise);
+            }
         }
 
         private void CreateSampleExercises()
@@ -109,16 +124,24 @@ namespace Duo.ViewModels
             Debug.WriteLine("Removing exercise...");
         }
 
-        public void CreateQuiz()
+        public async void CreateQuiz()
         {
             Debug.WriteLine("Creating quiz...");
-            Quiz newQuiz = new Quiz(0, NO_SECTION_ID, NO_ORDER_NUMBER);
+            Quiz newQuiz = new Quiz(0, 1, null);
             foreach (var exercise in SelectedExercises)
             {
                 newQuiz.AddExercise(exercise);
             }
-            //_quizService.CreateQuiz(newQuiz);
+            try {
+                int quizId = await _quizService.CreateQuiz(newQuiz);
+                await _quizService.AddExercisesToQuiz(quizId, newQuiz.ExerciseList);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             Debug.WriteLine(newQuiz);
+            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
     }
 }
