@@ -148,25 +148,34 @@ namespace Duo.Views.Pages
 
         private void AssociationControl_OnSendClicked(object sender, AssociationExerciseEventArgs e)
         {
-            var contentPairs = e.ContentPairs;
+            if (ViewModel.ValidatedCurrent == null)
+            {
+                var contentPairs = e.ContentPairs;
 
-            var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
+                var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
 
-            ShowMessage((FrameworkElement)sender, valid);
+                ShowMessage((FrameworkElement)sender, valid);
+            }
         }
         private void MultipleChoiceControl_OnSendClicked(object sender, MultipleChoiceExerciseEventArgs e)
         {
-            var contentPairs = e.ContentPairs;
+            if (ViewModel.ValidatedCurrent == null)
+            {
+                var contentPairs = e.ContentPairs;
 
-            var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
-            ShowMessage((FrameworkElement)sender, valid);
+                var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
+                ShowMessage((FrameworkElement)sender, valid);
+            }
         }
         private void FillInTheBlanksControl_OnSendClicked(object sender, FillInTheBlanksExerciseEventArgs e)
         {
-            var contentPairs = e.ContentPairs;
+            if (ViewModel.ValidatedCurrent == null)
+            {
+                var contentPairs = e.ContentPairs;
 
-            var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
-            ShowMessage((FrameworkElement)sender, valid);
+                var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
+                ShowMessage((FrameworkElement)sender, valid);
+            }
         }
         private void NextQuiz_Click(object sender, RoutedEventArgs e)
         {
