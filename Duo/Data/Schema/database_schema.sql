@@ -51,7 +51,6 @@ CREATE TABLE Sections (
     RoadmapId INT NOT NULL,
     OrderNumber INT NOT NULL,
     FOREIGN KEY (RoadmapId) REFERENCES Roadmaps(Id),
-    CONSTRAINT UQ_Section_Roadmap_Order UNIQUE (RoadmapId, OrderNumber)
 );
 
 -- Create Exercises table (base table for exercise types)
@@ -113,7 +112,6 @@ CREATE TABLE Quizzes (
     SectionId INT DEFAULT NULL,
     OrderNumber INT DEFAULT NULL,
     FOREIGN KEY (SectionId) REFERENCES Sections(Id),
-    CONSTRAINT UQ_Quiz_Section_Order UNIQUE (SectionId, OrderNumber)
 );
 
 -- Create QuizExercises table (junction table between Quizzes and Exercises)
