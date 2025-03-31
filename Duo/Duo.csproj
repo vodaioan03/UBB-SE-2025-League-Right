@@ -15,10 +15,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ViewModels\NewFolder\**" />
+    <EmbeddedResource Remove="ViewModels\NewFolder\**" />
+    <None Remove="ViewModels\NewFolder\**" />
+    <Page Remove="ViewModels\NewFolder\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="TutorialDatabaseSetup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\Components\CreateAssociationExercise.xaml" />
+    <None Remove="Views\Components\CreateExerciseComponents\CreateFlashcardExercise.xaml" />
     <None Remove="Views\Components\CreateFillInTheBlankExercise.xaml" />
     <None Remove="Views\Components\CreateMultipleChoiceExercise.xaml" />
     <None Remove="Views\Components\QuizAdminButton.xaml" />
@@ -123,11 +130,18 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Components\CreateExerciseComponents\CreateFlashcardExercise.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Pages\ManageExercisesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\Components\CreateMultipleChoiceExercise.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PRIResource Remove="ViewModels\NewFolder\**" />
   </ItemGroup>
 </Project>

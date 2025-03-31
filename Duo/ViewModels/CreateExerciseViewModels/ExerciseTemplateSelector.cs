@@ -9,6 +9,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
         public DataTemplate AssociationExerciseTemplate { get; set; }
         public DataTemplate FillInTheBlankExerciseTemplate { get; set; }
         public DataTemplate MultipleChoiceExerciseTemplate { get; set; }
+        public DataTemplate FlashcardExerciseTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
@@ -18,6 +19,8 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 return FillInTheBlankExerciseTemplate;
             if (item is MultipleChoiceExerciseViewModel)
                 return MultipleChoiceExerciseTemplate;
+            if (item is CreateFlashcardExerciseViewModel)
+                return FlashcardExerciseTemplate;
 
             return null;
         }
