@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using System.Text.RegularExpressions;
+using static Duo.Views.Components.AssociationExercise;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,6 +27,8 @@ namespace Duo.Views.Components
 {
     public sealed partial class FillInTheBlanksExercise : UserControl
     {
+        public event EventHandler<FillInTheBlanksExerciseEventArgs> OnSendClicked;
+
         public event RoutedEventHandler Click;
         private Button _selectedLeftButton;
         private Button _selectedRightButton;
@@ -81,7 +84,17 @@ namespace Duo.Views.Components
                 .Select(textBox => textBox.Text) 
                 .ToList();
 
-            // IMPLEMENT SEND RESULTS
+            OnSendClicked?.Invoke(this, new FillInTheBlanksExerciseEventArgs(inputValues));
+        }
+
+        public class FillInTheBlanksExerciseEventArgs : EventArgs
+        {
+            public List<string> ContentPairs { get; }
+
+            public FillInTheBlanksExerciseEventArgs(List<string> inputValues)
+            {
+                ContentPairs = inputValues;
+            }
         }
     }
 }

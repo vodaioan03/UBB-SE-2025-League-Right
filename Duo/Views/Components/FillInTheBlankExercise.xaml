@@ -18,7 +18,7 @@
         Text="Fill in the blank fields"
         HorizontalAlignment="Center" 
         FontSize="32"
-        Margin="100"
+        Margin="0, 0, 0,100"
         />
         <StackPanel Orientation="Horizontal" Spacing="0" HorizontalAlignment="Left">
             <ItemsControl ItemsSource="{x:Bind QuestionElements}">

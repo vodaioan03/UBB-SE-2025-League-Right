@@ -23,11 +23,6 @@ namespace Duo.Models.Exercises
 
         // Property for database repository support
         public string Sentence => Question;
-
-        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
-            : this(id, question, answer, difficulty)
-        {
-        }
         
         public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
             : base(id, question, difficulty)
@@ -75,7 +70,7 @@ namespace Duo.Models.Exercises
 
         public override string ToString()
         {
-            return $"Id: {Id}, Topic: {Topic}, Difficulty: {Difficulty}, Time: {TimeInSeconds}s";
+            return $"Id: {Id},  Difficulty: {Difficulty}, Time: {TimeInSeconds}s";
         }
     }
 } 

@@ -38,9 +38,9 @@ namespace Duo.Services
             await _exerciseRepository.DeleteExerciseAsync(exerciseId);
         }
 
-        public async Task<int> CreateExercise(Exercise exercise)
+        public async Task CreateExercise(Exercise exercise)
         {
-            return await _exerciseRepository.AddExerciseAsync(exercise);
+            await _exerciseRepository.AddExerciseAsync(exercise);
         }
     }
 }

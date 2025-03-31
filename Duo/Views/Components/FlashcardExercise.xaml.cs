@@ -395,9 +395,6 @@ namespace Duo.Views.Components
             _exerciseData = exercise;
             
             // Set topic, question and answer from the model
-            Topic = string.IsNullOrEmpty(exercise.Topic) ? 
-                DetermineTopicFromExercise(exercise) : // Fallback for backward compatibility
-                exercise.Topic;
             Question = exercise.Question;
             Answer = exercise.Answer;
             

@@ -63,6 +63,7 @@ namespace Duo
             services.AddSingleton<ExerciseRepository>();
             services.AddSingleton<ExerciseService>();
 
+            services.AddSingleton<ExamRepository>();
             services.AddSingleton<QuizRepository>();
             services.AddSingleton<QuizService>();
 
@@ -76,7 +77,7 @@ namespace Duo
             services.AddTransient<MultipleChoiceExerciseViewModel>();
             services.AddTransient<AssociationExerciseViewModel>();
             services.AddTransient<ExerciseCreationViewModel>();
-
+            services.AddTransient<QuizExamViewModel>();
             services.AddTransient<CreateQuizViewModel>();
 
 

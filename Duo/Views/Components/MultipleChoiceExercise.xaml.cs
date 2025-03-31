@@ -25,6 +25,9 @@ namespace Duo.Views.Components
 {
     public sealed partial class MultipleChoiceExercise : UserControl
     {
+
+        public event EventHandler<MultipleChoiceExerciseEventArgs> OnSendClicked;
+
         public event RoutedEventHandler Click;
         private Button _selectedLeftButton;
         private Button _selectedRightButton;
@@ -80,7 +83,17 @@ namespace Duo.Views.Components
         {
             List<string> userChoices = selectedButtons.Select(b => b.Content.ToString()).ToList();
 
-            // IMPLEMENT SEND RESULTS
+            OnSendClicked?.Invoke(this, new MultipleChoiceExerciseEventArgs(userChoices));
+        }
+
+        public class MultipleChoiceExerciseEventArgs : EventArgs
+        {
+            public List<string> ContentPairs { get; }
+
+            public MultipleChoiceExerciseEventArgs(List<string> userChoices)
+            {
+                ContentPairs = userChoices;
+            }
         }
     }
 }
