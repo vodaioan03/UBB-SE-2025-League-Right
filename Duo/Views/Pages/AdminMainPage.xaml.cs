@@ -24,7 +24,9 @@ namespace Duo.Views.Pages
 
         private void CreateSection_Click(object sender, RoutedEventArgs e)
         {
-            SectionModalOverlay.Visibility = Visibility.Visible;
+            //SectionModalOverlay.Visibility = Visibility.Visible;
+
+            Frame.Navigate(typeof(CreateSectionPage));
         }
 
         private void CreateSectionModal_SectionCreated(object sender, SectionCreatedEventArgs e)
