@@ -37,6 +37,26 @@
 
                 <ContentControl x:Name="ExerciseContentControl" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
 
+                <!-- Horizontal Line -->
+                <Rectangle Grid.Row="1"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Height="1"
+                           Margin="0,0,0,6"
+                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                           HorizontalAlignment="Stretch"/>  
+
+                <TextBlock x:Name="MessageTextBlock"
+                           Text=""
+                           Visibility="Collapsed"
+                           Foreground="Red"
+                           FontSize="16"
+                           Margin="10"
+                           HorizontalAlignment="Right" />
+                <components:QuizAdminButton Text="Next Exercise"
+                            x:Name="NextExerciseButton"
+                             Click="NextQuiz_Click"
+                             HorizontalAlignment="Right"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

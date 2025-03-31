@@ -33,6 +33,9 @@ namespace Duo.Views.Pages
     /// </summary>
     public sealed partial class QuizPage : Page
     {
+        private static readonly SolidColorBrush CorrectBrush = new SolidColorBrush(Microsoft.UI.Colors.Green);
+        private static readonly SolidColorBrush IncorrectBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
+
         public QuizPage()
         {
             this.InitializeComponent();
@@ -71,9 +74,11 @@ namespace Duo.Views.Pages
 
         private void LoadCurrentExercise()
         {
+            DoNotShowMessage();
+
             if (ViewModel != null && ViewModel.Exercises != null)
             {
-                var currentExercise = ViewModel.Exercises[ViewModel.CurrentExerciseIndex];
+                var currentExercise = ViewModel.CurrentExercise;
 
                 if (currentExercise != null)
                 {
@@ -111,30 +116,68 @@ namespace Duo.Views.Pages
                         ExerciseContentControl.Content = multipleChoiceControl;
                     }
                 }
+                else
+                {
+                    NextExerciseButton.Visibility = Visibility.Collapsed;
+                    ExerciseContentControl.Content = null;
+
+                    //ADD END SCREEN;
+                }
 
             }
 
+        }
+
+        private void ShowMessage(bool valid)
+        {
+            if (valid)
+            {
+                MessageTextBlock.Foreground = CorrectBrush;
+                MessageTextBlock.Text = "Correct!";
+                MessageTextBlock.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MessageTextBlock.Foreground = IncorrectBrush;
+                MessageTextBlock.Text = "Wrong answer.";
+                MessageTextBlock.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void DoNotShowMessage()
+        {
+            MessageTextBlock.Visibility = Visibility.Collapsed;
         }
 
         private void AssociationControl_OnSendClicked(object sender, AssociationExerciseEventArgs e)
         {
             var contentPairs = e.ContentPairs;
 
-            ViewModel.ValidateCurrentExercise(contentPairs);
+            var valid = ViewModel.ValidateCurrentExercise(contentPairs);
+
+            ShowMessage(valid);
         }
         private void MultipleChoiceControl_OnSendClicked(object sender, MultipleChoiceExerciseEventArgs e)
         {
             var contentPairs = e.ContentPairs;
 
-            ViewModel.ValidateCurrentExercise(contentPairs);
+            var valid =  ViewModel.ValidateCurrentExercise(contentPairs);
+            ShowMessage(valid);
         }
         private void FillInTheBlanksControl_OnSendClicked(object sender, FillInTheBlanksExerciseEventArgs e)
         {
             var contentPairs = e.ContentPairs;
 
-            ViewModel.ValidateCurrentExercise(contentPairs);
+            var valid = ViewModel.ValidateCurrentExercise(contentPairs);
+            ShowMessage(valid);
         }
+        private void NextQuiz_Click(object sender, RoutedEventArgs e)
+        {
+            var loadedNext = ViewModel.LoadNext();
 
+            if (loadedNext)
+                LoadCurrentExercise();
+        }
     }
 }
 
