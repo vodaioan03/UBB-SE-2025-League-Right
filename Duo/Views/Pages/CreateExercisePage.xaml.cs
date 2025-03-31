@@ -17,6 +17,7 @@ using System.Diagnostics;
 using Duo.Views.Components;
 using Duo.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,6 +34,27 @@ namespace Duo.Views.Pages
         {
             this.InitializeComponent();
             ViewModel.RequestGoBack += ViewModel_RequestGoBack;
+            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+        }
+
+
+        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        {
+            await ShowErrorMessage(e.Title, e.Message);
+        }
+
+
+        private async Task ShowErrorMessage(string title, string message)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = message,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+
+            await dialog.ShowAsync();
         }
 
 

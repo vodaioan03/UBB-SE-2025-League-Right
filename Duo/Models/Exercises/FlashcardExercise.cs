@@ -1,36 +1,70 @@
-using Duo.Models;
 using System;
-using System.Collections.Generic;
 
 namespace Duo.Models.Exercises
 {
     public class FlashcardExercise : Exercise
     {
-        public string Answer { get; set; }
-        public int TimeInSeconds => GetTimeInSeconds();
+        public string Type { get; } = "Flashcard";
+        public int TimeInSeconds { get; }
 
-        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty)
+        private string _answer;
+        public string Answer
+        {
+            get => _answer;
+            set => _answer = value;
+        }
+
+        private TimeSpan _elapsedTime;
+        public TimeSpan ElapsedTime
+        {
+            get => _elapsedTime;
+            set => _elapsedTime = value;
+        }
+
+        // Property for database repository support
+        public string Sentence => Question;
+
+        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
+            : this(id, question, answer, difficulty)
+        {
+        }
+        
+        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
             : base(id, question, difficulty)
         {
-            if (string.IsNullOrWhiteSpace(question))
-                throw new ArgumentException("Question cannot be empty", nameof(question));
+            if (string.IsNullOrWhiteSpace(answer))
+                throw new ArgumentException("Answer cannot be empty", nameof(answer));
+                
+            _answer = answer;
+            
+            // Default time based on difficulty
+            TimeInSeconds = GetDefaultTimeForDifficulty(difficulty);
+        }
+
+        // Constructor for database repository support
+        public FlashcardExercise(int id, string sentence, string answer, int timeInSeconds, Difficulty difficulty = Difficulty.Normal)
+            : base(id, sentence, difficulty)
+        {
             if (string.IsNullOrWhiteSpace(answer))
                 throw new ArgumentException("Answer cannot be empty", nameof(answer));
 
-            Answer = answer;
+            _answer = answer;
+            TimeInSeconds = timeInSeconds;
         }
-
-        private int GetTimeInSeconds()
+        
+        // Helper method to determine default time based on difficulty
+        private int GetDefaultTimeForDifficulty(Difficulty difficulty)
         {
-            return Difficulty switch
+            return difficulty switch
             {
-                Difficulty.Easy => 45,
+                Difficulty.Easy => 15,
                 Difficulty.Normal => 30,
-                Difficulty.Hard => 15,
-                _ => throw new ArgumentException($"Unknown difficulty level: {Difficulty}")
+                Difficulty.Hard => 45,
+                _ => 30
             };
         }
-
+        
+        // Validation method from develop branch
         public bool ValidateAnswer(string userAnswer)
         {
             if (string.IsNullOrWhiteSpace(userAnswer))
@@ -41,7 +75,7 @@ namespace Duo.Models.Exercises
 
         public override string ToString()
         {
-            return $"{base.ToString()} [Flashcard] Time: {TimeInSeconds}s Answer: {Answer}";
+            return $"Id: {Id}, Topic: {Topic}, Difficulty: {Difficulty}, Time: {TimeInSeconds}s";
         }
     }
 } 

@@ -14,6 +14,12 @@
     <Grid  HorizontalAlignment="Stretch"
            MaxWidth="900"
            Margin="32,0,32,0">
+        <InfoBar
+        x:Name="SuccessInfoBar"
+        Title="Success"
+        Message="Exercise added successfully!"
+        Severity="Success"
+        IsOpen="{Binding IsSuccessMessageVisible, Mode=TwoWay}" />
         <ScrollViewer
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
@@ -55,7 +61,8 @@
                     <components:QuizAdminButton Text="Manage sections"/>
                     <components:QuizAdminButton Text="Manage quizes"/>
                     <components:QuizAdminButton Text="Manage exams"/>
-                    <components:QuizAdminButton Text="Manage exercises"/>
+                    <components:QuizAdminButton Text="Manage exercises"
+                                                Click="OpenManageExercisesPage_Click"/>
                 </StackPanel>
 
             </StackPanel>

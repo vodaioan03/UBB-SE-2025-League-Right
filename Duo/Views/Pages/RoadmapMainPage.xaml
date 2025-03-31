@@ -11,7 +11,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
         <TextBlock Text="Quiz page" 
+                   Grid.Row="0"
                    HorizontalAlignment="Center" 
                    FontSize="32"/>
 

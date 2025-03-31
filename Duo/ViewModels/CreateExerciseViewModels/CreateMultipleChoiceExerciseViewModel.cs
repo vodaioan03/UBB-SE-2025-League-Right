@@ -16,6 +16,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 {
     class CreateMultipleChoiceExerciseViewModel : CreateExerciseViewModelBase
     {
+        private ExerciseCreationViewModel _parentViewModel;
         private const int MINIMUM_ANSWERS = 2;
         private const int MAXIMUM_ANSWERS = 5;
 
@@ -23,25 +24,18 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         public ObservableCollection<Answer> Answers { get; set; } = new ObservableCollection<Answer>();
 
-        public CreateMultipleChoiceExerciseViewModel()
+        public CreateMultipleChoiceExerciseViewModel(ExerciseCreationViewModel parentViewModel)
         {
+            _parentViewModel = parentViewModel;
             AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
             UpdateSelectedAnswerComand = new RelayCommandWithParameter<string>(UpdateSelectedAnswer);
         }
 
         public override Exercise CreateExercise(string questionText, Difficulty difficulty)
         {
-            try
-            {
-                List<MultipleChoiceAnswerModel> multipleChoiceAnswerModelList = generateAnswerModelList();
-                Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, questionText, difficulty, multipleChoiceAnswerModelList);
-                return newExercise;
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex);
-                return null;
-            }
+            List<MultipleChoiceAnswerModel> multipleChoiceAnswerModelList = generateAnswerModelList();
+            Exercise newExercise = new Models.Exercises.MultipleChoiceExercise(0, questionText, difficulty, multipleChoiceAnswerModelList);
+            return newExercise;
         }
 
         public List<MultipleChoiceAnswerModel> generateAnswerModelList()
@@ -77,6 +71,11 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         private void AddNewAnswer()
         {
+            if (Answers.Count == MAXIMUM_ANSWERS)
+            {
+                _parentViewModel.RaiseErrorMessage("Cannot add more answers", $"Maximum number of answers ({MAXIMUM_ANSWERS}) reached.");
+                return;
+            }
             Debug.WriteLine($"New answer");
             Answers.Add(new Answer("", false));
         }

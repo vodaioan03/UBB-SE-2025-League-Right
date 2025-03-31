@@ -1,5 +1,3 @@
-
-
 using Duo.ViewModels.Base;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -39,6 +37,9 @@ namespace Duo.ViewModels
                     {
                         case "QuizParent":
                             pageType = typeof(Views.Pages.RoadmapMainPage);
+                            break;
+                        case "FlashcardsParent":
+                            pageType = typeof(Views.Pages.FlashcardsPage);
                             break;
                         case "QuizAdminParent":
                             pageType = typeof(Views.Pages.AdminMainPage);
