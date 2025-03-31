@@ -1,3 +1,4 @@
+using Duo.Models.Exercises;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,6 +27,7 @@ namespace Duo.Views.Pages
         public ManageQuizesPage()
         {
             this.InitializeComponent();
+            ViewModel.ShowListViewModal += ViewModel_openSelectExercises;
         }
         public void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -33,6 +35,37 @@ namespace Duo.Views.Pages
             {
                 this.Frame.GoBack();
             }
+        }
+        private async void ViewModel_openSelectExercises(List<Exercise> exercises)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Select Exercise",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.XamlRoot
+            };
+
+            var listView = new ListView
+            {
+                ItemsSource = exercises,
+                SelectionMode = ListViewSelectionMode.Single,
+                MaxHeight = 300,
+                ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]
+            };
+
+            dialog.Content = listView;
+            dialog.PrimaryButtonText = "Add";
+            dialog.IsPrimaryButtonEnabled = false;
+
+            listView.SelectionChanged += (s, args) =>
+            {
+                dialog.IsPrimaryButtonEnabled = listView.SelectedItem != null;
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
+                ViewModel.AddExercise(selectedExercise);
         }
 
     }

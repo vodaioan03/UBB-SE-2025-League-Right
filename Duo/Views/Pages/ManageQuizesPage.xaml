@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Duo.Views.Pages"
     xmlns:local1="using:Duo.Models.Quizzes"
+    xmlns:exercise="using:Duo.Models.Exercises"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="using:Duo.ViewModels"
@@ -14,6 +15,20 @@
         <viewmodels:ManageQuizesViewModel x:Name="ViewModel"/>
     </Page.DataContext>
 
+    <Page.Resources>
+
+        <!-- Template for exercise selection dialog -->
+        <DataTemplate x:Key="ExerciseSelectionItemTemplate">
+            <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+                <TextBlock Text="Exercise #"/>
+                <TextBlock Text="{Binding Id}"/>
+                <TextBlock Text=" - "/>
+                <TextBlock Text="{Binding Question}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+    
     <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0">
         <ScrollViewer
     HorizontalAlignment="Stretch"
@@ -49,7 +64,8 @@
                    Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
                    HorizontalAlignment="Stretch"/>
                 <ListView ItemsSource="{Binding Quizes}"
-  >
+                          SelectedItem="{Binding SelectedQuiz, Mode=TwoWay}"
+                            >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local1:Quiz">
                             <Grid>
@@ -67,6 +83,52 @@
                                     Command="{x:Bind ViewModel.DeleteQuizCommand}"
                                     CommandParameter="{Binding}"
                                     Style="{ThemeResource TextBlockButtonStyle}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
+                <!-- Exercise Management -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Selected Exercises"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"
+                           VerticalAlignment="Center"/>
+
+                    <Button Grid.Column="1"
+                        Content="Add Exercise"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Command="{Binding OpenSelectExercisesCommand}"/>
+                </Grid>
+                <ListView x:Name="ExerciseList"
+                      Height="200"
+                      ItemsSource="{Binding QuizExercises, Mode=TwoWay}"
+                      BorderThickness="1"
+                      BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                      Padding="8">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="exercise:Exercise">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                                                <TextBlock Text="Exercise #"/>
+                                                <TextBlock Text="{Binding Id}"/>
+                                                <TextBlock Text=" - "/>
+                                                <TextBlock Text="{Binding Question}"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="1"
+                                                Command="{x:Bind ViewModel.RemoveExerciseFromQuizCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Remove"
+                                                Style="{ThemeResource TextBlockButtonStyle}"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

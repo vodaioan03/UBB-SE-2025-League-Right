@@ -32,6 +32,11 @@ public abstract class BaseQuiz
         return false;
     }
 
+    public bool RemoveExercise(Exercise exercise)
+    {
+        return ExerciseList.Remove(exercise);
+    }
+
     public bool IsValid()
     {
         return ExerciseList.Count == maxExercises;
