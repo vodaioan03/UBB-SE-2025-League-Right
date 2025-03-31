@@ -88,5 +88,10 @@ namespace Duo.Views.Pages
             QuizModalOverlay.Visibility = Visibility.Collapsed;
         }
 
+        public void OpenManageExercisesPage_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ManageExercisesPage));
+        }
+
     }
 }
