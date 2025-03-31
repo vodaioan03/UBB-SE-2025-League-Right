@@ -58,7 +58,8 @@
 
                 <StackPanel Orientation="Horizontal"
                             Spacing="12">
-                    <components:QuizAdminButton Text="Manage sections"/>
+                    <components:QuizAdminButton Text="Manage sections"
+                                                Click="OpenManageSectionsPage_Click"/>
                     <components:QuizAdminButton Text="Manage quizes"
                                                 Click="OpenManageQuizesPage_Click"/>
                     <components:QuizAdminButton Text="Manage exams"/>
