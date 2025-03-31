@@ -8,8 +8,8 @@ BEGIN
         -- Multiple Choice Exercise data
         mce.CorrectAnswer as MultipleChoiceCorrectAnswer,
         mco.OptionText as MultipleChoiceOption,
-        -- Fill in the Blanks Exercise data
-        fba.CorrectAnswer as FillInTheBlanksAnswer,
+        -- Fill in the Blank Exercise data
+        fba.CorrectAnswer as FillInTheBlankAnswer,
         -- Association Exercise data
         ap.FirstAnswer as AssociationFirstAnswer,
         ap.SecondAnswer as AssociationSecondAnswer,
@@ -20,9 +20,9 @@ BEGIN
     -- Multiple Choice Exercise joins
     LEFT JOIN MultipleChoiceExercises mce ON e.Id = mce.ExerciseId
     LEFT JOIN MultipleChoiceOptions mco ON mce.ExerciseId = mco.ExerciseId
-    -- Fill in the Blanks Exercise joins
-    LEFT JOIN FillInTheBlanksExercises fbe ON e.Id = fbe.ExerciseId
-    LEFT JOIN FillInTheBlanksAnswers fba ON fbe.ExerciseId = fba.ExerciseId
+    -- Fill in the Blank Exercise joins
+    LEFT JOIN FillInTheBlankExercises fbe ON e.Id = fbe.ExerciseId
+    LEFT JOIN FillInTheBlankAnswers fba ON fbe.ExerciseId = fba.ExerciseId
     -- Association Exercise joins
     LEFT JOIN AssociationExercises ae ON e.Id = ae.ExerciseId
     LEFT JOIN AssociationPairs ap ON ae.ExerciseId = ap.ExerciseId

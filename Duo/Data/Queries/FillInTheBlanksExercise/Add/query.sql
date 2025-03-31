@@ -1,5 +1,5 @@
-CREATE OR ALTER PROCEDURE sp_AddFillInTheBlanksExercise
-    @exerciseId INT,
+CREATE OR ALTER PROCEDURE sp_AddFillInTheBlankExercise
+    @exerciseId INT
 AS
 BEGIN
     BEGIN TRY
@@ -8,14 +8,14 @@ BEGIN
             SELECT 1 
             FROM Exercises 
             WHERE Id = @exerciseId 
-            AND Type = 'FillInTheBlanks'
+            AND Type = 'FillInTheBlank'
         )
         BEGIN
-            RAISEERROR('Invalid exercise ID or type', 16, 1) WITH NOWAIT;
+            RAISERROR ('Invalid exercise ID or type', 16, 1) WITH NOWAIT;
         END
 
-        -- Insert the fill in the blanks exercise
-        INSERT INTO FillInTheBlanksExercises (ExerciseId)
+        -- Insert the fill in the Blank exercise
+        INSERT INTO FillInTheBlankExercises (ExerciseId)
         VALUES (@exerciseId);
     END TRY
     BEGIN CATCH

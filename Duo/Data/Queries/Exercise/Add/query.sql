@@ -4,10 +4,8 @@ CREATE OR ALTER PROCEDURE sp_AddExercise
     @question VARCHAR(500),
     -- Multiple Choice parameters
     @correctAnswer VARCHAR(500) = NULL,
-    -- Fill in the Blanks parameters
-    @sentence VARCHAR(500) = NULL,
+    -- Fill in the Blank parameters
     -- Association parameters
-    @associationSentence VARCHAR(500) = NULL,
     -- Flashcard parameters
     @flashcardAnswer VARCHAR(100) = NULL,
     -- Output parameter
@@ -16,7 +14,7 @@ AS
 BEGIN
     BEGIN TRY
         -- Validate exercise type
-        IF @type NOT IN ('MultipleChoiceExercise', 'FillInTheBlanksExercise', 'AssociationExercise', 'FlashcardExercise')
+        IF @type NOT IN ('MultipleChoiceExercise', 'FillInTheBlankExercise', 'AssociationExercise', 'FlashcardExercise')
         BEGIN
             RAISERROR ('Invalid exercise type', 16, 1) WITH NOWAIT;
         END
@@ -53,10 +51,10 @@ BEGIN
             INSERT INTO MultipleChoiceExercises (ExerciseId, CorrectAnswer)
             VALUES (@newId, @correctAnswer);
         END
-        ELSE IF @type = 'FillInTheBlanksExercise'
+        ELSE IF @type = 'FillInTheBlankExercise'
         BEGIN
-            -- Insert the fill in the blanks exercise
-            INSERT INTO FillInTheBlanksExercises (ExerciseId)
+            -- Insert the fill in the Blank exercise
+            INSERT INTO FillInTheBlankExercises (ExerciseId)
             VALUES (@newId);
         END
         ELSE IF @type = 'AssociationExercise'

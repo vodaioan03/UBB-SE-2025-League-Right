@@ -1,7 +1,7 @@
 CREATE OR ALTER PROCEDURE sp_AddSection
     @subjectId INT,
     @title VARCHAR(255),
-    @description TEXT,
+    @description VARCHAR(500),
     @roadmapId INT,
     @orderNumber INT,
     @newId INT OUTPUT

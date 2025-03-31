@@ -1,14 +1,14 @@
 CREATE PROCEDURE sp_UpdateUserProgress
     @Id INT,
-    @LastCompletedSectionId INT,
-    @LastCompletedQuizId INT
+    @LastCompletedSectionId INT = NULL,
+    @LastCompletedQuizId INT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     
     UPDATE Users
     SET 
-        LastCompletedSectionId = @LastCompletedSectionId,
-        LastCompletedQuizId = @LastCompletedQuizId
+        LastCompletedSectionId = COALESCE(@LastCompletedSectionId, LastCompletedSectionId),
+        LastCompletedQuizId = COALESCE(@LastCompletedQuizId, LastCompletedQuizId)
     WHERE Id = @Id;
 END

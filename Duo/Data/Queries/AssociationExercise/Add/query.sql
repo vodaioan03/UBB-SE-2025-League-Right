@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE sp_AddAssociationExercise
-    @exerciseId INT,
+    @exerciseId INT
 AS
 BEGIN
     BEGIN TRY

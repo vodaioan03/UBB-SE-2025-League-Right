@@ -1,18 +1,18 @@
 CREATE OR ALTER PROCEDURE sp_AddQuiz
-    @sectionId INT,
-    @orderNumber INT,
+    @sectionId INT = NULL,
+    @orderNumber INT = NULL,
     @newId INT OUTPUT
 AS
 BEGIN
     BEGIN TRY
-        -- Check if section exists
-        IF NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
+        -- Check if section exists only if sectionId is not NULL
+        IF @sectionId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
         BEGIN
             RAISERROR ('Section not found', 16, 1) WITH NOWAIT;
         END
 
-        -- Check if order number is unique within the section
-        IF EXISTS (
+        -- Check if order number is unique within the section only if sectionId is not NULL
+        IF @sectionId IS NOT NULL AND @orderNumber IS NOT NULL AND EXISTS (
             SELECT 1 
             FROM Quizzes 
             WHERE SectionId = @sectionId 
@@ -39,4 +39,4 @@ BEGIN
         
         RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
-END; 
+END;

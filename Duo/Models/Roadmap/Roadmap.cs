@@ -6,12 +6,20 @@ namespace Duo.Models.Roadmap;
 
 public class Roadmap
 {
-    public required int Id { get; set; }
-    public required string Name { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
     public List<Section> Sections { get; set; }
 
     public Roadmap()
     {
+        Sections = new List<Section>();
+        Name = string.Empty;
+    }
+
+    public Roadmap(int id, string name)
+    {
+        Id = id;
+        Name = name;
         Sections = new List<Section>();
     }
 

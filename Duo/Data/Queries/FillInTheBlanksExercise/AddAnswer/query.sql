@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE sp_AddFillInTheBlanksAnswer
+CREATE OR ALTER PROCEDURE sp_AddFillInTheBlankAnswer
     @exerciseId INT,
     @correctAnswer VARCHAR(100)
 AS
@@ -8,15 +8,15 @@ BEGIN
         IF NOT EXISTS (
             SELECT 1 
             FROM Exercises e
-            JOIN FillInTheBlanksExercises fbe ON e.Id = fbe.ExerciseId
+            JOIN FillInTheBlankExercises fbe ON e.Id = fbe.ExerciseId
             WHERE e.Id = @exerciseId
         )
         BEGIN
-            RAISEERROR('Invalid exercise ID or not a Fill in the Blanks exercise', 16, 1) WITH NOWAIT;
+            RAISERROR ('Invalid exercise ID or not a Fill in the Blank exercise', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the answer
-        INSERT INTO FillInTheBlanksAnswers (ExerciseId, CorrectAnswer)
+        INSERT INTO FillInTheBlankAnswers (ExerciseId, CorrectAnswer)
         VALUES (@exerciseId, @correctAnswer);
     END TRY
     BEGIN CATCH

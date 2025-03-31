@@ -2,7 +2,7 @@ CREATE OR ALTER PROCEDURE sp_UpdateSection
     @sectionId INT,
     @subjectId INT,
     @title VARCHAR(255),
-    @description TEXT,
+    @description VARCHAR(500),
     @roadmapId INT,
     @orderNumber INT
 AS

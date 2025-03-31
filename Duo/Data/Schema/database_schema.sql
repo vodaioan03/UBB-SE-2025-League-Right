@@ -5,8 +5,9 @@ drop table if exists QuizExercises;
 drop table if exists Quizzes;
 drop table if exists AssociationPairs;
 drop table if exists AssociationExercises;
-drop table if exists FillInTheBlanksAnswers;
-drop table if exists FillInTheBlanksExercises;
+drop table if exists FillInTheBlankAnswers;
+drop table if exists FillInTheBlankExercises;
+drop table if exists FlashcardExercises;
 drop table if exists MultipleChoiceOptions;
 drop table if exists MultipleChoiceExercises;
 drop table if exists Exercises;
@@ -46,7 +47,7 @@ CREATE TABLE Sections (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     SubjectId INT NOT NULL,
     Title VARCHAR(255) NOT NULL,
-    Description TEXT,
+    Description VARCHAR(500),
     RoadmapId INT NOT NULL,
     OrderNumber INT NOT NULL,
     FOREIGN KEY (RoadmapId) REFERENCES Roadmaps(Id),
@@ -56,7 +57,7 @@ CREATE TABLE Sections (
 -- Create Exercises table (base table for exercise types)
 CREATE TABLE Exercises (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Type VARCHAR(50) NOT NULL, -- 'MultipleChoice', 'FillInTheBlanks', 'Association', 'Flashcard'
+    Type VARCHAR(50) NOT NULL, -- 'MultipleChoice', 'FillInTheBlank', 'Association', 'Flashcard'
     DifficultyId INT NOT NULL,
     Question VARCHAR(500) NOT NULL,
     FOREIGN KEY (DifficultyId) REFERENCES Difficulties(Id)
@@ -77,18 +78,18 @@ CREATE TABLE MultipleChoiceOptions (
     FOREIGN KEY (ExerciseId) REFERENCES MultipleChoiceExercises(ExerciseId) ON DELETE CASCADE
 );
 
--- Create FillInTheBlanksExercises table
-CREATE TABLE FillInTheBlanksExercises (
+-- Create FillInTheBlankExercises table
+CREATE TABLE FillInTheBlankExercises (
     ExerciseId INT PRIMARY KEY,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 
--- Create FillInTheBlanksAnswers table
-CREATE TABLE FillInTheBlanksAnswers (
+-- Create FillInTheBlankAnswers table
+CREATE TABLE FillInTheBlankAnswers (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     ExerciseId INT NOT NULL,
     CorrectAnswer VARCHAR(100) NOT NULL,
-    FOREIGN KEY (ExerciseId) REFERENCES FillInTheBlanksExercises(ExerciseId) ON DELETE CASCADE,
+    FOREIGN KEY (ExerciseId) REFERENCES FillInTheBlankExercises(ExerciseId) ON DELETE CASCADE,
 );
 
 -- Create AssociationExercises table

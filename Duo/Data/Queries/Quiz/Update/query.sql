@@ -1,7 +1,7 @@
 CREATE OR ALTER PROCEDURE sp_UpdateQuiz
     @quizId INT,
-    @sectionId INT,
-    @orderNumber INT
+    @sectionId INT = NULL,
+    @orderNumber INT = NULL
 AS
 BEGIN
     BEGIN TRY
@@ -12,23 +12,21 @@ BEGIN
         END
 
         -- Check if section exists
-        IF NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
+        IF @sectionId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
         BEGIN
             RAISERROR ('Section not found', 16, 1) WITH NOWAIT;
         END
 
         -- Check if order number is unique within the section
-        IF EXISTS (
+        IF @sectionId IS NOT NULL AND @orderNumber IS NOT NULL AND EXISTS (
             SELECT 1 
             FROM Quizzes 
             WHERE SectionId = @sectionId 
-            AND OrderNumber = @orderNumber 
-            AND Id != @quizId
+            AND OrderNumber = @orderNumber
         )
         BEGIN
             RAISERROR ('Order number already exists in this section', 16, 1) WITH NOWAIT;
         END
-
         -- Update the quiz
         UPDATE Quizzes
         SET 
