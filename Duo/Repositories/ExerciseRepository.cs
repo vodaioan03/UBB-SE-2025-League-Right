@@ -20,6 +20,52 @@ public class ExerciseRepository
         _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
+        private List<Exercise> MergeExercises(List<Exercise> exercises)
+    {
+        var mergedExercises = new List<Exercise>();
+        var exerciseMap = new Dictionary<int, Exercise>();
+
+        foreach (var exercise in exercises)
+        {
+            if (!exerciseMap.TryGetValue(exercise.Id, out var existingExercise))
+            {
+                // First occurrence of this exercise ID
+                exerciseMap[exercise.Id] = exercise switch
+                {
+                    MultipleChoiceExercise mc => new MultipleChoiceExercise(mc.Id, mc.Question, mc.Difficulty, new List<MultipleChoiceAnswerModel>(mc.Choices)),
+                    FillInTheBlankExercise fb => new FillInTheBlankExercise(fb.Id, fb.Question, fb.Difficulty, new List<string>(fb.PossibleCorrectAnswers)),
+                    AssociationExercise assoc => new AssociationExercise(assoc.Id, assoc.Question, assoc.Difficulty, new List<string>(assoc.FirstAnswersList), new List<string>(assoc.SecondAnswersList)),
+                    FlashcardExercise flash => new FlashcardExercise(flash.Id, flash.Question, flash.Answer, flash.Difficulty),
+                    _ => exercise // Keep other types unchanged
+                };
+            }
+            else
+            {
+                // Merge the data
+                switch (existingExercise)
+                {
+                    case MultipleChoiceExercise existingMC when exercise is MultipleChoiceExercise newMC:
+                        existingMC.Choices.AddRange(newMC.Choices);
+                        break;
+
+                    case FillInTheBlankExercise existingFB when exercise is FillInTheBlankExercise newFB:
+                        existingFB.PossibleCorrectAnswers.AddRange(newFB.PossibleCorrectAnswers);
+                        break;
+
+                    case AssociationExercise existingAssoc when exercise is AssociationExercise newAssoc:
+                        existingAssoc.FirstAnswersList.AddRange(newAssoc.FirstAnswersList);
+                        existingAssoc.SecondAnswersList.AddRange(newAssoc.SecondAnswersList);
+                        break;
+                }
+            }
+        }
+
+        // Add the merged multiple-choice exercises to the final list
+        mergedExercises.AddRange(exerciseMap.Values);
+
+        return mergedExercises;
+    }
+
     public async Task<IEnumerable<Exercise>> GetAllExercisesAsync()
     {
         try
@@ -53,7 +99,7 @@ public class ExerciseRepository
                 exercises.Add(exercise);
             }
             
-            return exercises;
+            return MergeExercises(exercises);
         }
         catch (SqlException ex)
         {
@@ -69,7 +115,8 @@ public class ExerciseRepository
         }
 
         try
-        {
+        {   
+            var exercises = new List<Exercise>();
             using var connection = await _databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
             
@@ -80,13 +127,13 @@ public class ExerciseRepository
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
             
-            if (await reader.ReadAsync())
+            while (await reader.ReadAsync())
             {
                 var type = reader.GetString(reader.GetOrdinal("Type"));
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
-                return type switch
+                Exercise exercise = type switch
                 {
                     "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
                     "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
@@ -94,9 +141,11 @@ public class ExerciseRepository
                     "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
                     _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
                 };
+
+                exercises.Add(exercise);
             }
             
-            throw new KeyNotFoundException($"Exercise with ID {id} not found.");
+            return MergeExercises(exercises)[0];
         }
         catch (SqlException ex)
         {
@@ -143,7 +192,7 @@ public class ExerciseRepository
                 exercises.Add(exercise);
             }
             
-            return exercises;
+            return MergeExercises(exercises);
         }
         catch (SqlException ex)
         {
@@ -190,7 +239,7 @@ public class ExerciseRepository
                 exercises.Add(exercise);
             }
             
-            return exercises;
+            return MergeExercises(exercises);
         }
         catch (SqlException ex)
         {
