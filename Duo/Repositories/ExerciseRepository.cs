@@ -276,7 +276,7 @@ public class ExerciseRepository
                     foreach (var answer in fbExercise.PossibleCorrectAnswers)
                     {
                         using var answerCommand = connection.CreateCommand();
-                        answerCommand.CommandText = "sp_AddFillInTheBlanksAnswer";
+                        answerCommand.CommandText = "sp_AddFillInTheBlankAnswer";
                         answerCommand.CommandType = System.Data.CommandType.StoredProcedure;
                         answerCommand.Parameters.AddWithValue("@exerciseId", newId);
                         answerCommand.Parameters.AddWithValue("@correctAnswer", answer);
@@ -341,7 +341,7 @@ public class ExerciseRepository
         using var connection = await _databaseConnection.CreateConnectionAsync();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "sp_GetMultipleChoiceExercise";
+        command.CommandText = "sp_GetMultipleChoiceExerciseById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@exerciseId", id);
         
@@ -374,7 +374,7 @@ public class ExerciseRepository
         using var connection = await _databaseConnection.CreateConnectionAsync();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "sp_GetFillInTheBlankExercise";
+        command.CommandText = "sp_GetFillInTheBlankExerciseById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@exerciseId", id);
         
@@ -384,7 +384,7 @@ public class ExerciseRepository
         var answers = new List<string>();
         while (await reader.ReadAsync())
         {
-            answers.Add(reader.GetString(reader.GetOrdinal("Answer")));
+            answers.Add(reader.GetString(reader.GetOrdinal("CorrectAnswer")));
         }
         
         return new FillInTheBlankExercise(id, question, difficulty, answers);
@@ -395,7 +395,7 @@ public class ExerciseRepository
         using var connection = await _databaseConnection.CreateConnectionAsync();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "sp_GetAssociationExercise";
+        command.CommandText = "sp_GetAssociationExerciseById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@exerciseId", id);
         
@@ -428,7 +428,6 @@ public class ExerciseRepository
         if (await reader.ReadAsync())
         {
             var answer = reader.GetString(reader.GetOrdinal("Answer"));
-            var timeInSeconds = reader.GetInt32(reader.GetOrdinal("TimeInSeconds"));
             
             return new FlashcardExercise(id, question, answer, difficulty);
         }
