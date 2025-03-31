@@ -68,7 +68,8 @@ namespace Duo.Views.Pages
 
         private void CreateQuiz_Click(object sender, RoutedEventArgs e)
         {
-            QuizModalOverlay.Visibility = Visibility.Visible;
+            //QuizModalOverlay.Visibility = Visibility.Visible;
+            Frame.Navigate(typeof(CreateQuizPage));
         }
 
         private async void CreateQuizModal_QuizCreated(object sender, QuizCreatedEventArgs e)
@@ -91,6 +92,11 @@ namespace Duo.Views.Pages
         public void OpenManageExercisesPage_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(ManageExercisesPage));
+        }
+
+        public void OpenManageQuizesPage_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ManageQuizesPage));
         }
 
     }

@@ -10,7 +10,7 @@ BEGIN
             WHERE Id = @optionId
         )
         BEGIN
-            THROW 50001, 'Multiple Choice option not found', 1;
+            RAISERROR('Option not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete the option
@@ -18,6 +18,13 @@ BEGIN
         WHERE Id = @optionId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END; 

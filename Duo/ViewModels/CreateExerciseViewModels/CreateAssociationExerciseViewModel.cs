@@ -41,7 +41,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         public override Exercise CreateExercise(string question, Difficulty difficulty)
         {
-            Exercise newExercise = new Models.Exercises.AssociationExercise(0,question,difficulty, generateAnswerList(LeftSideAnswers), generateAnswerList(RightSideAnswers)); 
+            Exercise newExercise = new Models.Exercises.AssociationExercise(0, question, difficulty, generateAnswerList(LeftSideAnswers), generateAnswerList(RightSideAnswers));
             return newExercise;
         }
 

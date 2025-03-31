@@ -66,7 +66,7 @@ public class UserRepository
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@Username", user.Username);
         
-        var newIdParam = new SqlParameter("@Id", System.Data.SqlDbType.Int)
+        var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
         {
             Direction = System.Data.ParameterDirection.Output
         };

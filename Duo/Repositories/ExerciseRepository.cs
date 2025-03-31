@@ -1,9 +1,11 @@
 ﻿using Duo.Data;
 using Duo.Models;
 using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,10 +43,10 @@ public class ExerciseRepository
 
                 Exercise exercise = type switch
                 {
-                    "MultipleChoice" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlanks" => await GetFillInTheBlanksExerciseAsync(id, question, difficulty),
-                    "Association" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "Flashcard" => await GetFlashcardExerciseAsync(id, question, difficulty),
+                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
+                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
+                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
+                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
                     _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
                 };
 
@@ -86,10 +88,10 @@ public class ExerciseRepository
 
                 return type switch
                 {
-                    "MultipleChoice" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlanks" => await GetFillInTheBlanksExerciseAsync(id, question, difficulty),
-                    "Association" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "Flashcard" => await GetFlashcardExerciseAsync(id, question, difficulty),
+                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
+                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
+                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
+                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
                     _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
                 };
             }
@@ -131,10 +133,10 @@ public class ExerciseRepository
 
                 Exercise exercise = type switch
                 {
-                    "MultipleChoice" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlanks" => await GetFillInTheBlanksExerciseAsync(id, question, difficulty),
-                    "Association" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "Flashcard" => await GetFlashcardExerciseAsync(id, question, difficulty),
+                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
+                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
+                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
+                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
                     _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
                 };
 
@@ -178,10 +180,10 @@ public class ExerciseRepository
 
                 Exercise exercise = type switch
                 {
-                    "MultipleChoice" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlanks" => await GetFillInTheBlanksExerciseAsync(id, question, difficulty),
-                    "Association" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "Flashcard" => await GetFlashcardExerciseAsync(id, question, difficulty),
+                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
+                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
+                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
+                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
                     _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
                 };
 
@@ -203,11 +205,6 @@ public class ExerciseRepository
             throw new ArgumentNullException(nameof(exercise));
         }
 
-        if (string.IsNullOrWhiteSpace(exercise.Question))
-        {
-            throw new ArgumentException("Exercise question cannot be empty.", nameof(exercise));
-        }
-
         try
         {
             using var connection = await _databaseConnection.CreateConnectionAsync();
@@ -216,14 +213,16 @@ public class ExerciseRepository
             command.CommandText = "sp_AddExercise";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@type", exercise.GetType().Name);
+            Debug.WriteLine(exercise.GetType().Name);
             command.Parameters.AddWithValue("@difficultyId", (int)exercise.Difficulty);
             
-            command.Parameters.AddWithValue("@question", DBNull.Value);
+            command.Parameters.AddWithValue("@question", exercise.Question);
+            if (string.IsNullOrWhiteSpace(exercise.Question))
+            {
+                throw new ArgumentException("Exercise question cannot be empty.", nameof(exercise));
+            }
             command.Parameters.AddWithValue("@correctAnswer", DBNull.Value);
-            command.Parameters.AddWithValue("@sentence", DBNull.Value);
-            command.Parameters.AddWithValue("@flashcardSentence", DBNull.Value);
             command.Parameters.AddWithValue("@flashcardAnswer", DBNull.Value);
-            command.Parameters.AddWithValue("@timeInSeconds", DBNull.Value);
             
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
@@ -239,21 +238,17 @@ public class ExerciseRepository
                     {
                         throw new ArgumentException("Multiple choice exercise must have one correct answer.");
                     }
-                    command.Parameters["@question"].Value = mcExercise.Question;
                     command.Parameters["@correctAnswer"].Value = correctAnswer;
                     break;
 
                 case FillInTheBlankExercise fbExercise:
-                    command.Parameters["@sentence"].Value = fbExercise.Question;
                     break;
 
-                case AssociationExercise:
+                case AssociationExercise assocExercise:
                     break;
 
                 case FlashcardExercise flashcardExercise:
-                    command.Parameters["@flashcardSentence"].Value = flashcardExercise.Sentence;
                     command.Parameters["@flashcardAnswer"].Value = flashcardExercise.Answer;
-                    command.Parameters["@timeInSeconds"].Value = flashcardExercise.TimeInSeconds;
                     break;
 
                 default:
@@ -263,7 +258,6 @@ public class ExerciseRepository
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
             var newId = (int)newIdParam.Value;
-
             switch (exercise)
             {
                 case MultipleChoiceExercise mcExercise:
@@ -282,7 +276,7 @@ public class ExerciseRepository
                     foreach (var answer in fbExercise.PossibleCorrectAnswers)
                     {
                         using var answerCommand = connection.CreateCommand();
-                        answerCommand.CommandText = "sp_AddFillInTheBlanksAnswer";
+                        answerCommand.CommandText = "sp_AddFillInTheBlankAnswer";
                         answerCommand.CommandType = System.Data.CommandType.StoredProcedure;
                         answerCommand.Parameters.AddWithValue("@exerciseId", newId);
                         answerCommand.Parameters.AddWithValue("@correctAnswer", answer);
@@ -308,6 +302,7 @@ public class ExerciseRepository
         }
         catch (SqlException ex)
         {
+            Debug.WriteLine(ex.Message);
             throw new Exception($"Database error while creating exercise: {ex.Message}", ex);
         }
     }
@@ -346,7 +341,7 @@ public class ExerciseRepository
         using var connection = await _databaseConnection.CreateConnectionAsync();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "sp_GetMultipleChoiceExercise";
+        command.CommandText = "sp_GetMultipleChoiceExerciseById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@exerciseId", id);
         
@@ -374,12 +369,12 @@ public class ExerciseRepository
         return new MultipleChoiceExercise(id, question, difficulty, choices);
     }
 
-    private async Task<FillInTheBlankExercise> GetFillInTheBlanksExerciseAsync(int id, string question, Difficulty difficulty)
+    private async Task<FillInTheBlankExercise> GetFillInTheBlankExerciseAsync(int id, string question, Difficulty difficulty)
     {
         using var connection = await _databaseConnection.CreateConnectionAsync();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "sp_GetFillInTheBlanksExercise";
+        command.CommandText = "sp_GetFillInTheBlankExerciseById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@exerciseId", id);
         
@@ -389,7 +384,7 @@ public class ExerciseRepository
         var answers = new List<string>();
         while (await reader.ReadAsync())
         {
-            answers.Add(reader.GetString(reader.GetOrdinal("Answer")));
+            answers.Add(reader.GetString(reader.GetOrdinal("CorrectAnswer")));
         }
         
         return new FillInTheBlankExercise(id, question, difficulty, answers);
@@ -400,7 +395,7 @@ public class ExerciseRepository
         using var connection = await _databaseConnection.CreateConnectionAsync();
         using var command = connection.CreateCommand();
         
-        command.CommandText = "sp_GetAssociationExercise";
+        command.CommandText = "sp_GetAssociationExerciseById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@exerciseId", id);
         
@@ -432,11 +427,9 @@ public class ExerciseRepository
         
         if (await reader.ReadAsync())
         {
-            var sentence = reader.GetString(reader.GetOrdinal("Sentence"));
             var answer = reader.GetString(reader.GetOrdinal("Answer"));
-            var timeInSeconds = reader.GetInt32(reader.GetOrdinal("TimeInSeconds"));
             
-            return new FlashcardExercise(id, sentence, answer, timeInSeconds, difficulty);
+            return new FlashcardExercise(id, question, answer, difficulty);
         }
         
         throw new KeyNotFoundException($"Flashcard exercise with ID {id} not found.");

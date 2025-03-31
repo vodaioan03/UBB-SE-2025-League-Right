@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
 using System.Windows.Input;
+using Duo.Views.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -93,6 +94,12 @@ namespace Duo.Views.Components
             {
                 Debug.WriteLine($"Quiz with ID {button.QuizId} clicked!");
 
+                Frame parentFrame = FindParent<Frame>(this);
+                if (parentFrame != null)
+                {
+                    parentFrame.Navigate(typeof(QuizPage), button.QuizId);
+                }
+
                 // You can perform any additional logic here based on the button that was clicked
             }
         }
@@ -103,8 +110,25 @@ namespace Duo.Views.Components
             {
                 Debug.WriteLine($"Exam with ID {button.QuizId} clicked!");
 
+                Frame parentFrame = FindParent<Frame>(this);
+                if (parentFrame != null)
+                {
+                    parentFrame.Navigate(typeof(ExamPage), button.QuizId);
+                }
                 // You can perform any additional logic here based on the button that was clicked
             }
+        }
+
+        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(child);
+            while (parent != null)
+            {
+                if (parent is T tParent)
+                    return tParent;
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+            return null;
         }
 
     }

@@ -150,10 +150,6 @@ public class RoadmapRepository
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new InvalidOperationException($"A roadmap with the name '{roadmap.Name}' already exists.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while adding roadmap '{roadmap.Name}': {ex.Message}", ex);
@@ -178,10 +174,6 @@ public class RoadmapRepository
             
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
-        }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Roadmap with ID {roadmapId} not found.", ex);
         }
         catch (SqlException ex)
         {

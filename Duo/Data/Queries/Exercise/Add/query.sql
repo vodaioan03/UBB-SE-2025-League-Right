@@ -1,89 +1,88 @@
 CREATE OR ALTER PROCEDURE sp_AddExercise
     @type VARCHAR(50),
     @difficultyId INT,
+    @question VARCHAR(500),
     -- Multiple Choice parameters
-    @question VARCHAR(500) = NULL,
     @correctAnswer VARCHAR(500) = NULL,
-    -- Fill in the Blanks parameters
-    @sentence VARCHAR(500) = NULL,
+    -- Fill in the Blank parameters
+    -- Association parameters
     -- Flashcard parameters
-    @flashcardSentence VARCHAR(500) = NULL,
     @flashcardAnswer VARCHAR(100) = NULL,
-    @timeInSeconds INT = NULL,
     -- Output parameter
     @newId INT OUTPUT
 AS
 BEGIN
     BEGIN TRY
         -- Validate exercise type
-        IF @type NOT IN ('MultipleChoice', 'FillInTheBlanks', 'Association', 'Flashcard')
+        IF @type NOT IN ('MultipleChoiceExercise', 'FillInTheBlankExercise', 'AssociationExercise', 'FlashcardExercise')
         BEGIN
-            THROW 50001, 'Invalid exercise type', 1;
+            RAISERROR ('Invalid exercise type', 16, 1) WITH NOWAIT;
         END
 
         -- Check if difficulty exists
         IF NOT EXISTS (SELECT 1 FROM Difficulties WHERE Id = @difficultyId)
         BEGIN
-            THROW 50002, 'Difficulty not found', 1;
+            RAISERROR ('Difficulty not found', 16, 1) WITH NOWAIT;
+        END
+
+        -- Validate question is not null
+        IF @question IS NULL
+        BEGIN
+            RAISERROR ('Question is required for all exercises', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the base exercise
-        INSERT INTO Exercises (Type, DifficultyId)
-        VALUES (@type, @difficultyId);
+        INSERT INTO Exercises (Type, DifficultyId, Question)
+        VALUES (@type, @difficultyId, @question);
 
         -- Get the new ID
         SET @newId = SCOPE_IDENTITY();
 
         -- Handle specific exercise type creation
-        IF @type = 'MultipleChoice'
+        IF @type = 'MultipleChoiceExercise'
         BEGIN
             -- Validate required parameters
-            IF @question IS NULL OR @correctAnswer IS NULL
+            IF @correctAnswer IS NULL
             BEGIN
-                THROW 50003, 'Question and correct answer are required for MultipleChoice exercises', 1;
+                RAISERROR ('Correct answer is required for MultipleChoice exercises', 16, 1) WITH NOWAIT;
             END
 
             -- Insert the multiple choice exercise
-            INSERT INTO MultipleChoiceExercises (ExerciseId, Question, CorrectAnswer)
-            VALUES (@newId, @question, @correctAnswer);
+            INSERT INTO MultipleChoiceExercises (ExerciseId, CorrectAnswer)
+            VALUES (@newId, @correctAnswer);
         END
-        ELSE IF @type = 'FillInTheBlanks'
+        ELSE IF @type = 'FillInTheBlankExercise'
         BEGIN
-            -- Validate required parameters
-            IF @sentence IS NULL
-            BEGIN
-                THROW 50004, 'Sentence is required for FillInTheBlanks exercises', 1;
-            END
-
-            -- Insert the fill in the blanks exercise
-            INSERT INTO FillInTheBlanksExercises (ExerciseId, Sentence)
-            VALUES (@newId, @sentence);
+            -- Insert the fill in the Blank exercise
+            INSERT INTO FillInTheBlankExercises (ExerciseId)
+            VALUES (@newId);
         END
-        ELSE IF @type = 'Association'
+        ELSE IF @type = 'AssociationExercise'
         BEGIN
-            -- Insert the association exercise (no additional data needed)
+            -- Insert the association exercise
             INSERT INTO AssociationExercises (ExerciseId)
             VALUES (@newId);
         END
-        ELSE IF @type = 'Flashcard'
+        ELSE IF @type = 'FlashcardExercise'
         BEGIN
             -- Validate required parameters
-            IF @flashcardSentence IS NULL OR @flashcardAnswer IS NULL OR @timeInSeconds IS NULL
+            IF @flashcardAnswer IS NULL
             BEGIN
-                THROW 50005, 'Sentence, answer and time are required for Flashcard exercises', 1;
+                RAISERROR ('Answer is required for Flashcard exercises', 16, 1) WITH NOWAIT;
             END
 
             -- Insert the flashcard exercise
-            INSERT INTO FlashcardExercises (ExerciseId, Sentence, Answer, TimeInSeconds)
-            VALUES (@newId, @flashcardSentence, @flashcardAnswer, @timeInSeconds);
+            INSERT INTO FlashcardExercises (ExerciseId, Answer)
+            VALUES (@newId, @flashcardAnswer);
         END
     END TRY
     BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
         -- If an error occurred, rollback the base exercise creation
         IF @newId IS NOT NULL
         BEGIN
             DELETE FROM Exercises WHERE Id = @newId;
         END
-        THROW;
+        RAISERROR (@ErrorMessage, 16, 1) WITH NOWAIT;
     END CATCH
 END; 

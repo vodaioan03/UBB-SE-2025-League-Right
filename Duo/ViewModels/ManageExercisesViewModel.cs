@@ -33,7 +33,7 @@ namespace Duo.ViewModels
             DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(DeleteExercise);
 
             initializeViewModel();
-            //LoadExercisesAsync();
+            LoadExercisesAsync();
         }
 
         public ICommand DeleteExerciseCommand { get; }
@@ -42,35 +42,32 @@ namespace Duo.ViewModels
         // Method to load exercises asynchronously
         private async void LoadExercisesAsync()
         {
+            Exercises.Clear(); // Clear the ObservableCollection
             var exercises = await _exerciseService.GetAllExercises();
             foreach (var exercise in exercises)
             {
                 Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                Exercises.Add(exercise);
             }
         }
 
         public void initializeViewModel()
         {
-            Exercises.Add(new AssociationExercise(
-                id: 1,
-                question: "Match the capitals to their countries.",
-                difficulty: Difficulty.Easy,
-                firstAnswers: new List<string> { "Paris", "London", "Berlin" },
-                secondAnswers: new List<string> { "France", "England", "Germany" }
-            ));
-            Exercises.Add(new AssociationExercise(
-                id: 1,
-                question: "Match the capitals to their countries.",
-                difficulty: Difficulty.Easy,
-                firstAnswers: new List<string> { "Paris", "London", "Berlin" },
-                secondAnswers: new List<string> { "France", "England", "Germany" }
-            ));
+            
         }
 
-        public void DeleteExercise(Exercise exercise)
+        public async void DeleteExercise(Exercise exercise)
         {
             Debug.WriteLine(exercise);
-            //_exerciseService.DeleteExercise(exercise.Id);
+            try
+            {
+                await _exerciseService.DeleteExercise(exercise.Id);
+                LoadExercisesAsync();
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
 
         }
 

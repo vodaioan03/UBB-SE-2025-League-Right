@@ -24,6 +24,7 @@ namespace Duo.Views.Components
 {
     public sealed partial class AssociationExercise : UserControl
     {
+        public event EventHandler<AssociationExerciseEventArgs> OnSendClicked;
         public event RoutedEventHandler Click;
         private Button _selectedLeftButton;
         private Button _selectedRightButton;
@@ -146,13 +147,24 @@ namespace Duo.Views.Components
 
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            List<Tuple<string, string>> contentPairs = pairs
-                .Select(mapping => new Tuple<string, string>(
-                    mapping.Item1.Content.ToString(),
-                    mapping.Item2.Content.ToString()))
-                .ToList(); 
-            
-            // IMPLEMENT SEND RESULTS
+            List<(string, string)> contentPairs = pairs
+                .Select(mapping => (
+                mapping.Item1.Content.ToString(),
+                mapping.Item2.Content.ToString()
+                ))
+                .ToList();
+
+            OnSendClicked?.Invoke(this, new AssociationExerciseEventArgs(contentPairs));
+        }
+
+        public class AssociationExerciseEventArgs : EventArgs
+        {
+            public List<(string, string)> ContentPairs { get; }
+
+            public AssociationExerciseEventArgs(List<(string, string)> contentPairs)
+            {
+                ContentPairs = contentPairs;
+            }
         }
     }
 }

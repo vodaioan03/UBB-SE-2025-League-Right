@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.CreateExerciseComponents.CreateFillInTheBlankExercise"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components.CreateExerciseComponents"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:createexerciseviewmodels="using:Duo.ViewModels.CreateExerciseViewModels" 
+    d:DataContext="{d:DesignInstance Type=createexerciseviewmodels:CreateFillInTheBlankExerciseViewModel}"
+    mc:Ignorable="d">
+
+    <Grid 
+        DataContext="{Binding CreateFillInTheBlankExerciseViewModel}">
+        <StackPanel  Grid.Column="1" HorizontalAlignment="Left">
+            <TextBlock Margin="0,0,16,0">Answers from the question:</TextBlock>
+            <ListView  SelectionMode="None"  Padding="0"
+              ItemsSource="{Binding Answers, Mode=TwoWay}">
+                <ListView.ItemTemplate >
+                    <DataTemplate>
+                        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"                            
+                             HorizontalAlignment="Left"
+                            BorderThickness="0"></TextBox>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button   
+                x:Name="AddNewInputButton"
+                Content="Add new input"
+                Command="{Binding AddNewAnswerCommand}"
+                Padding="16,8,16,8"
+                Margin="8,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

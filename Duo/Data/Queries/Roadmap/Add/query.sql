@@ -7,7 +7,7 @@ BEGIN
         -- Check if name already exists
         IF EXISTS (SELECT 1 FROM Roadmaps WHERE Name = @name)
         BEGIN
-            THROW 50001, 'Roadmap with this name already exists', 1;
+            RAISERROR ('Roadmap with this name already exists', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the new roadmap
@@ -18,6 +18,13 @@ BEGIN
         SET @newId = SCOPE_IDENTITY();
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

@@ -6,7 +6,7 @@ BEGIN
         -- Check if user exists
         IF NOT EXISTS (SELECT 1 FROM Users WHERE Id = @userId)
         BEGIN
-            THROW 50001, 'User not found', 1;
+            RAISERROR ('User not found', 16, 1) WITH NOWAIT;
         END
 
         -- Get user's last completed section and quiz
@@ -14,11 +14,17 @@ BEGIN
             u.Id AS UserId,
             u.Username,
             u.LastCompletedSectionId,
-            u.LastCompletedQuizId,
+            u.LastCompletedQuizId
         FROM Users u
         WHERE u.Id = @userId;
     END TRY
     BEGIN CATCH
-        THROW;
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 
