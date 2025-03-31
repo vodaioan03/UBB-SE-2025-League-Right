@@ -128,20 +128,23 @@ namespace Duo.Views.Pages
 
         }
 
-        private void ShowMessage(bool valid)
+        private async void ShowMessage(FrameworkElement parentElement, bool valid)
         {
+
+            var feedbackPopup = new AnswerFeedbackPopup();
+            feedbackPopup.XamlRoot = parentElement.XamlRoot;
+
+
             if (valid)
             {
-                MessageTextBlock.Foreground = CorrectBrush;
-                MessageTextBlock.Text = "Correct!";
-                MessageTextBlock.Visibility = Visibility.Visible;
+                feedbackPopup.ShowCorrectAnswer(ViewModel.GetCurrentExerciseCorrectAnswer());
             }
             else
             {
-                MessageTextBlock.Foreground = IncorrectBrush;
-                MessageTextBlock.Text = "Wrong answer.";
-                MessageTextBlock.Visibility = Visibility.Visible;
+                feedbackPopup.ShowWrongAnswer(ViewModel.GetCurrentExerciseCorrectAnswer());
             }
+
+            await feedbackPopup.ShowAsync();
         }
 
         private void DoNotShowMessage()
@@ -155,21 +158,21 @@ namespace Duo.Views.Pages
 
             var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
 
-            ShowMessage(valid);
+            ShowMessage((FrameworkElement)sender, valid);
         }
         private void MultipleChoiceControl_OnSendClicked(object sender, MultipleChoiceExerciseEventArgs e)
         {
             var contentPairs = e.ContentPairs;
 
             var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
-            ShowMessage(valid);
+            ShowMessage((FrameworkElement)sender, valid);
         }
         private void FillInTheBlanksControl_OnSendClicked(object sender, FillInTheBlanksExerciseEventArgs e)
         {
             var contentPairs = e.ContentPairs;
 
             var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
-            ShowMessage(valid);
+            ShowMessage((FrameworkElement)sender, valid);
         }
         private void NextQuiz_Click(object sender, RoutedEventArgs e)
         {

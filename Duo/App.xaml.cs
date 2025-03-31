@@ -63,6 +63,7 @@ namespace Duo
             services.AddSingleton<ExerciseRepository>();
             services.AddSingleton<ExerciseService>();
 
+            services.AddSingleton<ExamRepository>();
             services.AddSingleton<QuizRepository>();
             services.AddSingleton<QuizService>();
 

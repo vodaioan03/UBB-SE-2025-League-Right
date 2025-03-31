@@ -45,7 +45,6 @@ namespace Duo.Views.Pages
                     1, 
                     "Geography",
                     "The tallest mountain in the world is ___ with a height of 8,848 meters.", 
-                    "Mount Everest", 
                     Models.Difficulty.Easy),
                 
                 // Original examples
@@ -53,35 +52,30 @@ namespace Duo.Views.Pages
                     2, 
                     "Mountains",
                     "What is Earth's highest mountain above sea level?", 
-                    "Mount Everest", 
                     Models.Difficulty.Normal),
                 
                 new Models.Exercises.FlashcardExercise(
                     3, 
                     "Capitals",
                     "What is the capital city of France?", 
-                    "Paris", 
                     Models.Difficulty.Easy),
                 
                 new Models.Exercises.FlashcardExercise(
                     4, 
                     "Rivers",
                     "What is the longest river in the world?", 
-                    "Nile River", 
                     Models.Difficulty.Hard),
                 
                 new Models.Exercises.FlashcardExercise(
                     5, 
                     "Oceans",
                     "What is the largest ocean on Earth?", 
-                    "Pacific Ocean", 
                     Models.Difficulty.Normal),
                 
                 new Models.Exercises.FlashcardExercise(
                     6, 
                     "Planets",
                     "Which planet is known as the Red Planet?", 
-                    "Mars", 
                     Models.Difficulty.Easy)
             };
 

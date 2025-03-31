@@ -1,10 +1,12 @@
-﻿using Duo.Models.Exercises;
+﻿using Azure;
+using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
 using Duo.Services;
 using Duo.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Duo.ViewModels
@@ -228,18 +230,17 @@ namespace Duo.ViewModels
             if (ValidatedCurrent is not null)
                 return ValidatedCurrent;
 
-            var currentExercise = Exercises[CurrentExerciseIndex];
             bool isValid = false;
 
-            if (currentExercise is AssociationExercise associationExercise)
+            if (CurrentExercise is AssociationExercise associationExercise)
             {
                 isValid = associationExercise.ValidateAnswer((List<(string, string)>)responses);
             }
-            else if (currentExercise is FillInTheBlankExercise fillInTheBlanksExercise)
+            else if (CurrentExercise is FillInTheBlankExercise fillInTheBlanksExercise)
             {
                 isValid = fillInTheBlanksExercise.ValidateAnswer((List<string>)responses);
             }
-            else if (currentExercise is MultipleChoiceExercise multipleChoiceExercise)
+            else if (CurrentExercise is MultipleChoiceExercise multipleChoiceExercise)
             {
                 isValid = multipleChoiceExercise.ValidateAnswer((List<string>)responses);
             }
@@ -274,6 +275,30 @@ namespace Duo.ViewModels
         public float GetPercentageCorrect()
         {
             return CurrentQuiz.ExerciseList.Count / CurrentQuiz.GetNumberOfCorrectAnswers();
+        }
+
+        public string GetCurrentExerciseCorrectAnswer()
+        {
+            string correctAnswers = "";
+
+            if (CurrentExercise is AssociationExercise associationExercise)
+            {
+                for (int i = 0; i < associationExercise.FirstAnswersList.Count; i++) {
+                    correctAnswers += associationExercise.FirstAnswersList[i] + " - " + associationExercise.SecondAnswersList[i] + "\n";
+                 }
+            }
+            else if (CurrentExercise is FillInTheBlankExercise fillInTheBlanksExercise)
+            {
+                foreach(var answer in fillInTheBlanksExercise.PossibleCorrectAnswers)
+                    correctAnswers += answer + "\n";
+
+            }
+            else if (CurrentExercise is MultipleChoiceExercise multipleChoiceExercise)
+            {
+                correctAnswers += multipleChoiceExercise.Choices.Select(choice => choice.IsCorrect == true).First();
+            }
+
+            return correctAnswers;
         }
     }
 }
