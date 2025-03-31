@@ -56,14 +56,6 @@
                            Margin="0,0,0,6"
                            Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
                            HorizontalAlignment="Stretch"/>  
-
-                <TextBlock x:Name="MessageTextBlock"
-                           Text=""
-                           Visibility="Collapsed"
-                           Foreground="Red"
-                           FontSize="16"
-                           Margin="10"
-                           HorizontalAlignment="Right" />
                 <components:QuizAdminButton Text="Next Exercise"
                             x:Name="NextExerciseButton"
                              Click="NextQuiz_Click"
