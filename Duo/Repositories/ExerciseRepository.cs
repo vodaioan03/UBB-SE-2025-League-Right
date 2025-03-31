@@ -175,8 +175,12 @@ public class ExerciseRepository
             
             while (await reader.ReadAsync())
             {
-                var type = reader.GetString(reader.GetOrdinal("Type"));
-                var id = reader.GetInt32(reader.GetOrdinal("Id"));
+                var type = reader.IsDBNull(reader.GetOrdinal("Type")) ? null : reader.GetString(reader.GetOrdinal("Type"));
+                if (string.IsNullOrEmpty(type))
+                {
+                    return new List<Exercise>();
+                }
+                var id = reader.GetInt32(reader.GetOrdinal("ExerciseId"));
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
@@ -222,8 +226,12 @@ public class ExerciseRepository
             
             while (await reader.ReadAsync())
             {
-                var type = reader.GetString(reader.GetOrdinal("Type"));
-                var id = reader.GetInt32(reader.GetOrdinal("Id"));
+                var type = reader.IsDBNull(reader.GetOrdinal("Type")) ? null : reader.GetString(reader.GetOrdinal("Type"));
+                if (string.IsNullOrEmpty(type))
+                {
+                    return new List<Exercise>();
+                }
+                var id = reader.GetInt32(reader.GetOrdinal("ExerciseId"));
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
