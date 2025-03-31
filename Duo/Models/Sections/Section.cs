@@ -23,6 +23,17 @@ public class Section
         Quizzes = new List<Quiz>();
     }
 
+    public Section(int id, int subjectId, string title, string description, int roadmapId, int orderNumber)
+    {
+        Id = id;
+        SubjectId = subjectId;
+        Title = title;
+        Description = description;
+        RoadmapId = roadmapId;
+        OrderNumber = orderNumber;
+        Quizzes = new List<Quiz>();
+    }
+
     public bool AddQuiz(Quiz quiz)
     {
         if (Quizzes.Count < MAX_QUIZZES)

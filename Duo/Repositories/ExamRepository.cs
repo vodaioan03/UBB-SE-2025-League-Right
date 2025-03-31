@@ -104,7 +104,7 @@ public class ExamRepository
             {
                 return new Exam(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId"))
+                    sectionId
                 );
             }
             
@@ -185,14 +185,6 @@ public class ExamRepository
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Section with ID {exam.SectionId} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50002)
-        {
-            throw new InvalidOperationException($"Section {exam.SectionId} already has an exam.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while adding exam: {ex.Message}", ex);
@@ -237,18 +229,6 @@ public class ExamRepository
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Exam with ID {exam.Id} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50002)
-        {
-            throw new KeyNotFoundException($"Section with ID {exam.SectionId} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50003)
-        {
-            throw new InvalidOperationException($"Section {exam.SectionId} already has an exam.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while updating exam: {ex.Message}", ex);
@@ -273,10 +253,6 @@ public class ExamRepository
             
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
-        }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Exam with ID {examId} not found.", ex);
         }
         catch (SqlException ex)
         {

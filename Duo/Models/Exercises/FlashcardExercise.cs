@@ -7,13 +7,6 @@ namespace Duo.Models.Exercises
         public string Type { get; } = "Flashcard";
         public int TimeInSeconds { get; }
 
-        private string _topic;
-        public string Topic
-        {
-            get => _topic;
-            set => _topic = value;
-        }
-
         private string _answer;
         public string Answer
         {
@@ -32,17 +25,16 @@ namespace Duo.Models.Exercises
         public string Sentence => Question;
 
         public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
-            : this(id, null, question, answer, difficulty)
+            : this(id, question, answer, difficulty)
         {
         }
         
-        public FlashcardExercise(int id, string topic, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
+        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
             : base(id, question, difficulty)
         {
             if (string.IsNullOrWhiteSpace(answer))
                 throw new ArgumentException("Answer cannot be empty", nameof(answer));
                 
-            _topic = topic;
             _answer = answer;
             
             // Default time based on difficulty

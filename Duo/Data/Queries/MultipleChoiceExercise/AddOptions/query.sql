@@ -12,7 +12,7 @@ BEGIN
             WHERE e.Id = @exerciseId
         )
         BEGIN
-            THROW 50001, 'Invalid exercise ID or not a Multiple Choice exercise', 1;
+            RAISERROR('Invalid exercise ID or not a Multiple Choice exercise', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the option
@@ -20,6 +20,13 @@ BEGIN
         VALUES (@exerciseId, @optionText);
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END; 

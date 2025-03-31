@@ -6,7 +6,7 @@ BEGIN
         -- Check if quiz exists
         IF NOT EXISTS (SELECT 1 FROM Quizzes WHERE Id = @quizId)
         BEGIN
-            THROW 50001, 'Quiz not found', 1;
+            RAISERROR ('Quiz not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete quiz exercises first
@@ -18,6 +18,9 @@ BEGIN
         WHERE Id = @quizId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END; 

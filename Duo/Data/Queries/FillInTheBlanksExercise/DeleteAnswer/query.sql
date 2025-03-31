@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE sp_DeleteFillInTheBlanksAnswer
+CREATE OR ALTER PROCEDURE sp_DeleteFillInTheBlankAnswer
     @answerId INT
 AS
 BEGIN
@@ -6,18 +6,25 @@ BEGIN
         -- Check if answer exists
         IF NOT EXISTS (
             SELECT 1 
-            FROM FillInTheBlanksAnswers 
+            FROM FillInTheBlankAnswers 
             WHERE Id = @answerId
         )
         BEGIN
-            THROW 50001, 'Fill in the Blanks answer not found', 1;
+            RAISERROR ('Fill in the Blank answer not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete the answer
-        DELETE FROM FillInTheBlanksAnswers
+        DELETE FROM FillInTheBlankAnswers
         WHERE Id = @answerId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

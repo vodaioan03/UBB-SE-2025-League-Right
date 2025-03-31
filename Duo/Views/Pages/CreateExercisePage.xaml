@@ -29,10 +29,15 @@
             <TextBlock Text="Multiple Choice Exercise View Loaded!" />
         </DataTemplate>
 
+        <DataTemplate x:Key="FlashcardExerciseTemplate">
+            <TextBlock Text="Flashcard Exercise View Loaded!" />
+        </DataTemplate>
+
         <exerciseviewmodels:ExerciseTemplateSelector x:Key="ExerciseTemplateSelector"
             AssociationExerciseTemplate="{StaticResource AssociationExerciseTemplate}"
             FillInTheBlankExerciseTemplate="{StaticResource FillInTheBlankExerciseTemplate}"
-            MultipleChoiceExerciseTemplate="{StaticResource MultipleChoiceExerciseTemplate}" />
+            MultipleChoiceExerciseTemplate="{StaticResource MultipleChoiceExerciseTemplate}" 
+            FlashcardExerciseTemplate="{StaticResource FlashcardExerciseTemplate}"/>
     </Page.Resources>
 
     <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0"> 
@@ -67,13 +72,19 @@
                             TextWrapping="Wrap"
                             AcceptsReturn="True"
                             MaxHeight="100"
-                        Width="400"/>
+                        Width="350"/>
                     </StackPanel>
                     <ComboBox x:Name="ExerciseTypeComboBox"          
                               ItemsSource="{Binding ExerciseTypes}" 
                               SelectedItem="{Binding SelectedExerciseType, Mode=TwoWay}" 
                               x:DefaultBindMode="TwoWay"
                               Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
+                    </ComboBox>
+                    <ComboBox x:Name="DifficultyComboBox"          
+                           ItemsSource="{Binding Difficulties}" 
+                           SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}" 
+                           x:DefaultBindMode="TwoWay"
+                           Header="Difficulty" PlaceholderText="Difficulty" Width="150">
                     </ComboBox>
                 </StackPanel>
 

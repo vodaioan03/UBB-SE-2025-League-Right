@@ -1,19 +1,19 @@
 CREATE OR ALTER PROCEDURE sp_AddExam
-    @sectionId INT,
+    @sectionId INT = NULL,
     @newId INT OUTPUT
 AS
 BEGIN
     BEGIN TRY
         -- Check if section exists
-        IF NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
+        IF @sectionId IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
         BEGIN
-            THROW 50001, 'Section not found', 1;
+            RAISERROR ('Section not found', 16, 1) WITH NOWAIT;
         END
 
         -- Check if section already has an exam
-        IF EXISTS (SELECT 1 FROM Exams WHERE SectionId = @sectionId)
+        IF @sectionId IS NOT NULL AND EXISTS (SELECT 1 FROM Exams WHERE SectionId = @sectionId)
         BEGIN
-            THROW 50002, 'Section already has an exam', 1;
+            RAISERROR ('Section already has an exam', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the new exam
@@ -24,6 +24,9 @@ BEGIN
         SET @newId = SCOPE_IDENTITY();
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 
