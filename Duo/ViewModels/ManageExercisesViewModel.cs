@@ -33,7 +33,7 @@ namespace Duo.ViewModels
             DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(DeleteExercise);
 
             initializeViewModel();
-            //LoadExercisesAsync();
+            LoadExercisesAsync();
         }
 
         public ICommand DeleteExerciseCommand { get; }
