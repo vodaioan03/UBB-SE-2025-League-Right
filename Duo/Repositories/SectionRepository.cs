@@ -177,14 +177,6 @@ public class SectionRepository
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Roadmap with ID {section.RoadmapId} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50002)
-        {
-            throw new InvalidOperationException($"Order number {section.OrderNumber} already exists in roadmap {section.RoadmapId}.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while adding section '{section.Title}': {ex.Message}", ex);
@@ -235,18 +227,6 @@ public class SectionRepository
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Section with ID {section.Id} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50002)
-        {
-            throw new KeyNotFoundException($"Roadmap with ID {section.RoadmapId} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50003)
-        {
-            throw new InvalidOperationException($"Order number {section.OrderNumber} already exists in roadmap {section.RoadmapId}.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while updating section '{section.Title}': {ex.Message}", ex);
@@ -271,10 +251,6 @@ public class SectionRepository
             
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
-        }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Section with ID {sectionId} not found.", ex);
         }
         catch (SqlException ex)
         {

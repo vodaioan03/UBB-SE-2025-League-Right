@@ -7,13 +7,13 @@ BEGIN
     -- Check if quiz exists
     IF NOT EXISTS (SELECT 1 FROM Quizzes WHERE Id = @quizId)
     BEGIN
-        THROW 50001, 'Quiz not found.', 1;
+        RAISERROR ('Quiz not found.', 16, 1) WITH NOWAIT;
     END
 
     -- Check if exercise exists
     IF NOT EXISTS (SELECT 1 FROM Exercises WHERE Id = @exerciseId)
     BEGIN
-        THROW 50002, 'Exercise not found.', 1;
+        RAISERROR ('Exercise not found.', 16, 1) WITH NOWAIT;
     END
 
     INSERT INTO QuizExercises (QuizId, ExerciseId)

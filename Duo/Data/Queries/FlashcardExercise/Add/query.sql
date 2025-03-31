@@ -1,8 +1,6 @@
 CREATE OR ALTER PROCEDURE sp_AddFlashcardExercise
     @exerciseId INT,
-    @sentence VARCHAR(500),
-    @answer VARCHAR(100),
-    @timeInSeconds INT
+    @answer VARCHAR(100)
 AS
 BEGIN
     BEGIN TRY
@@ -14,14 +12,21 @@ BEGIN
             AND Type = 'Flashcard'
         )
         BEGIN
-            THROW 50001, 'Invalid exercise ID or type', 1;
+            RAISERROR ('Invalid exercise ID or type', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the flashcard exercise
-        INSERT INTO FlashcardExercises (ExerciseId, Sentence, Answer, TimeInSeconds)
-        VALUES (@exerciseId, @sentence, @answer, @timeInSeconds);
+        INSERT INTO FlashcardExercises (ExerciseId, Answer)
+        VALUES (@exerciseId, @answer);
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

@@ -107,7 +107,7 @@ public class QuizRepository
             {
                 quizzes.Add(new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
-                    reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId")),
+                    sectionId,
                     reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 ));
             }
@@ -204,14 +204,6 @@ public class QuizRepository
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Section with ID {quiz.SectionId} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50002)
-        {
-            throw new InvalidOperationException($"Order number {quiz.OrderNumber} already exists in section {quiz.SectionId}.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while adding quiz: {ex.Message}", ex);
@@ -270,18 +262,6 @@ public class QuizRepository
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Quiz with ID {quiz.Id} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50002)
-        {
-            throw new KeyNotFoundException($"Section with ID {quiz.SectionId} not found.", ex);
-        }
-        catch (SqlException ex) when (ex.Number == 50003)
-        {
-            throw new InvalidOperationException($"Order number {quiz.OrderNumber} already exists in section {quiz.SectionId}.", ex);
-        }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while updating quiz: {ex.Message}", ex);
@@ -306,10 +286,6 @@ public class QuizRepository
             
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
-        }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"Quiz with ID {quizId} not found.", ex);
         }
         catch (SqlException ex)
         {

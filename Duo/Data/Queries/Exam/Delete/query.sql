@@ -6,7 +6,7 @@ BEGIN
         -- Check if exam exists
         IF NOT EXISTS (SELECT 1 FROM Exams WHERE Id = @examId)
         BEGIN
-            THROW 50001, 'Exam not found', 1;
+            RAISERROR ('Exam not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete exam exercises first
@@ -18,6 +18,9 @@ BEGIN
         WHERE Id = @examId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

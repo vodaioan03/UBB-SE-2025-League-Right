@@ -13,7 +13,7 @@ BEGIN
             WHERE e.Id = @exerciseId
         )
         BEGIN
-            THROW 50001, 'Invalid exercise ID or not an Association exercise', 1;
+            RAISERROR ('Invalid exercise ID or not an Association exercise', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the pair
@@ -21,6 +21,9 @@ BEGIN
         VALUES (@exerciseId, @firstAnswer, @secondAnswer);
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

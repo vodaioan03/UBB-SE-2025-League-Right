@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE sp_DeleteFillInTheBlanksExercise
+CREATE OR ALTER PROCEDURE sp_DeleteFillInTheBlankExercise
     @exerciseId INT
 AS
 BEGIN
@@ -6,18 +6,25 @@ BEGIN
         -- Check if exercise exists
         IF NOT EXISTS (
             SELECT 1 
-            FROM FillInTheBlanksExercises 
+            FROM FillInTheBlankExercises 
             WHERE ExerciseId = @exerciseId
         )
         BEGIN
-            THROW 50001, 'Fill in the Blanks exercise not found', 1;
+            RAISERROR ('Fill in the Blank exercise not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete the exercise (this will cascade delete the answers due to foreign key)
-        DELETE FROM FillInTheBlanksExercises
+        DELETE FROM FillInTheBlankExercises
         WHERE ExerciseId = @exerciseId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

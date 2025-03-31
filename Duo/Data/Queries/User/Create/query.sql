@@ -1,5 +1,6 @@
 CREATE PROCEDURE sp_CreateUser
-    @Username VARCHAR(100)
+    @Username VARCHAR(100),
+    @newId INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -7,8 +8,7 @@ BEGIN
     -- Check if username already exists
     IF EXISTS (SELECT 1 FROM Users WHERE Username = @Username)
     BEGIN
-        RAISERROR ('Username already exists.', 16, 1);
-        RETURN;
+        RAISERROR ('Username already exists.', 16, 1) WITH NOWAIT;
     END
 
     -- Insert new user with default NULL values for progress
@@ -16,5 +16,5 @@ BEGIN
     VALUES (@Username, NULL, NULL);
     
     -- Return the newly created user's ID
-    SELECT SCOPE_IDENTITY() AS Id;
+    SET @newId = SCOPE_IDENTITY();
 END

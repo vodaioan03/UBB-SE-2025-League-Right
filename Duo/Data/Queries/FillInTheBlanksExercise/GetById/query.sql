@@ -1,10 +1,9 @@
-CREATE OR ALTER PROCEDURE sp_GetFillInTheBlanksExerciseById
+CREATE OR ALTER PROCEDURE sp_GetFillInTheBlankExerciseById
     @exerciseId INT
 AS
 BEGIN
-    SELECT fite.*, fita.CorrectAnswer, fita.Position
-    FROM FillInTheBlanksExercises fite
-    LEFT JOIN FillInTheBlanksAnswers fita ON fite.ExerciseId = fita.ExerciseId
+    SELECT fite.*, fita.CorrectAnswer
+    FROM FillInTheBlankExercises fite
+    LEFT JOIN FillInTheBlankAnswers fita ON fite.ExerciseId = fita.ExerciseId
     WHERE fite.ExerciseId = @exerciseId
-    ORDER BY fita.Position;
 END; 

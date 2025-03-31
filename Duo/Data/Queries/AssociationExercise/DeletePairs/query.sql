@@ -10,7 +10,7 @@ BEGIN
             WHERE Id = @pairId
         )
         BEGIN
-            THROW 50001, 'Association pair not found', 1;
+            RAISERROR ('Association pair not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete the pair
@@ -18,6 +18,9 @@ BEGIN
         WHERE Id = @pairId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

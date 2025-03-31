@@ -6,7 +6,7 @@ BEGIN
         -- Check if section exists
         IF NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
         BEGIN
-            THROW 50001, 'Section not found', 1;
+            RAISERROR ('Section not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete all quizzes in this section
@@ -29,6 +29,9 @@ BEGIN
         WHERE Id = @sectionId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 
