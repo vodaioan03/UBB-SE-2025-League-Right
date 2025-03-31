@@ -30,5 +30,9 @@
                 Margin="0,20,0,0"
                 Command="{Binding StartQuizCommand}"
                 CommandParameter="{Binding Quiz}"/>
+        <Button Content="Back" 
+                HorizontalAlignment="Center" 
+                Margin="0,20,0,0"
+                Command="{Binding BackButtonCommand}"/>
     </StackPanel>
 </UserControl>

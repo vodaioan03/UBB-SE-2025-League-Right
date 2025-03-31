@@ -31,15 +31,15 @@ namespace Duo.ViewModels.Roadmap
             _sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
 
             StartQuizCommand = new RelayCommand(StartQuiz);
-            OpenQuizPreviewCommand = new RelayCommandWithParameter<int>(OpenQuizPreview);
+            OpenQuizPreviewCommand = new RelayCommandWithParameter<Tuple<int, bool>>(OpenQuizPreview);
         }
 
-        private async void OpenQuizPreview(int quizId)
+        private async void OpenQuizPreview(Tuple<int, bool> args)
         {
-            Debug.WriteLine($"Opening quiz with ID: {quizId}");
+            Debug.WriteLine($"Opening quiz with ID: {args.Item1}");
 
             var quizPreviewViewModel = (RoadmapQuizPreviewViewModel)App.serviceProvider.GetService(typeof(RoadmapQuizPreviewViewModel));
-            await quizPreviewViewModel.OpenForQuiz(quizId);
+            await quizPreviewViewModel.OpenForQuiz(args.Item1, args.Item2);
         }
 
         private void StartQuiz()

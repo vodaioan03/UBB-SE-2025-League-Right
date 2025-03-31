@@ -79,8 +79,10 @@ namespace Duo.Views.Components
 
         private void Quiz_Click(object sender, RoutedEventArgs e)
         {
-            var clickedButton = sender as Button;
-            // HANDLE QUIZ CLICK
+            var clickedButton = sender as QuizRoadmapButton;
+            Debug.WriteLine(clickedButton.QuizId);
+            var args = new Tuple<int, bool>(clickedButton.QuizId, clickedButton.IsExam);
+            ViewModel.OpenQuizPreviewCommand.Execute(args);
         }
 
         private void Exam_Click(object sender, RoutedEventArgs e)

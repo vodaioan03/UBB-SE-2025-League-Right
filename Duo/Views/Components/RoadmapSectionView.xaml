@@ -36,18 +36,19 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <local:QuizRoadmapButton 
-                                    Command="{Binding OpenQuizPreviewCommand}" 
-                                    CommandParameter="{Binding Quiz.Id}" 
-                                    QuizId="{Binding Quiz.Id}" 
-                                    Margin="0"/>
+                                    QuizId="{Binding Quiz.Id}"
+                                    IsExam="False"
+                                    Margin="0"
+                                    ButtonClick="Quiz_Click"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
                     <!--<local:QuizRoadmapButton ButtonClick="OnExamRoadmapButtonClick" QuizId="{x:Bind Exam.Id}" Margin="0" IsExam="True"/> -->
-                    <local:QuizRoadmapButton Command="{Binding ExamButtonTemplate.OpenQuizPreviewCommand}"
-                         CommandParameter="{Binding ExamButtonTemplate.Quiz.Id}"
-                         QuizId="{Binding ExamButtonTemplate.Quiz.Id}" IsExam="True"
+                    <local:QuizRoadmapButton 
+                         ButtonClick="Quiz_Click"
+                         QuizId="{Binding ExamButtonTemplate.Quiz.Id}" 
+                         IsExam="True"
                          Margin="0"/>
                 </StackPanel>
             </ScrollViewer>

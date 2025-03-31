@@ -98,6 +98,11 @@ namespace Duo.ViewModels.Roadmap
         public BaseQuiz Quiz { get; }
         public ICommand OpenQuizPreviewCommand { get; }
 
+        public bool isExam
+        {
+            get => Quiz is Exam;
+        }
+
         public RoadmapButtonTemplate(BaseQuiz quiz, ICommand openQuizPreviewCommand)
         {
             Quiz = quiz;

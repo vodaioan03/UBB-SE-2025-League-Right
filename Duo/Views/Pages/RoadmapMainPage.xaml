@@ -8,39 +8,39 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:components="using:Duo.Views.Components"
     xmlns:viewmodel="using:Duo.ViewModels.Roadmap"
+    xmlns:pages="using:Duo.Views.Pages"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.DataContext>
         <viewmodel:RoadmapMainPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Quiz page" 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Title -->
+                <RowDefinition Height="*"/>
+                <!-- Section View -->
+                <RowDefinition Height="Auto"/>
+                <!-- Quiz Preview -->
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Quiz page" 
                    Grid.Row="0"
                    HorizontalAlignment="Center" 
                    FontSize="32"/>
 
-        <!-- <components:AssociationExercise Question="Connect the countries to their capital" FirstAnswersList="{x:Bind FirstAnswersList}" SecondAnswersList="{x:Bind SecondAnswersList}"/> -->
-        <!-- <components:MultipleChoiceExercise Question="Test question" Answers="{x:Bind Answers}" /> -->
-        <!-- <components:FillInTheBlanksExercise Question="Test test {} Test {}" /> -->
+            <components:RoadmapSectionView x:Name="RoadmapSectionView"
+                                       Grid.Row="1"/>
 
-        <!-- <components:RoadmapSectionView Section="Countries" 
-                                      Quizzes="{Binding Quizzes}" 
-                                      Exam="{Binding Exam}" 
-                                      OpenQuizPreviewCommand="{Binding OpenQuizPreviewCommand}" 
-                                      DataContext="{Binding SectionViewModel}" 
-                                      x:Name="RoadmapSectionView" /> -->
-
-        <!--<components:RoadmapSectionView x:Name="RoadmapSectionView" DataContext="{Binding SectionViewModel}"/>-->
-        <components:RoadmapSectionView x:Name="RoadmapSectionView"/>
-        
-        
-        <components:RoadmapQuizPreview></components:RoadmapQuizPreview>
+            <components:RoadmapQuizPreview Grid.Row="2"/>
+        </Grid>
     </Grid>
 </Page>
