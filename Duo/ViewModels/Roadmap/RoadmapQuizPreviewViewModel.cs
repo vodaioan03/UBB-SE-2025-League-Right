@@ -52,17 +52,15 @@ namespace Duo.ViewModels.Roadmap
             StartQuizCommand = startQuizCommand;
         }
 
-        private void OnStartQuiz()
+        public async Task OpenForQuiz(BaseQuiz quiz, Section section)
         {
-            // Your logic to handle the start quiz event
-            Debug.WriteLine("Start quiz clicked!");
-        }
-
-        public async Task OpenForQuizAsync(int quizId)
-        {
-            _quiz = await _quizService.GetExerciseById(quizId);
-            _section = await _sectionService.GetSectionById((int)_quiz.SectionId);
+            _quiz = quiz;
+            _section = section;
             _isPreviewVisible = true;
+
+            OnPropertyChanged(nameof(QuizOrderNumber));
+            OnPropertyChanged(nameof(SectionTitle));
+            OnPropertyChanged(nameof(IsPreviewVisible));
         }
 
     }
