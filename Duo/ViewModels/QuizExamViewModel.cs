@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Duo.ViewModels
 {
-    public class QuizViewModel : ViewModelBase
+    public class QuizExamViewModel : ViewModelBase
     {
         private readonly ExerciseService _exerciseService;
         private readonly QuizService _quizService;
@@ -18,7 +18,7 @@ namespace Duo.ViewModels
         private List<Exercise> _exercises;
         private Exercise _currentExercise;
         private int _currentExerciseIndex;
-        private bool _validatedCurrent;
+        private bool? _validatedCurrent = null;
 
         public int QuizId
         {
@@ -72,7 +72,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public bool ValidatedCurrent
+        public bool? ValidatedCurrent
         {
             get => _validatedCurrent;
             set
@@ -82,12 +82,12 @@ namespace Duo.ViewModels
             }
         }
 
-        public QuizViewModel(ExerciseService exerciseService)
+        public QuizExamViewModel(ExerciseService exerciseService)
         {
             _exerciseService = exerciseService;
         }
 
-        public QuizViewModel()
+        public QuizExamViewModel()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace Duo.ViewModels
 
                 CurrentExerciseIndex = 0;
                 CurrentExercise = Exercises[CurrentExerciseIndex];
-                ValidatedCurrent = false;
+                ValidatedCurrent = null;
 
             }
             catch (Exception ex)
@@ -143,9 +143,9 @@ namespace Duo.ViewModels
             }
         }
 
-        private void UpdateQuiz(bool isExerciseValid)
+        private void UpdateQuiz(bool? isExerciseValid)
         {
-            if (isExerciseValid)
+            if (isExerciseValid == true)
             {
                 CurrentQuiz.IncrementCorrectAnswers();
                 CurrentQuiz.IncrementNumberOfAnswersGiven();
@@ -154,10 +154,10 @@ namespace Duo.ViewModels
                 CurrentQuiz.IncrementNumberOfAnswersGiven();
         }
 
-        public bool ValidateCurrentExercise(object responses)
+        public bool? ValidateCurrentExercise(object responses)
         {
-            if (ValidatedCurrent)
-                return true;
+            if (ValidatedCurrent is not null)
+                return ValidatedCurrent;
 
             var currentExercise = Exercises[CurrentExerciseIndex];
             bool isValid = false;
@@ -182,7 +182,7 @@ namespace Duo.ViewModels
 
         public bool LoadNext()
         {
-            if (ValidatedCurrent == false)
+            if (ValidatedCurrent == null)
                 return false;
 
             CurrentExerciseIndex += 1;

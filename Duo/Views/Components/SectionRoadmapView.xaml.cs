@@ -97,6 +97,11 @@ namespace Duo.Views.Components
             {
                 Debug.WriteLine($"Exam with ID {button.QuizId} clicked!");
 
+                Frame parentFrame = FindParent<Frame>(this);
+                if (parentFrame != null)
+                {
+                    parentFrame.Navigate(typeof(ExamPage), button.QuizId);
+                }
                 // You can perform any additional logic here based on the button that was clicked
             }
         }
