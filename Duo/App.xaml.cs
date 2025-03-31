@@ -77,6 +77,8 @@ namespace Duo
             services.AddTransient<AssociationExerciseViewModel>();
             services.AddTransient<ExerciseCreationViewModel>();
 
+            services.AddTransient<CreateQuizViewModel>();
+
 
             serviceProvider = services.BuildServiceProvider();
         }
