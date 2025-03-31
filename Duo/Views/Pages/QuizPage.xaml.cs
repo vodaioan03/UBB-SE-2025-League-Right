@@ -74,8 +74,6 @@ namespace Duo.Views.Pages
 
         private void LoadCurrentExercise()
         {
-            DoNotShowMessage();
-
             if (ViewModel != null && ViewModel.Exercises != null)
             {
                 var currentExercise = ViewModel.CurrentExercise;
@@ -147,10 +145,6 @@ namespace Duo.Views.Pages
             await feedbackPopup.ShowAsync();
         }
 
-        private void DoNotShowMessage()
-        {
-            MessageTextBlock.Visibility = Visibility.Collapsed;
-        }
 
         private void AssociationControl_OnSendClicked(object sender, AssociationExerciseEventArgs e)
         {
