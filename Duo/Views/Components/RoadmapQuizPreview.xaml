@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.RoadmapQuizPreview"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <TextBlock Text="{Binding SectionTitle, Mode=OneWay}" 
+                   HorizontalAlignment="Center" 
+                   FontSize="32"/>
+        <TextBlock Text="{Binding QuizOrderNumber, Mode=OneWay}" 
+                   HorizontalAlignment="Center" 
+                   FontSize="32"/>
+        <Button Content="Start quiz" 
+                HorizontalAlignment="Center" 
+                Margin="0,20,0,0"
+                Command="{Binding StartQuizCommand}"/>
+    </StackPanel>
+</UserControl>

@@ -22,6 +22,7 @@
     <None Remove="Views\Components\CreateFillInTheBlankExercise.xaml" />
     <None Remove="Views\Components\CreateMultipleChoiceExercise.xaml" />
     <None Remove="Views\Components\QuizAdminButton.xaml" />
+    <None Remove="Views\Components\RoadmapQuizPreview.xaml" />
     <None Remove="Views\Pages\AdminMainPage.xaml" />
     <None Remove="Views\Pages\CreateExercisePage.xaml" />
     <None Remove="Views\Pages\RoadmapMainPage.xaml" />
@@ -122,6 +123,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Components\RoadmapQuizPreview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Components\CreateMultipleChoiceExercise.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
