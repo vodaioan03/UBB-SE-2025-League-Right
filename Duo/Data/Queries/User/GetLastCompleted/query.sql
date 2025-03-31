@@ -14,7 +14,7 @@ BEGIN
             u.Id AS UserId,
             u.Username,
             u.LastCompletedSectionId,
-            u.LastCompletedQuizId,
+            u.LastCompletedQuizId
         FROM Users u
         WHERE u.Id = @userId;
     END TRY
