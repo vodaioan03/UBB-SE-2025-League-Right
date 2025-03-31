@@ -133,6 +133,11 @@ namespace Duo.ViewModels
         public void AddExercise(Exercise selectedExercise)
         {
             Debug.WriteLine("Adding exercise...");
+            if(SelectedQuiz == null)
+            {
+                Debug.WriteLine("No quiz selected.");
+                return;
+            }
             SelectedQuiz.AddExercise(selectedExercise);
             UpdateQuizExercises(SelectedQuiz);
             AvailableExercises.Remove(selectedExercise);

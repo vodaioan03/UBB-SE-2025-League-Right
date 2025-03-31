@@ -109,15 +109,21 @@ namespace Duo.ViewModels
             Debug.WriteLine("Removing exercise...");
         }
 
-        public void CreateQuiz()
+        public async void CreateQuiz()
         {
             Debug.WriteLine("Creating quiz...");
-            Quiz newQuiz = new Quiz(0, NO_SECTION_ID, NO_ORDER_NUMBER);
+            Quiz newQuiz = new Quiz(0, 1, 3);
             foreach (var exercise in SelectedExercises)
             {
                 newQuiz.AddExercise(exercise);
             }
-            //_quizService.CreateQuiz(newQuiz);
+            try {
+                await _quizService.CreateQuiz(newQuiz);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             Debug.WriteLine(newQuiz);
         }
     }
