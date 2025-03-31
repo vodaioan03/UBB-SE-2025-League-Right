@@ -54,8 +54,6 @@ namespace Duo.Views.Components
         public RoadmapSectionView()
         {
             this.InitializeComponent();
-
-            Debug.WriteLine($"DataContext of SectionView is : {DataContext}");
         }
 
         //public ObservableCollection<Quiz> Quizzes

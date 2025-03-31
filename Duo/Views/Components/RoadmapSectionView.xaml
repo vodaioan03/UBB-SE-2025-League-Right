@@ -11,10 +11,14 @@
     xmlns:viewmodel="using:Duo.ViewModels.Roadmap"
     mc:Ignorable="d">
 
+    <UserControl.DataContext>
+        <viewmodel:RoadmapSectionViewModel x:Name="ViewModel"/>
+    </UserControl.DataContext>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical" Spacing="0" HorizontalAlignment="Center" Margin="0">
             <TextBlock 
-                Text="{Binding Section.Title}"
+                Text="Section title goes here"
                 HorizontalAlignment="Left" 
                 FontSize="32"
                 Margin="50, 50, 0, 0"/>
@@ -22,7 +26,7 @@
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Horizontal" Spacing="0" Margin="0">
 
-                    <ItemsControl ItemsSource="{Binding QuizButtonTemplate, Mode=OneWay}" Margin="0">
+                    <ItemsControl ItemsSource="{Binding QuizButtonTemplates, Mode=OneWay}" Margin="0">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal"/>
@@ -30,14 +34,16 @@
                         </ItemsControl.ItemsPanel>
 
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="viewmodel:RoadmapButtonTemplate">
-                                <local:QuizRoadmapButton Command="{x:Bind OpenQuizPreviewCommand}"
-                                         CommandParameter="{x:Bind Quiz.Id}"
-                                         QuizId="{x:Bind Quiz.Id}"
-                                         Margin="0"/>
+                            <DataTemplate>
+                                <local:QuizRoadmapButton 
+                                    Command="{Binding OpenQuizPreviewCommand}" 
+                                    CommandParameter="{Binding Quiz.Id}" 
+                                    QuizId="{Binding Quiz.Id}" 
+                                    Margin="0"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
                     <!--<local:QuizRoadmapButton ButtonClick="OnExamRoadmapButtonClick" QuizId="{x:Bind Exam.Id}" Margin="0" IsExam="True"/> -->
                     <local:QuizRoadmapButton Command="{Binding ExamButtonTemplate.OpenQuizPreviewCommand}"
                          CommandParameter="{Binding ExamButtonTemplate.Quiz.Id}"

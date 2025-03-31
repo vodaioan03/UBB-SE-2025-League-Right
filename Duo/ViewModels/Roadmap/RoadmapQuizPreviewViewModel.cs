@@ -16,6 +16,8 @@ namespace Duo.ViewModels.Roadmap
     public class RoadmapQuizPreviewViewModel : ViewModelBase
     {
         private BaseQuiz _quiz;
+        public BaseQuiz Quiz
+        { get => _quiz; }
         private Section _section;
         private bool _isPreviewVisible;
         private readonly QuizService _quizService;
@@ -43,19 +45,21 @@ namespace Duo.ViewModels.Roadmap
         }
         public ICommand StartQuizCommand { get; }
 
-        public RoadmapQuizPreviewViewModel(QuizService quizService, SectionService sectionService, ICommand startQuizCommand)
+        public RoadmapQuizPreviewViewModel()
         {
-            _quizService = quizService;
-            _sectionService = sectionService;
+            _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+            _sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
             _isPreviewVisible = false;
 
-            StartQuizCommand = startQuizCommand;
+            var mainPageViewModel= (RoadmapMainPageViewModel)App.serviceProvider.GetService(typeof(RoadmapMainPageViewModel));
+            StartQuizCommand = mainPageViewModel.StartQuizCommand;
         }
 
-        public async Task OpenForQuiz(BaseQuiz quiz, Section section)
+        public async Task OpenForQuiz(int quizId)
         {
-            _quiz = quiz;
-            _section = section;
+
+            _quiz = await _quizService.GetExerciseById(quizId);
+            _section = await _sectionService.GetSectionById((int)_quiz.SectionId);
             _isPreviewVisible = true;
 
             OnPropertyChanged(nameof(QuizOrderNumber));

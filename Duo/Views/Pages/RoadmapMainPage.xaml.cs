@@ -17,6 +17,7 @@ using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
+using Duo.ViewModels.Roadmap;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,9 +32,6 @@ namespace Duo.Views.Pages
         public RoadmapMainPage()
         {
             this.InitializeComponent();
-            RoadmapMainPageViewModel ViewModel = App.serviceProvider.GetService<RoadmapMainPageViewModel>();
-            DataContext = ViewModel;
-
         }
 
         //public ObservableCollection<MultipleChoiceAnswerModel> Answers = new ObservableCollection<MultipleChoiceAnswerModel>

@@ -22,16 +22,9 @@ namespace Duo.Views.Components
 {
     public sealed partial class RoadmapQuizPreview : UserControl
     {
-        public RoadmapQuizPreview(RoadmapQuizPreviewViewModel viewModel)
-        {
-            this.InitializeComponent();
-            DataContext = viewModel;
-        }
-
         public RoadmapQuizPreview()
         {
             this.InitializeComponent();
-            DataContext = App.serviceProvider.GetService<RoadmapQuizPreviewViewModel>();
         }
     }
 }

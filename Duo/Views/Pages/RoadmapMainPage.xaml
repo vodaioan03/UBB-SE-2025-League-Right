@@ -11,6 +11,10 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.DataContext>
+        <viewmodel:RoadmapMainPageViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,8 +37,8 @@
                                       DataContext="{Binding SectionViewModel}" 
                                       x:Name="RoadmapSectionView" /> -->
 
-        <components:RoadmapSectionView DataContext="{Binding SectionViewModel}" 
-                                      x:Name="RoadmapSectionView" />
+        <!--<components:RoadmapSectionView x:Name="RoadmapSectionView" DataContext="{Binding SectionViewModel}"/>-->
+        <components:RoadmapSectionView x:Name="RoadmapSectionView"/>
         
         
         <components:RoadmapQuizPreview></components:RoadmapQuizPreview>

@@ -10,49 +10,42 @@ using Duo.Services;
 using Duo.ViewModels.Base;
 using Duo.ViewModels.Roadmap;
 using Duo.Views.Components;
+using Microsoft.Extensions.DependencyInjection;
 
-public class RoadmapMainPageViewModel : ViewModelBase
+namespace Duo.ViewModels.Roadmap
 {
-    private RoadmapQuizPreviewViewModel _quizPreviewViewModel;
-    private RoadmapSectionViewModel _sectionViewModel;
-    private BaseQuiz _selectedQuiz;
-    private Section _currentSection;
-    private QuizService _quizService;
-    private SectionService _sectionService;
-
-    private ICommand OpenQuizPreviewCommand;
-    private ICommand StartQuizCommand;
-
-    public RoadmapQuizPreviewViewModel QuizPreviewViewModel => _quizPreviewViewModel;
-    public RoadmapSectionViewModel SectionViewModel => _sectionViewModel;
-
-    public RoadmapMainPageViewModel(QuizService quizService, SectionService sectionService)
+    public class RoadmapMainPageViewModel : ViewModelBase
     {
-        _quizService = quizService;
-        _sectionService = sectionService;
+        private BaseQuiz _selectedQuiz;
+        private Section _currentSection;
+        private QuizService _quizService;
+        private SectionService _sectionService;
 
-        StartQuizCommand = new RelayCommand(StartQuiz);
-        OpenQuizPreviewCommand = new RelayCommandWithParameter<int>(OpenQuizPreview);
-
-        // Pass the dependencies to the RoadmapQuizPreviewViewModel
-        _quizPreviewViewModel = new RoadmapQuizPreviewViewModel(_quizService, _sectionService, StartQuizCommand);
-        _sectionViewModel = new RoadmapSectionViewModel(-1, OpenQuizPreviewCommand);
+        public ICommand OpenQuizPreviewCommand;
+        public ICommand StartQuizCommand;
 
 
-    }
+        public RoadmapMainPageViewModel()
+        {
+            _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+            _sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
 
-    private async void OpenQuizPreview(int quizId)
-    {
-        Debug.WriteLine($"Opening quiz with ID: {quizId}");
+            StartQuizCommand = new RelayCommand(StartQuiz);
+            OpenQuizPreviewCommand = new RelayCommandWithParameter<int>(OpenQuizPreview);
+        }
 
-        _selectedQuiz = await _quizService.GetExerciseById(quizId);
-        _currentSection = await _sectionService.GetSectionById((int)_selectedQuiz.SectionId);
-        await _quizPreviewViewModel.OpenForQuiz(_selectedQuiz, _currentSection);
-    }
+        private async void OpenQuizPreview(int quizId)
+        {
+            Debug.WriteLine($"Opening quiz with ID: {quizId}");
 
-    private void StartQuiz()
-    {
-        Console.WriteLine($"Starting quiz with ID: {_selectedQuiz?.Id}");
-        // Navigation logic goes here
+            var quizPreviewViewModel = (RoadmapQuizPreviewViewModel)App.serviceProvider.GetService(typeof(RoadmapQuizPreviewViewModel));
+            await quizPreviewViewModel.OpenForQuiz(quizId);
+        }
+
+        private void StartQuiz()
+        {
+            Console.WriteLine($"Starting quiz with ID: {_selectedQuiz?.Id}");
+            // Navigation logic goes here
+        }
     }
 }
