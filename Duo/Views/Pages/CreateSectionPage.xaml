@@ -6,7 +6,13 @@
     xmlns:local="using:Duo.Views.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:Duo.ViewModels"
+    xmlns:local1="using:Duo.Models.Quizzes"
     mc:Ignorable="d">
+    
+    <Page.DataContext>
+        <viewmodels:CreateSectionViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
     
     <Page.Resources>
         <!-- Template for the main list with remove button -->
@@ -44,11 +50,8 @@
                Opacity="0.8"/>
 
         <!-- Modal content -->
-        <Grid Width="600"
-          MaxHeight="800"
+        <Grid 
           VerticalAlignment="Center"
-          BorderThickness="1"
-          CornerRadius="8"
           Padding="24">
 
             <Grid.RowDefinitions>
@@ -67,6 +70,7 @@
                       VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="16">
                     <TextBox x:Name="SubjectTextBox"
+                         Text="{Binding SubjectText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Header="Subject"
                          PlaceholderText="Enter section subject"/>
 
@@ -85,10 +89,12 @@
                             Grid.Column="1"
                             Content="Add Quiz"
                             Style="{ThemeResource AccentButtonStyle}"
-                            Click="AddQuizButton_Click"/>
+                            Command="{Binding OpenSelectQuizesCommand}"
+                                />
                     </Grid>
 
                     <ListView x:Name="QuizUnassignedList"
+                          ItemsSource="{Binding SelectedQuizes, Mode=TwoWay}"
                           Height="200"
                           BorderThickness="1"
                           BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
@@ -110,15 +116,19 @@
                             Grid.Column="1"
                             Content="Select Exam"
                             Style="{ThemeResource AccentButtonStyle}"
-                            Click="AddExamButton_Click"/>
+                            Command="{Binding OpenSelectExamsCommand}"/>
                     </Grid>
 
                     <ListView x:Name="SelectedExamList"
+                          ItemsSource="{Binding SelectedExams, Mode=TwoWay}"
                           Height="80"
                           BorderThickness="1"
                           BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                           Padding="8"
-                          ItemTemplate="{StaticResource QuizSelectionItemTemplate}"/>
+                          ItemTemplate="{StaticResource QuizSelectionItemTemplate}">
+                        
+                        
+                    </ListView>
                 </StackPanel>
             </ScrollViewer>
 
@@ -134,7 +144,7 @@
                 <Button x:Name="SaveButton"
                     Content="Save"
                     Style="{ThemeResource AccentButtonStyle}"
-                    Click="SaveButton_Click"/>
+                    Command="{Binding SaveButtonCommand}"/>
             </StackPanel>
         </Grid>
     </Grid>

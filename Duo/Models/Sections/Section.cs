@@ -6,12 +6,12 @@ namespace Duo.Models.Sections;
 
 public class Section
 {
-    public required int Id { get; set; }
-    public required int SubjectId { get; set; }
-    public required string Title { get; set; }
-    public required string Description { get; set; }
-    public required int RoadmapId { get; set; }
-    public required int OrderNumber { get; set; }
+    public int Id { get; set; }
+    public int? SubjectId { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public int RoadmapId { get; set; }
+    public int? OrderNumber { get; set; }
     public List<Quiz> Quizzes { get; set; }
     public Exam? Exam { get; set; }
 
@@ -23,7 +23,7 @@ public class Section
         Quizzes = new List<Quiz>();
     }
 
-    public Section(int id, int subjectId, string title, string description, int roadmapId, int orderNumber)
+    public Section(int id, int? subjectId, string title, string description, int roadmapId, int? orderNumber)
     {
         Id = id;
         SubjectId = subjectId;
