@@ -14,6 +14,12 @@
     <Grid  HorizontalAlignment="Stretch"
            MaxWidth="900"
            Margin="32,0,32,0">
+        <InfoBar
+        x:Name="SuccessInfoBar"
+        Title="Success"
+        Message="Exercise added successfully!"
+        Severity="Success"
+        IsOpen="{Binding IsSuccessMessageVisible, Mode=TwoWay}" />
         <ScrollViewer
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
