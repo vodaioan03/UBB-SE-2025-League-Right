@@ -35,6 +35,8 @@ namespace Duo.ViewModels
         public ICommand RemoveExerciseCommand { get; }
         public ICommand SaveButtonCommand { get; }
         public ICommand OpenSelectExercisesCommand { get; }
+
+        public event EventHandler RequestGoBack;
         public CreateQuizViewModel()
         {
             try
@@ -125,19 +127,21 @@ namespace Duo.ViewModels
         public async void CreateQuiz()
         {
             Debug.WriteLine("Creating quiz...");
-            Quiz newQuiz = new Quiz(0, 1, 3);
+            Quiz newQuiz = new Quiz(0, 1, null);
             foreach (var exercise in SelectedExercises)
             {
                 newQuiz.AddExercise(exercise);
             }
             try {
-                await _quizService.CreateQuiz(newQuiz);
+                int quizId = await _quizService.CreateQuiz(newQuiz);
+                await _quizService.AddExercisesToQuiz(quizId, newQuiz.ExerciseList);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
             Debug.WriteLine(newQuiz);
+            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
     }
 }
