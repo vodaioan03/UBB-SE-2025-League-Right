@@ -3,6 +3,7 @@ using Duo.Models.Quizzes;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Duo.Repositories;
@@ -111,7 +112,6 @@ public class QuizRepository
                     reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 ));
             }
-            
             return quizzes;
         }
         catch (SqlException ex)
