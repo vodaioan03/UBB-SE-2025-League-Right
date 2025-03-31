@@ -24,6 +24,7 @@
     <None Remove="Views\Components\QuizAdminButton.xaml" />
     <None Remove="Views\Pages\AdminMainPage.xaml" />
     <None Remove="Views\Pages\CreateExercisePage.xaml" />
+    <None Remove="Views\Pages\ManageExercisesPage.xaml" />
     <None Remove="Views\Pages\RoadmapMainPage.xaml" />
   </ItemGroup>
 
@@ -122,6 +123,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Pages\ManageExercisesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Components\CreateMultipleChoiceExercise.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

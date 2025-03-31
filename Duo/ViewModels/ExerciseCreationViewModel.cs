@@ -162,7 +162,7 @@ namespace Duo.ViewModels
         public void CreateMultipleChoiceExercise()
         {
             Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, Models.Difficulty.Easy);
-            //_exerciseService.CreateExercise(newExercise);
+            _exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
             RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
@@ -170,7 +170,7 @@ namespace Duo.ViewModels
         public void CreateAssocitationExercise()
         {
             Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText,Models.Difficulty.Easy);
-            //_exerciseService.CreateExercise(newExercise);
+            _exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
             RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
