@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="using:Duo.ViewModels"
+    xmlns:local1="using:Duo.Models.Exercises"
     mc:Ignorable="d">
 
     <Page.DataContext>
@@ -14,26 +15,6 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <!-- Template for exercises in the main list -->
-        <DataTemplate x:Key="ExerciseItemTemplate">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal"
-                        Spacing="8">
-                    <TextBlock Text="Exercise #"/>
-                    <TextBlock Text="{Binding Id}"/>
-                    <TextBlock Text=" - "/>
-                    <TextBlock Text="{Binding Question}"/>
-                </StackPanel>
-                <Button Grid.Column="1"
-                    Content="Remove"
-                    Click="RemoveExercise_Click"
-                    Style="{ThemeResource TextBlockButtonStyle}"/>
-            </Grid>
-        </DataTemplate>
 
         <!-- Template for exercise selection dialog -->
         <DataTemplate x:Key="ExerciseSelectionItemTemplate">
@@ -83,13 +64,35 @@
                         Command="{Binding OpenSelectExercisesCommand}"/>
                 </Grid>
 
-                <ListView x:Name="ExerciseList"
+            <ListView x:Name="ExerciseList"
                       Height="200"
                       ItemsSource="{Binding SelectedExercises, Mode=TwoWay}"
                       BorderThickness="1"
                       BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                      Padding="8"
-                      ItemTemplate="{StaticResource ExerciseItemTemplate}"/>
+                      Padding="8">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local1:Exercise">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                            <TextBlock Text="Exercise #"/>
+                            <TextBlock Text="{Binding Id}"/>
+                            <TextBlock Text=" - "/>
+                            <TextBlock Text="{Binding Question}"/>
+                        </StackPanel>
+                            <Button Grid.Column="1"
+                            Content="Remove"
+                            Command="{x:Bind ViewModel.RemoveExerciseCommand}"
+                            CommandParameter="{Binding}"
+                            Style="{ThemeResource TextBlockButtonStyle}"/>
+                    </Grid>
+                </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             </StackPanel>
 
             <!-- Buttons -->

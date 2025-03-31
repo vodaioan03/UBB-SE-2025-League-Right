@@ -30,6 +30,10 @@ namespace Duo.ViewModels
         private const int MAX_EXERCISES = 10;
         private const int NO_ORDER_NUMBER = -1;
         private const int NO_SECTION_ID = -1;
+
+        public ICommand RemoveExerciseCommand { get; }
+        public ICommand SaveButtonCommand { get; }
+        public ICommand OpenSelectExercisesCommand { get; }
         public CreateQuizViewModel()
         {
             try
@@ -43,10 +47,9 @@ namespace Duo.ViewModels
             CreateSampleExercises();
             SaveButtonCommand = new RelayCommand(CreateQuiz);
             OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
+            RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
         }
 
-        public ICommand SaveButtonCommand { get; }
-        public ICommand OpenSelectExercisesCommand { get; }
         private void CreateSampleExercises()
         {
 
@@ -99,6 +102,11 @@ namespace Duo.ViewModels
                 Debug.WriteLine("Cannot add more exercises", $"Maximum number of exercises ({MAX_EXERCISES}) reached.");
             }
             
+        }
+        public void RemoveExercise(Exercise exerciseToBeRemoved)
+        {
+            SelectedExercises.Remove(exerciseToBeRemoved);
+            Debug.WriteLine("Removing exercise...");
         }
 
         public void CreateQuiz()
