@@ -31,6 +31,7 @@
     <None Remove="Views\Components\QuizAdminButton.xaml" />
     <None Remove="Views\Pages\AdminMainPage.xaml" />
     <None Remove="Views\Pages\CreateExercisePage.xaml" />
+    <None Remove="Views\Pages\CreateQuizPage.xaml" />
     <None Remove="Views\Pages\ManageExercisesPage.xaml" />
     <None Remove="Views\Pages\RoadmapMainPage.xaml" />
   </ItemGroup>
@@ -130,6 +131,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Pages\CreateQuizPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Components\CreateExerciseComponents\CreateFlashcardExercise.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
