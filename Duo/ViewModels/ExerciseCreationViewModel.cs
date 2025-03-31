@@ -25,8 +25,12 @@ namespace Duo.ViewModels
         // List of exercise types
         public ObservableCollection<string> ExerciseTypes { get; set; }
 
+        public ObservableCollection<string> Difficulties {  get; set; }
+
         // Selected exercise type
         private string _selectedExerciseType;
+
+        private string _selectedDifficulty;
 
         private object _currentExerciseViewModel;
 
@@ -61,6 +65,13 @@ namespace Duo.ViewModels
                 "Flashcard"
             };
 
+            Difficulties = new ObservableCollection<string>
+            {
+                "Easy",
+                "Normal",
+                "Hard"
+            };
+
             SelectedExerciseContent = new TextBlock { Text = "Select an exercise type." };
             _currentExerciseViewModel = CreateAssociationExerciseViewModel;
         }
@@ -92,6 +103,20 @@ namespace Duo.ViewModels
                 }
             }
         }
+
+        public string SelectedDifficulty
+        {
+            get => _selectedDifficulty;
+            set
+            {
+                if (_selectedDifficulty != value)
+                {
+                    _selectedDifficulty = value;
+                    OnPropertyChanged(nameof(SelectedDifficulty));
+                }
+            }
+        }
+
         public object SelectedExerciseContent
         {
             get => _selectedExerciseContent;
@@ -161,7 +186,8 @@ namespace Duo.ViewModels
 
         public void CreateMultipleChoiceExercise()
         {
-            Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, Models.Difficulty.Easy);
+            Duo.Models.Difficulty difficulty = getDifficulty(SelectedDifficulty);
+            Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, difficulty);
             _exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
             RequestGoBack?.Invoke(this, EventArgs.Empty);
@@ -169,12 +195,26 @@ namespace Duo.ViewModels
 
         public void CreateAssocitationExercise()
         {
-            Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText,Models.Difficulty.Easy);
+            Duo.Models.Difficulty difficulty = getDifficulty(SelectedDifficulty);
+            Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText, difficulty);
             _exerciseService.CreateExercise(newExercise);
             Debug.WriteLine(newExercise);
             RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
 
-
+        private Duo.Models.Difficulty getDifficulty(string difficulty)
+        {
+            switch(difficulty)
+            {
+                case "Easy":
+                    return Models.Difficulty.Easy;
+                case "Normal":
+                    return Models.Difficulty.Normal;
+                case "Hard":
+                    return Models.Difficulty.Hard;
+                default:
+                    return Models.Difficulty.Normal;
+            }
+        }
     }
 }

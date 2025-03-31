@@ -67,13 +67,19 @@
                             TextWrapping="Wrap"
                             AcceptsReturn="True"
                             MaxHeight="100"
-                        Width="400"/>
+                        Width="350"/>
                     </StackPanel>
                     <ComboBox x:Name="ExerciseTypeComboBox"          
                               ItemsSource="{Binding ExerciseTypes}" 
                               SelectedItem="{Binding SelectedExerciseType, Mode=TwoWay}" 
                               x:DefaultBindMode="TwoWay"
                               Header="Exercise type" PlaceholderText="Pick an exercise type" Width="200">
+                    </ComboBox>
+                    <ComboBox x:Name="DifficultyComboBox"          
+                           ItemsSource="{Binding Difficulties}" 
+                           SelectedItem="{Binding SelectedDifficulty, Mode=TwoWay}" 
+                           x:DefaultBindMode="TwoWay"
+                           Header="Difficulty" PlaceholderText="Difficulty" Width="150">
                     </ComboBox>
                 </StackPanel>
 
