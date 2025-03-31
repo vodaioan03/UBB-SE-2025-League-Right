@@ -7,7 +7,7 @@ BEGIN
     -- Check if username already exists
     IF EXISTS (SELECT 1 FROM Users WHERE Username = @Username)
     BEGIN
-        RAISERROR ('Username already exists.', 16, 1);
+        RAISERROR ('Username already exists.', 16, 1) WITH NOWAIT;
         RETURN;
     END
 

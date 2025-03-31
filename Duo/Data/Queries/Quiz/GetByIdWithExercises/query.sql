@@ -7,19 +7,15 @@ BEGIN
         e.*,
         d.Name as DifficultyName,
         -- Multiple Choice Exercise data
-        mce.Question as MultipleChoiceQuestion,
         mce.CorrectAnswer as MultipleChoiceCorrectAnswer,
         mco.OptionText as MultipleChoiceOption,
         -- Fill in the Blanks Exercise data
-        fbe.Sentence as FillInTheBlanksSentence,
         fba.CorrectAnswer as FillInTheBlanksAnswer,
         -- Association Exercise data
         ap.FirstAnswer as AssociationFirstAnswer,
         ap.SecondAnswer as AssociationSecondAnswer,
         -- Flashcard Exercise data
-        fe.Sentence as FlashcardSentence,
-        fe.Answer as FlashcardAnswer,
-        fe.TimeInSeconds as FlashcardTimeInSeconds
+        fe.Answer as FlashcardAnswer
     FROM Quizzes q
     LEFT JOIN QuizExercises qe ON q.Id = qe.QuizId
     LEFT JOIN Exercises e ON qe.ExerciseId = e.Id

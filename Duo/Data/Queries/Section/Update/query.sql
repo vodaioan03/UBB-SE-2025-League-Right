@@ -11,13 +11,13 @@ BEGIN
         -- Check if section exists
         IF NOT EXISTS (SELECT 1 FROM Sections WHERE Id = @sectionId)
         BEGIN
-            THROW 50001, 'Section not found', 1;
+            RAISERROR ('Section not found', 16, 1) WITH NOWAIT;
         END
 
         -- Check if roadmap exists
         IF NOT EXISTS (SELECT 1 FROM Roadmaps WHERE Id = @roadmapId)
         BEGIN
-            THROW 50002, 'Roadmap not found', 1;
+            RAISERROR ('Roadmap not found', 16, 1) WITH NOWAIT;
         END
 
         -- Check if order number is unique within the roadmap
@@ -29,7 +29,7 @@ BEGIN
             AND Id != @sectionId
         )
         BEGIN
-            THROW 50003, 'Order number already exists in this roadmap', 1;
+            RAISERROR ('Order number already exists in this roadmap', 16, 1) WITH NOWAIT;
         END
 
         -- Update the section
@@ -43,6 +43,13 @@ BEGIN
         WHERE Id = @sectionId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

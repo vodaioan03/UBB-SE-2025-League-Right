@@ -10,7 +10,7 @@ BEGIN
             WHERE Id = @answerId
         )
         BEGIN
-            THROW 50001, 'Fill in the Blanks answer not found', 1;
+            RAISEERROR('Fill in the Blanks answer not found', 16, 1) WITH NOWAIT;
         END
 
         -- Delete the answer
@@ -18,6 +18,13 @@ BEGIN
         WHERE Id = @answerId;
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 

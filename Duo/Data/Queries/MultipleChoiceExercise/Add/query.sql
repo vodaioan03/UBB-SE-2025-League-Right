@@ -1,6 +1,5 @@
 CREATE OR ALTER PROCEDURE sp_AddMultipleChoiceExercise
     @exerciseId INT,
-    @question VARCHAR(500),
     @correctAnswer VARCHAR(500)
 AS
 BEGIN
@@ -13,14 +12,21 @@ BEGIN
             AND Type = 'MultipleChoice'
         )
         BEGIN
-            THROW 50001, 'Invalid exercise ID or type', 1;
+            RAISERROR('Exercise not found or not of type MultipleChoice', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the multiple choice exercise
-        INSERT INTO MultipleChoiceExercises (ExerciseId, Question, CorrectAnswer)
-        VALUES (@exerciseId, @question, @correctAnswer);
+        INSERT INTO MultipleChoiceExercises (ExerciseId, CorrectAnswer)
+        VALUES (@exerciseId, @correctAnswer);
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT 
+            @ErrorMessage = ERROR_MESSAGE(),
+            @ErrorSeverity = ERROR_SEVERITY(),
+            @ErrorState = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
 END; 

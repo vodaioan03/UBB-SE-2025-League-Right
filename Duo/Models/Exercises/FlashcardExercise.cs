@@ -6,23 +6,29 @@ namespace Duo.Models.Exercises
 {
     public class FlashcardExercise : Exercise
     {
-        public string Sentence { get; set; }
         public string Answer { get; set; }
-        public int TimeInSeconds { get; set; }
+        public int TimeInSeconds => GetTimeInSeconds();
 
-        public FlashcardExercise(int id, string sentence, string answer, int timeInSeconds, Difficulty difficulty)
-            : base(id, sentence, difficulty)
+        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty)
+            : base(id, question, difficulty)
         {
-            if (string.IsNullOrWhiteSpace(sentence))
-                throw new ArgumentException("Sentence cannot be empty", nameof(sentence));
+            if (string.IsNullOrWhiteSpace(question))
+                throw new ArgumentException("Question cannot be empty", nameof(question));
             if (string.IsNullOrWhiteSpace(answer))
                 throw new ArgumentException("Answer cannot be empty", nameof(answer));
-            if (timeInSeconds <= 0)
-                throw new ArgumentException("Time in seconds must be greater than 0", nameof(timeInSeconds));
 
-            Sentence = sentence;
             Answer = answer;
-            TimeInSeconds = timeInSeconds;
+        }
+
+        private int GetTimeInSeconds()
+        {
+            return Difficulty switch
+            {
+                Difficulty.Easy => 45,
+                Difficulty.Normal => 30,
+                Difficulty.Hard => 15,
+                _ => throw new ArgumentException($"Unknown difficulty level: {Difficulty}")
+            };
         }
 
         public bool ValidateAnswer(string userAnswer)

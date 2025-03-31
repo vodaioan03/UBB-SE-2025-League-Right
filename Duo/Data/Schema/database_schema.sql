@@ -58,13 +58,13 @@ CREATE TABLE Exercises (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Type VARCHAR(50) NOT NULL, -- 'MultipleChoice', 'FillInTheBlanks', 'Association', 'Flashcard'
     DifficultyId INT NOT NULL,
+    Question VARCHAR(500) NOT NULL,
     FOREIGN KEY (DifficultyId) REFERENCES Difficulties(Id)
 );
 
 -- Create MultipleChoiceExercises table
 CREATE TABLE MultipleChoiceExercises (
     ExerciseId INT PRIMARY KEY,
-    Question VARCHAR(500) NOT NULL,
     CorrectAnswer VARCHAR(500) NOT NULL,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
@@ -80,7 +80,6 @@ CREATE TABLE MultipleChoiceOptions (
 -- Create FillInTheBlanksExercises table
 CREATE TABLE FillInTheBlanksExercises (
     ExerciseId INT PRIMARY KEY,
-    Sentence VARCHAR(500) NOT NULL,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 
@@ -144,9 +143,7 @@ CREATE TABLE ExamExercises (
 -- Create FlashcardExercises table
 CREATE TABLE FlashcardExercises (
     ExerciseId INT PRIMARY KEY,
-    Sentence VARCHAR(500) NOT NULL,
     Answer VARCHAR(100) NOT NULL,
-    TimeInSeconds INT NOT NULL,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
 

@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE sp_AddAssociationExercise
-    @exerciseId INT
+    @exerciseId INT,
 AS
 BEGIN
     BEGIN TRY
@@ -8,10 +8,10 @@ BEGIN
             SELECT 1 
             FROM Exercises 
             WHERE Id = @exerciseId 
-            AND Type = 'Association'
+            AND Type = 'AssociationExercise'
         )
         BEGIN
-            THROW 50001, 'Invalid exercise ID or type', 1;
+            RAISERROR ('Invalid exercise ID or type.', 16, 1) WITH NOWAIT;
         END
 
         -- Insert the association exercise
@@ -19,6 +19,9 @@ BEGIN
         VALUES (@exerciseId);
     END TRY
     BEGIN CATCH
-        THROW;
+        -- Handle errors
+        DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState) WITH NOWAIT;
     END CATCH
 END; 
