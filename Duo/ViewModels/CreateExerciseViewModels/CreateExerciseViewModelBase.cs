@@ -13,4 +13,5 @@ namespace Duo.ViewModels.ExerciseViewModels
     {
         public abstract Exercise CreateExercise(string question,Difficulty difficulty);
     }
+
 }

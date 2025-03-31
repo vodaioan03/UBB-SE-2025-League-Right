@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Duo.ViewModels;
+using Duo.ViewModels.CreateExerciseViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,29 +29,6 @@ namespace Duo.Views.Components.CreateExerciseComponents
         {
             this.InitializeComponent();
         }
-
-        /*
-        public async void AddNewAnswerButton_Click(object sender, RoutedEventArgs e)
-        {
-            if(AnswerItems.Count == MAXIMUM_ANSWERS)
-            {
-                await ShowErrorMessage("Cannot add more answers", $"Maximum number of answers ({MAXIMUM_ANSWERS}) reached.");
-                return;
-            }
-            AnswerItems.Add("");
-        }*/
-
-        private async Task ShowErrorMessage(string title, string message)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = title,
-                Content = message,
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
-            };
-
-            await dialog.ShowAsync();
-        }
+        
     }
 }

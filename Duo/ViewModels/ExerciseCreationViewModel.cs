@@ -38,10 +38,12 @@ namespace Duo.ViewModels
 
         public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; } = new();
         public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; } = new();
-        public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; } = new();
+        public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; }
         public CreateFlashcardExerciseViewModel CreateFlashcardExerciseViewModel { get; } = new();
 
         public event EventHandler RequestGoBack;
+        public event EventHandler<(string Title, string Message)> ShowErrorMessageRequested;
+
         public ExerciseCreationViewModel(ExerciseService exerciseService) 
         {
             _exerciseService = exerciseService;
@@ -57,6 +59,8 @@ namespace Duo.ViewModels
             {
                 Debug.WriteLine(ex);
             }
+
+            CreateMultipleChoiceExerciseViewModel = new CreateMultipleChoiceExerciseViewModel(this);
 
             SaveButtonCommand = new RelayCommand(CreateExercise);
             ExerciseTypes = new ObservableCollection<string>
@@ -141,6 +145,10 @@ namespace Duo.ViewModels
                 OnPropertyChanged(nameof(CurrentExerciseViewModel));
             }
         }
+        public void RaiseErrorMessage(string title, string message)
+        {
+            ShowErrorMessageRequested?.Invoke(this, (title, message));
+        }
 
         private void UpdateExerciseContent(string exerciseType)
         {
@@ -193,20 +201,36 @@ namespace Duo.ViewModels
 
         public void CreateMultipleChoiceExercise()
         {
-            Duo.Models.Difficulty difficulty = getDifficulty(SelectedDifficulty);
-            Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, difficulty);
-            _exerciseService.CreateExercise(newExercise);
-            Debug.WriteLine(newExercise);
-            RequestGoBack?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                Duo.Models.Difficulty difficulty = getDifficulty(SelectedDifficulty);
+                Exercise newExercise = CreateMultipleChoiceExerciseViewModel.CreateExercise(QuestionText, difficulty);
+                _exerciseService.CreateExercise(newExercise);
+                Debug.WriteLine(newExercise);
+                RequestGoBack?.Invoke(this, EventArgs.Empty);
+            }
+            catch(ArgumentException ex)
+            {
+                Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message,"");
+            }
         }
 
         public void CreateAssocitationExercise()
         {
-            Duo.Models.Difficulty difficulty = getDifficulty(SelectedDifficulty);
-            Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText, difficulty);
-            _exerciseService.CreateExercise(newExercise);
-            Debug.WriteLine(newExercise);
-            RequestGoBack?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                Duo.Models.Difficulty difficulty = getDifficulty(SelectedDifficulty);
+                Exercise newExercise = CreateAssociationExerciseViewModel.CreateExercise(QuestionText, difficulty);
+                _exerciseService.CreateExercise(newExercise);
+                Debug.WriteLine(newExercise);
+                RequestGoBack?.Invoke(this, EventArgs.Empty);
+            }
+            catch(ArgumentException ex)
+            {
+                Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message,"");
+            }
         }
 
         public void CreateFlashcardExercise()
