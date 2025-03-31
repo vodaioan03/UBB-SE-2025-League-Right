@@ -104,17 +104,13 @@ namespace Duo.ViewModels
             QuizExercises.Clear();
             if (SelectedQuiz==null)
                 return;
-            foreach (var exercise in selectedQuiz.ExerciseList)
-            {
-                QuizExercises.Add(exercise);
-            }
 
-            /*List<Exercise> exercisesOfSelectedQuiz = await _exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
+            List<Exercise> exercisesOfSelectedQuiz = await _exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
             foreach (var exercise in exercisesOfSelectedQuiz)
             {
                 Debug.WriteLine(exercise);
                 QuizExercises.Add(exercise);
-            }*/
+            }
         }
 
         public void openSelectExercises()

@@ -20,6 +20,7 @@ namespace Duo.ViewModels
     internal class CreateQuizViewModel: ViewModelBase
     {
         private readonly QuizService _quizService;
+        private readonly ExerciseService _exerciseService;
         private readonly List<Exercise> _availableExercises;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
         public ObservableCollection<Exercise> SelectedExercises { get; private set; } = new ObservableCollection<Exercise>();
@@ -39,15 +40,27 @@ namespace Duo.ViewModels
             try
             {
                 _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
-            CreateSampleExercises();
+            LoadExercisesAsync();
             SaveButtonCommand = new RelayCommand(CreateQuiz);
             OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
+        }
+
+        private async void LoadExercisesAsync()
+        {
+            Exercises.Clear(); // Clear the ObservableCollection
+            var exercises = await _exerciseService.GetAllExercises();
+            foreach (var exercise in exercises)
+            {
+                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                Exercises.Add(exercise);
+            }
         }
 
         private void CreateSampleExercises()
