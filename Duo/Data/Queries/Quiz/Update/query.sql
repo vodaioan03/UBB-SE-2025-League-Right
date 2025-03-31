@@ -16,17 +16,6 @@ BEGIN
         BEGIN
             RAISERROR ('Section not found', 16, 1) WITH NOWAIT;
         END
-
-        -- Check if order number is unique within the section
-        IF @sectionId IS NOT NULL AND @orderNumber IS NOT NULL AND EXISTS (
-            SELECT 1 
-            FROM Quizzes 
-            WHERE SectionId = @sectionId 
-            AND OrderNumber = @orderNumber
-        )
-        BEGIN
-            RAISERROR ('Order number already exists in this section', 16, 1) WITH NOWAIT;
-        END
         -- Update the quiz
         UPDATE Quizzes
         SET 
