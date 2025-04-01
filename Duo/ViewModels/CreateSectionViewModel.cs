@@ -31,6 +31,8 @@ namespace Duo.ViewModels
         public ICommand SaveButtonCommand { get; }
         public ICommand OpenSelectQuizesCommand { get; }
         public ICommand OpenSelectExamsCommand { get; }
+
+
         public CreateSectionViewModel()
         {
             try

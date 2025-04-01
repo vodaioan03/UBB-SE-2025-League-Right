@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duo.Models.Quizzes;
 using Duo.Models.Sections;
 using Duo.Repositories;
 
@@ -14,9 +15,9 @@ namespace Duo.Services
             _sectionRepository = sectionRepository;
         }
 
-        public Task<IEnumerable<Section>> GetAllSections()
+        public async Task<List<Section>> GetAllSections()
         {
-            return _sectionRepository.GetAllAsync();
+            return (List<Section>)await _sectionRepository.GetAllAsync();
         }
 
         public Task<Section> GetSectionById(int sectionId)
@@ -29,9 +30,12 @@ namespace Duo.Services
             return _sectionRepository.GetByRoadmapIdAsync(roadmapId);
         }
 
-        public Task<int> AddSection(Section section)
+        public async Task<int> AddSection(Section section)
         {
-            return _sectionRepository.AddAsync(section);
+            List<Section> allSections = await GetAllSections();
+            int orderNumber = allSections.Count;
+            section.OrderNumber = orderNumber + 1;
+            return await _sectionRepository.AddAsync(section);
         }
 
         public Task DeleteSection(int sectionId)
