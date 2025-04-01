@@ -43,39 +43,39 @@ namespace Duo.Views.Pages
                 // Example of a fill-in-the-blank question (with ___ placeholder)
                 new Models.Exercises.FlashcardExercise(
                     1, 
-                    "Geography",
-                    "The tallest mountain in the world is ___ with a height of 8,848 meters.", 
+                    "The tallest mountain in the world is ___ with a height of 8,848 meters.",
+                    "Mount Everest",
                     Models.Difficulty.Easy),
                 
                 // Original examples
                 new Models.Exercises.FlashcardExercise(
                     2, 
-                    "Mountains",
-                    "What is Earth's highest mountain above sea level?", 
+                    "What is Earth's highest mountain above sea level?",
+                    "Mount Everest",
                     Models.Difficulty.Normal),
                 
                 new Models.Exercises.FlashcardExercise(
                     3, 
-                    "Capitals",
-                    "What is the capital city of France?", 
+                    "What is the capital city of France?",
+                    "Paris",
                     Models.Difficulty.Easy),
                 
                 new Models.Exercises.FlashcardExercise(
                     4, 
-                    "Rivers",
                     "What is the longest river in the world?", 
+                    "Nile River",
                     Models.Difficulty.Hard),
                 
                 new Models.Exercises.FlashcardExercise(
                     5, 
-                    "Oceans",
-                    "What is the largest ocean on Earth?", 
+                    "What is the largest ocean on Earth?",
+                    "Pacific Ocean",
                     Models.Difficulty.Normal),
                 
                 new Models.Exercises.FlashcardExercise(
-                    6, 
-                    "Planets",
+                    6,
                     "Which planet is known as the Red Planet?", 
+                    "Mars",
                     Models.Difficulty.Easy)
             };
 

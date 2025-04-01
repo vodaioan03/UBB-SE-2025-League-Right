@@ -47,7 +47,7 @@
                 <components:AdminPageManageCard 
                     x:Name="ManageSectionsCard"
                     Title="Manage Sections" 
-                    ButtonText="add section">
+                    ButtonText="Add section">
                     <components:AdminPageManageCard.Icon>
                         <FontIcon Glyph="&#xE8F1;" FontSize="24" Margin="10" />
                     </components:AdminPageManageCard.Icon>
@@ -56,7 +56,7 @@
                 <components:AdminPageManageCard  
                     x:Name="ManageQuizesCard"
                     Title="Manage Quizzes"
-                    ButtonText="add quiz">
+                    ButtonText="Add quiz">
                     <components:AdminPageManageCard.Icon>
                         <FontIcon Glyph="&#xF22E;" FontSize="24" Margin="10" />
                     </components:AdminPageManageCard.Icon>
@@ -65,7 +65,7 @@
                 <components:AdminPageManageCard 
                     x:Name="ManageExamsCard"
                     Title="Manage Exams"
-                    ButtonText="add exam">
+                    ButtonText="Add exam">
                     <components:AdminPageManageCard.Icon>
                         <FontIcon Glyph="&#xE82D;" FontSize="24" Margin="10" />
                     </components:AdminPageManageCard.Icon>
@@ -74,7 +74,7 @@
                 <components:AdminPageManageCard 
                     x:Name="ManageExercisesCard"
                     Title="Manage Exercises"
-                    ButtonText="add exercise">
+                    ButtonText="Add exercise">
                     <components:AdminPageManageCard.Icon>
                         <FontIcon Glyph="&#xE8A5;" FontSize="24" Margin="10" />
                     </components:AdminPageManageCard.Icon>
