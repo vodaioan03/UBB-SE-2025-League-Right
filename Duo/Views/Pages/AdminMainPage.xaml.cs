@@ -35,7 +35,7 @@ namespace Duo.Views.Pages
         }
         private void CreateExam_Click(object sender, EventArgs e)
         {
-            ExamModalOverlay.Visibility = Visibility.Visible;
+            Frame.Navigate(typeof(CreateExamPage));
         }
 
         private void CreateExercise_Click(object sender, EventArgs e)
