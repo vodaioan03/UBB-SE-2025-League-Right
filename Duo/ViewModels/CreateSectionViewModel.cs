@@ -124,7 +124,11 @@ namespace Duo.ViewModels
         public async void CreateSection()
         {
             Section newSection = new Section(0,1,SubjectText,"",1,null);
+            newSection.Quizzes = SelectedQuizes.ToList();
+            newSection.Exam = SelectedExams.ToList()[0];
             int sectionId = await _sectionService.AddSection(newSection);
+            //_sectionService.AddQuizzesToSection(sectionId, SelectedQuizes.ToList());
+            Debug.WriteLine("Section created: " + newSection);
         }
     }
 }

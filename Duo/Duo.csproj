@@ -32,6 +32,7 @@
     <None Remove="Views\Components\QuizAdminButton.xaml" />
     <None Remove="Views\Components\RoadmapQuizPreview.xaml" />
     <None Remove="Views\Pages\AdminMainPage.xaml" />
+    <None Remove="Views\Pages\CreateExamPage.xaml" />
     <None Remove="Views\Pages\CreateExercisePage.xaml" />
     <None Remove="Views\Pages\CreateQuizPage.xaml" />
     <None Remove="Views\Pages\CreateSectionPage.xaml" />
@@ -139,6 +140,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Pages\CreateExamPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Components\AdminPageManageCard.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

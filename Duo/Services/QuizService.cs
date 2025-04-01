@@ -85,7 +85,7 @@ namespace Duo.Services
             await _examRepository.UpdateAsync(exam);
         }
 
-        public Task CreateExam(Exam exam)
+        public Task<int> CreateExam(Exam exam)
         {
             return _examRepository.AddAsync(exam);
         }
