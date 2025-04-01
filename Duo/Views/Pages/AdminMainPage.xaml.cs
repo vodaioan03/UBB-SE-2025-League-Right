@@ -20,11 +20,34 @@ namespace Duo.Views.Pages
             CreateExamModal.ModalClosed += CreateExamModal_ModalClosed;
             CreateQuizModal.QuizCreated += CreateQuizModal_QuizCreated;
             CreateQuizModal.ModalClosed += CreateQuizModal_ModalClosed;
+
+
+            ManageSectionsCard.AddButtonClicked += CreateSection_Click;
+            ManageExercisesCard.AddButtonClicked += CreateExercise_Click;
+            ManageQuizesCard.AddButtonClicked += CreateQuiz_Click;
+            ManageExamsCard.AddButtonClicked += CreateExam_Click;
+
+            ManageSectionsCard.ManageButtonClicked += OpenManageSectionsPage_Click;
+            ManageExercisesCard.ManageButtonClicked += OpenManageExercisesPage_Click;
+            ManageQuizesCard.ManageButtonClicked += OpenManageQuizesPage_Click;
+            ManageExamsCard.ManageButtonClicked += OpenManageExamsPage_Click;
+
+        }
+        private void CreateExam_Click(object sender, EventArgs e)
+        {
+            ExamModalOverlay.Visibility = Visibility.Visible;
         }
 
-        private void CreateSection_Click(object sender, RoutedEventArgs e)
+        private void CreateExercise_Click(object sender, EventArgs e)
         {
-            SectionModalOverlay.Visibility = Visibility.Visible;
+            Frame.Navigate(typeof(CreateExercisePage));
+        }
+
+        private void CreateSection_Click(object sender, EventArgs e)
+        {
+            //SectionModalOverlay.Visibility = Visibility.Visible;
+
+            Frame.Navigate(typeof(CreateSectionPage));
         }
 
         private void CreateSectionModal_SectionCreated(object sender, SectionCreatedEventArgs e)
@@ -66,7 +89,7 @@ namespace Duo.Views.Pages
         }
 
 
-        private void CreateQuiz_Click(object sender, RoutedEventArgs e)
+        private void CreateQuiz_Click(object sender, EventArgs e)
         {
             //QuizModalOverlay.Visibility = Visibility.Visible;
             Frame.Navigate(typeof(CreateQuizPage));
@@ -89,14 +112,22 @@ namespace Duo.Views.Pages
             QuizModalOverlay.Visibility = Visibility.Collapsed;
         }
 
-        public void OpenManageExercisesPage_Click(object sender, RoutedEventArgs e)
+        public void OpenManageExercisesPage_Click(object sender, EventArgs e)
         {
             Frame.Navigate(typeof(ManageExercisesPage));
         }
 
-        public void OpenManageQuizesPage_Click(object sender, RoutedEventArgs e)
+        public void OpenManageQuizesPage_Click(object sender, EventArgs e)
         {
             Frame.Navigate(typeof(ManageQuizesPage));
+        }
+        public void OpenManageSectionsPage_Click(object sender, EventArgs e)
+        {
+            Frame.Navigate(typeof(ManageSectionsPage));
+        }
+        public void OpenManageExamsPage_Click(object sender, EventArgs e)
+        {
+
         }
 
     }

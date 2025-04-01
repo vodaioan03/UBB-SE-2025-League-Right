@@ -22,50 +22,86 @@ INSERT INTO Quizzes (SectionId, OrderNumber) VALUES
 
 -- Insert Exercises
 INSERT INTO Exercises (Type, DifficultyId, Question) VALUES 
-('MultipleChoice', 1, 'What is the largest continent?'),
-('FillInTheBlank', 2, 'The capital of France is Paris.'),
-('Association', 3, 'Match the countries with their capitals.'),
-('Flashcard', 1, 'What is the capital of Japan?');
+('MultipleChoiceExercise', 1, 'What is the largest continent?'),
+('FillInTheBlankExercise', 2, 'The capital of France is Paris.'),
+('AssociationExercise', 3, 'Match the countries with their capitals.'),
+('FlashcardExercise', 1, 'What is the capital of Japan?'),
+('MultipleChoiceExercise', 2, 'Which continent is known as the "Dark Continent"?'),
+('FillInTheBlankExercise', 1, 'The capital of Germany is Berlin.'),
+('AssociationExercise', 2, 'Match the country with its capital.'),
+('FlashcardExercise', 3, 'What is the capital of Italy?'),
+('MultipleChoiceExercise', 3, 'Which continent is the smallest?'),
+('FillInTheBlankExercise', 2, 'The capital of Spain is Madrid.'),
+('AssociationExercise', 1, 'Match the country with its capital.'),
+('FlashcardExercise', 2, 'What is the capital of Canada?');
 
--- Retrieve Exercise IDs
-DECLARE @mcExerciseId INT = 1;
-DECLARE @fibExerciseId INT = 2;
-DECLARE @assocExerciseId INT = 3;
-DECLARE @flashcardExerciseId INT = 4;
 
 -- Insert Multiple Choice Exercise Details
 INSERT INTO MultipleChoiceExercises (ExerciseId, CorrectAnswer) VALUES 
-(1, 'Asia');
+(1, 'Asia'),
+(5, 'Africa'), 
+(9, 'Australia');
 
 INSERT INTO MultipleChoiceOptions (ExerciseId, OptionText) VALUES 
 (1, 'Africa'),
 (1, 'Europe'),
-(1, 'North America');
+(1, 'North America'),
+(5, 'Antarctica'),
+(5, 'Europe'),
+(5, 'Australia'),
+(9, 'Asia'),
+(9, 'Europe'),
+(9, 'North America');
 
 -- Insert Fill In The Blank Answers
-INSERT INTO FillInTheBlankExercises (ExerciseId) VALUES (2);
+INSERT INTO FillInTheBlankExercises (ExerciseId) VALUES
+(2),
+(6), 
+(10);
 
 INSERT INTO FillInTheBlankAnswers (ExerciseId, CorrectAnswer) VALUES 
-(2, 'Paris');
+(2, 'Paris'),
+(6, 'Berlin'), 
+(10, 'Madrid');
 
 -- Insert Association Exercise
-INSERT INTO AssociationExercises (ExerciseId) VALUES (3);
+INSERT INTO AssociationExercises (ExerciseId) VALUES
+(3),
+(7), 
+(11);
 
 INSERT INTO AssociationPairs (ExerciseId, FirstAnswer, SecondAnswer) VALUES 
 (3, 'France', 'Paris'),
 (3, 'Germany', 'Berlin'),
-(3, 'Italy', 'Rome');
+(3, 'Italy', 'Rome'),
+(7, 'Spain', 'Madrid'),
+(7, 'Italy', 'Rome'),
+(11, 'Canada', 'Ottawa'),
+(11, 'USA', 'Washington D.C.'),
+(11, 'Mexico', 'Mexico City'),
+(11, 'Brazil', 'Brasilia'),
+(11, 'Argentina', 'Buenos Aires');
 
 -- Insert Flashcard Exercise
 INSERT INTO FlashcardExercises (ExerciseId, Answer) VALUES 
-(4, 'Tokyo');
+(4, 'Tokyo'),
+(8, 'Rome'), 
+(12, 'Ottawa');
 
 -- Link Exercises to Quizzes
 INSERT INTO QuizExercises (QuizId, ExerciseId) VALUES 
 (1, 1),
 (1, 2),
 (2, 3),
-(3, 4);
+(3, 4),
+(3, 5),
+(1, 6),
+(2, 7),
+(3, 8),
+(1, 9),
+(2, 10),
+(3, 11),
+(1, 12);
 
 -- Insert Exam
 INSERT INTO Exams (SectionId) VALUES (1);

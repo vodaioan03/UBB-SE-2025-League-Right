@@ -1,7 +1,6 @@
 CREATE OR ALTER PROCEDURE sp_AddExerciseToExam
     @examId INT,
-    @exerciseId INT,
-    @newId INT OUTPUT
+    @exerciseId INT
 AS
 BEGIN
     -- Check if exam exists
@@ -19,5 +18,4 @@ BEGIN
     INSERT INTO ExamExercises (ExamId, ExerciseId)
     VALUES (@examId, @exerciseId);
 
-    SET @newId = SCOPE_IDENTITY();
 END; 

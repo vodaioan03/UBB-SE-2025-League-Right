@@ -80,6 +80,7 @@ namespace Duo
             services.AddTransient<ExerciseCreationViewModel>();
             services.AddTransient<QuizExamViewModel>();
             services.AddTransient<CreateQuizViewModel>();
+            services.AddTransient<CreateSectionViewModel>();
 
             services.AddSingleton<RoadmapMainPageViewModel>();
             services.AddSingleton<RoadmapSectionViewModel>();

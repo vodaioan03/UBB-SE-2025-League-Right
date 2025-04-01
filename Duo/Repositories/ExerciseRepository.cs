@@ -20,6 +20,54 @@ public class ExerciseRepository
         _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
+        private List<Exercise> MergeExercises(List<Exercise> exercises)
+    {
+        var mergedExercises = new List<Exercise>();
+        var exerciseMap = new Dictionary<int, Exercise>();
+
+        foreach (var exercise in exercises)
+        {
+            if (!exerciseMap.TryGetValue(exercise.Id, out var existingExercise))
+            {
+                // First occurrence of this exercise ID
+                exerciseMap[exercise.Id] = exercise switch
+                {
+                    MultipleChoiceExercise mc => new MultipleChoiceExercise(mc.Id, mc.Question, mc.Difficulty, new List<MultipleChoiceAnswerModel>(mc.Choices)),
+                    FillInTheBlankExercise fb => new FillInTheBlankExercise(fb.Id, fb.Question, fb.Difficulty, new List<string>(fb.PossibleCorrectAnswers)),
+                    AssociationExercise assoc => new AssociationExercise(assoc.Id, assoc.Question, assoc.Difficulty, new List<string>(assoc.FirstAnswersList), new List<string>(assoc.SecondAnswersList)),
+                    FlashcardExercise flash => new FlashcardExercise(flash.Id, flash.Question, flash.Answer, flash.Difficulty),
+                    _ => exercise // Keep other types unchanged
+                };
+            }
+            else
+            {
+                // Merge the data
+                switch (existingExercise)
+                {
+                    case MultipleChoiceExercise existingMC when exercise is MultipleChoiceExercise newMC:
+                        //remove from the choicesthe correct choice, as it was previously added
+                        newMC.Choices.RemoveAll(c => c.IsCorrect);
+                        existingMC.Choices.AddRange(newMC.Choices);
+                        break;
+
+                    case FillInTheBlankExercise existingFB when exercise is FillInTheBlankExercise newFB:
+                        existingFB.PossibleCorrectAnswers.AddRange(newFB.PossibleCorrectAnswers);
+                        break;
+
+                    case AssociationExercise existingAssoc when exercise is AssociationExercise newAssoc:
+                        existingAssoc.FirstAnswersList.AddRange(newAssoc.FirstAnswersList);
+                        existingAssoc.SecondAnswersList.AddRange(newAssoc.SecondAnswersList);
+                        break;
+                }
+            }
+        }
+
+        // Add the merged multiple-choice exercises to the final list
+        mergedExercises.AddRange(exerciseMap.Values);
+
+        return mergedExercises;
+    }
+
     public async Task<IEnumerable<Exercise>> GetAllExercisesAsync()
     {
         try
@@ -41,19 +89,44 @@ public class ExerciseRepository
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
-                Exercise exercise = type switch
+                Exercise exercise;
+                switch (type)
                 {
-                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
-                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
-                    _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
-                };
+                    case "MultipleChoiceExercise":
+                        var correctAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceCorrectAnswer"));
+                        var correctAnswerPair = new MultipleChoiceAnswerModel(correctAnswer, true);
+                        var wrongAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceOption"));
+                        var wrongAnswerPair = new MultipleChoiceAnswerModel(wrongAnswer, false);
+                        var options = new List<MultipleChoiceAnswerModel> { correctAnswerPair, wrongAnswerPair };
+                        exercise = new MultipleChoiceExercise(id, question, difficulty, options);
+                        break;
+
+                    case "FillInTheBlankExercise":
+                        var possibleAnswer = reader.GetString(reader.GetOrdinal("FillInTheBlankAnswer"));
+                        exercise = new FillInTheBlankExercise(id, question, difficulty, new List<string> { possibleAnswer });
+                        break;
+
+                    case "AssociationExercise":
+                        var firstAnswer = reader.GetString(reader.GetOrdinal("AssociationFirstAnswer"));
+                        var secondAnswer = reader.GetString(reader.GetOrdinal("AssociationSecondAnswer"));
+                        var firstAnswersList = new List<string> { firstAnswer };
+                        var secondAnswersList = new List<string> { secondAnswer };
+                        exercise = new AssociationExercise(id, question, difficulty, firstAnswersList, secondAnswersList);
+                        break;
+
+                    case "FlashcardExercise":
+                        var flashcardAnswer = reader.GetString(reader.GetOrdinal("FlashcardAnswer"));
+                        exercise = new FlashcardExercise(id, question, flashcardAnswer, difficulty);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown exercise type: {type}");
+                }
 
                 exercises.Add(exercise);
             }
             
-            return exercises;
+            return MergeExercises(exercises); 
         }
         catch (SqlException ex)
         {
@@ -69,7 +142,8 @@ public class ExerciseRepository
         }
 
         try
-        {
+        {   
+            var exercises = new List<Exercise>();
             using var connection = await _databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
             
@@ -80,23 +154,50 @@ public class ExerciseRepository
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
             
-            if (await reader.ReadAsync())
+            while (await reader.ReadAsync())
             {
                 var type = reader.GetString(reader.GetOrdinal("Type"));
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
-                return type switch
+                Exercise exercise;
+                switch (type)
                 {
-                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
-                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
-                    _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
-                };
+                    case "MultipleChoiceExercise":
+                        var correctAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceCorrectAnswer"));
+                        var correctAnswerPair = new MultipleChoiceAnswerModel(correctAnswer, true);
+                        var wrongAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceOption"));
+                        var wrongAnswerPair = new MultipleChoiceAnswerModel(wrongAnswer, false);
+                        var options = new List<MultipleChoiceAnswerModel> { correctAnswerPair, wrongAnswerPair };
+                        exercise = new MultipleChoiceExercise(id, question, difficulty, options);
+                        break;
+
+                    case "FillInTheBlankExercise":
+                        var possibleAnswer = reader.GetString(reader.GetOrdinal("FillInTheBlankAnswer"));
+                        exercise = new FillInTheBlankExercise(id, question, difficulty, new List<string> { possibleAnswer });
+                        break;
+
+                    case "AssociationExercise":
+                        var firstAnswer = reader.GetString(reader.GetOrdinal("AssociationFirstAnswer"));
+                        var secondAnswer = reader.GetString(reader.GetOrdinal("AssociationSecondAnswer"));
+                        var firstAnswersList = new List<string> { firstAnswer };
+                        var secondAnswersList = new List<string> { secondAnswer };
+                        exercise = new AssociationExercise(id, question, difficulty, firstAnswersList, secondAnswersList);
+                        break;
+
+                    case "FlashcardExercise":
+                        var flashcardAnswer = reader.GetString(reader.GetOrdinal("FlashcardAnswer"));
+                        exercise = new FlashcardExercise(id, question, flashcardAnswer, difficulty);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown exercise type: {type}");
+                }
+
+                exercises.Add(exercise);
             }
             
-            throw new KeyNotFoundException($"Exercise with ID {id} not found.");
+            return MergeExercises(exercises)[0];
         }
         catch (SqlException ex)
         {
@@ -126,24 +227,53 @@ public class ExerciseRepository
             
             while (await reader.ReadAsync())
             {
-                var type = reader.GetString(reader.GetOrdinal("Type"));
-                var id = reader.GetInt32(reader.GetOrdinal("Id"));
+                var type = reader.IsDBNull(reader.GetOrdinal("Type")) ? null : reader.GetString(reader.GetOrdinal("Type"));
+                if (string.IsNullOrEmpty(type))
+                {
+                    return new List<Exercise>();
+                }
+                var id = reader.GetInt32(reader.GetOrdinal("ExerciseId"));
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
-                Exercise exercise = type switch
+                Exercise exercise;
+                switch (type)
                 {
-                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
-                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
-                    _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
-                };
+                    case "MultipleChoiceExercise":
+                        var correctAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceCorrectAnswer"));
+                        var correctAnswerPair = new MultipleChoiceAnswerModel(correctAnswer, true);
+                        var wrongAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceOption"));
+                        var wrongAnswerPair = new MultipleChoiceAnswerModel(wrongAnswer, false);
+                        var options = new List<MultipleChoiceAnswerModel> { correctAnswerPair, wrongAnswerPair };
+                        exercise = new MultipleChoiceExercise(id, question, difficulty, options);
+                        break;
+
+                    case "FillInTheBlankExercise":
+                        var possibleAnswer = reader.GetString(reader.GetOrdinal("FillInTheBlankAnswer"));
+                        exercise = new FillInTheBlankExercise(id, question, difficulty, new List<string> { possibleAnswer });
+                        break;
+
+                    case "AssociationExercise":
+                        var firstAnswer = reader.GetString(reader.GetOrdinal("AssociationFirstAnswer"));
+                        var secondAnswer = reader.GetString(reader.GetOrdinal("AssociationSecondAnswer"));
+                        var firstAnswersList = new List<string> { firstAnswer };
+                        var secondAnswersList = new List<string> { secondAnswer };
+                        exercise = new AssociationExercise(id, question, difficulty, firstAnswersList, secondAnswersList);
+                        break;
+
+                    case "FlashcardExercise":
+                        var flashcardAnswer = reader.GetString(reader.GetOrdinal("FlashcardAnswer"));
+                        exercise = new FlashcardExercise(id, question, flashcardAnswer, difficulty);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown exercise type: {type}");
+                }
 
                 exercises.Add(exercise);
             }
             
-            return exercises;
+            return MergeExercises(exercises);
         }
         catch (SqlException ex)
         {
@@ -173,24 +303,53 @@ public class ExerciseRepository
             
             while (await reader.ReadAsync())
             {
-                var type = reader.GetString(reader.GetOrdinal("Type"));
-                var id = reader.GetInt32(reader.GetOrdinal("Id"));
+                var type = reader.IsDBNull(reader.GetOrdinal("Type")) ? null : reader.GetString(reader.GetOrdinal("Type"));
+                if (string.IsNullOrEmpty(type))
+                {
+                    return new List<Exercise>();
+                }
+                var id = reader.GetInt32(reader.GetOrdinal("ExerciseId"));
                 var question = reader.GetString(reader.GetOrdinal("Question"));
                 var difficulty = (Difficulty)reader.GetInt32(reader.GetOrdinal("DifficultyId"));
 
-                Exercise exercise = type switch
+                Exercise exercise;
+                switch (type)
                 {
-                    "MultipleChoiceExercise" => await GetMultipleChoiceExerciseAsync(id, question, difficulty),
-                    "FillInTheBlankExercise" => await GetFillInTheBlankExerciseAsync(id, question, difficulty),
-                    "AssociationExercise" => await GetAssociationExerciseAsync(id, question, difficulty),
-                    "FlashcardExercise" => await GetFlashcardExerciseAsync(id, question, difficulty),
-                    _ => throw new InvalidOperationException($"Unknown exercise type: {type}")
-                };
+                    case "MultipleChoiceExercise":
+                        var correctAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceCorrectAnswer"));
+                        var correctAnswerPair = new MultipleChoiceAnswerModel(correctAnswer, true);
+                        var wrongAnswer = reader.GetString(reader.GetOrdinal("MultipleChoiceOption"));
+                        var wrongAnswerPair = new MultipleChoiceAnswerModel(wrongAnswer, false);
+                        var options = new List<MultipleChoiceAnswerModel> { correctAnswerPair, wrongAnswerPair };
+                        exercise = new MultipleChoiceExercise(id, question, difficulty, options);
+                        break;
+
+                    case "FillInTheBlankExercise":
+                        var possibleAnswer = reader.GetString(reader.GetOrdinal("FillInTheBlankAnswer"));
+                        exercise = new FillInTheBlankExercise(id, question, difficulty, new List<string> { possibleAnswer });
+                        break;
+
+                    case "AssociationExercise":
+                        var firstAnswer = reader.GetString(reader.GetOrdinal("AssociationFirstAnswer"));
+                        var secondAnswer = reader.GetString(reader.GetOrdinal("AssociationSecondAnswer"));
+                        var firstAnswersList = new List<string> { firstAnswer };
+                        var secondAnswersList = new List<string> { secondAnswer };
+                        exercise = new AssociationExercise(id, question, difficulty, firstAnswersList, secondAnswersList);
+                        break;
+
+                    case "FlashcardExercise":
+                        var flashcardAnswer = reader.GetString(reader.GetOrdinal("FlashcardAnswer"));
+                        exercise = new FlashcardExercise(id, question, flashcardAnswer, difficulty);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown exercise type: {type}");
+                }
 
                 exercises.Add(exercise);
             }
             
-            return exercises;
+            return MergeExercises(exercises);
         }
         catch (SqlException ex)
         {
@@ -334,104 +493,5 @@ public class ExerciseRepository
         {
             throw new Exception($"Database error while deleting exercise with ID {id}: {ex.Message}", ex);
         }
-    }
-
-    private async Task<MultipleChoiceExercise> GetMultipleChoiceExerciseAsync(int id, string question, Difficulty difficulty)
-    {
-        using var connection = await _databaseConnection.CreateConnectionAsync();
-        using var command = connection.CreateCommand();
-        
-        command.CommandText = "sp_GetMultipleChoiceExerciseById";
-        command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@exerciseId", id);
-        
-        await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
-        
-        var choices = new List<MultipleChoiceAnswerModel>();
-        
-        if (await reader.ReadAsync())
-        {
-            choices.Add(new MultipleChoiceAnswerModel(
-                reader.GetString(reader.GetOrdinal("CorrectAnswer")),
-                true
-            ));
-        }
-        
-        while (await reader.ReadAsync())
-        {
-            choices.Add(new MultipleChoiceAnswerModel(
-                reader.GetString(reader.GetOrdinal("OptionText")),
-                false
-            ));
-        }
-        
-        return new MultipleChoiceExercise(id, question, difficulty, choices);
-    }
-
-    private async Task<FillInTheBlankExercise> GetFillInTheBlankExerciseAsync(int id, string question, Difficulty difficulty)
-    {
-        using var connection = await _databaseConnection.CreateConnectionAsync();
-        using var command = connection.CreateCommand();
-        
-        command.CommandText = "sp_GetFillInTheBlankExerciseById";
-        command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@exerciseId", id);
-        
-        await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
-        
-        var answers = new List<string>();
-        while (await reader.ReadAsync())
-        {
-            answers.Add(reader.GetString(reader.GetOrdinal("CorrectAnswer")));
-        }
-        
-        return new FillInTheBlankExercise(id, question, difficulty, answers);
-    }
-
-    private async Task<AssociationExercise> GetAssociationExerciseAsync(int id, string question, Difficulty difficulty)
-    {
-        using var connection = await _databaseConnection.CreateConnectionAsync();
-        using var command = connection.CreateCommand();
-        
-        command.CommandText = "sp_GetAssociationExerciseById";
-        command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@exerciseId", id);
-        
-        await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
-        
-        var firstAnswers = new List<string>();
-        var secondAnswers = new List<string>();
-        while (await reader.ReadAsync())
-        {
-            firstAnswers.Add(reader.GetString(reader.GetOrdinal("FirstAnswer")));
-            secondAnswers.Add(reader.GetString(reader.GetOrdinal("SecondAnswer")));
-        }
-        
-        return new AssociationExercise(id, question, difficulty, firstAnswers, secondAnswers);
-    }
-
-    private async Task<FlashcardExercise> GetFlashcardExerciseAsync(int id, string question, Difficulty difficulty)
-    {
-        using var connection = await _databaseConnection.CreateConnectionAsync();
-        using var command = connection.CreateCommand();
-        
-        command.CommandText = "sp_GetFlashcardExercise";
-        command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@exerciseId", id);
-        
-        await connection.OpenAsync();
-        using var reader = await command.ExecuteReaderAsync();
-        
-        if (await reader.ReadAsync())
-        {
-            var answer = reader.GetString(reader.GetOrdinal("Answer"));
-            
-            return new FlashcardExercise(id, question, answer, difficulty);
-        }
-        
-        throw new KeyNotFoundException($"Flashcard exercise with ID {id} not found.");
     }
 }
