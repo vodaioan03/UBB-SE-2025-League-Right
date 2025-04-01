@@ -3,7 +3,6 @@ using Duo.Models.Sections;
 
 namespace Duo.Models.Roadmap;
 
-
 public class Roadmap
 {
     public int Id { get; set; }
