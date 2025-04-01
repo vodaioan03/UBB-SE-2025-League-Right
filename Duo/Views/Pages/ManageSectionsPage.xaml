@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Duo.Views.Pages"
     xmlns:local1="using:Duo.Models.Sections"
+    xmlns:quiz="using:Duo.Models.Quizzes"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -74,7 +75,40 @@ Padding="0,16,0,16">
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-                
+                <!-- Quiz Management -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Selected Quizes"
+           Style="{ThemeResource SubtitleTextBlockStyle}"
+           VerticalAlignment="Center"/>
+
+                </Grid>
+                <ListView x:Name="SelectedQuizes"
+      Height="200"
+      ItemsSource="{Binding SectionQuizes, Mode=TwoWay}"
+      BorderThickness="1"
+      BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+      Padding="8">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="quiz:Quiz">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal"
+                Spacing="8">
+                                    <TextBlock Text="Quiz #"/>
+                                    <TextBlock Text="{Binding Id}"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackPanel>
         </ScrollViewer>
     </Grid>
