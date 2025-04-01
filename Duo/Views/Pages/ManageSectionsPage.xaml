@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Duo.Views.Pages"
+    xmlns:local1="using:Duo.Models.Sections"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -48,8 +49,33 @@ Padding="0,16,0,16">
                Margin="0,0,0,6"
                Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
                HorizontalAlignment="Stretch"/>
-            </StackPanel>
 
+                <ListView ItemsSource="{Binding Sections}"
+                SelectedItem="{Binding SelectedSection, Mode=TwoWay}"
+            >
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local1:Section">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+                                <TextBlock Text="{Binding Title}"/>
+                                <TextBlock Text="{Binding Id}"/>
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                    Content="Remove" 
+                    Command="{x:Bind ViewModel.DeleteSectionCommand}"
+                    CommandParameter="{Binding}"
+                    Style="{ThemeResource TextBlockButtonStyle}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+                
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </Page>
