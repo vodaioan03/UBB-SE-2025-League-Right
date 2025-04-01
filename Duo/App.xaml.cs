@@ -83,7 +83,7 @@ namespace Duo
             services.AddTransient<CreateSectionViewModel>();
 
             services.AddSingleton<RoadmapMainPageViewModel>();
-            services.AddSingleton<RoadmapSectionViewModel>();
+            services.AddTransient<RoadmapSectionViewModel>();
             services.AddSingleton<RoadmapQuizPreviewViewModel>();
 
             serviceProvider = services.BuildServiceProvider();

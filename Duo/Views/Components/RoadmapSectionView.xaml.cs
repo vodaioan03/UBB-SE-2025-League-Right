@@ -21,6 +21,9 @@ using Duo.Models.Quizzes;
 using System.Windows.Input;
 using Duo.Helpers;
 using Duo.Views.Pages;
+using Duo.Views.Components;
+using Duo.ViewModels.Roadmap;
+using Microsoft.UI.Xaml.Markup;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,52 +34,10 @@ namespace Duo.Views.Components
     {
         public event RoutedEventHandler Click;
 
-        //public static readonly DependencyProperty QuizzesProperty =
-        //    DependencyProperty.Register(nameof(Quizzes), typeof(ObservableCollection<Quiz>), typeof(RoadmapSectionView), new PropertyMetadata(new ObservableCollection<Quiz>()));
-
-        //public static readonly DependencyProperty ExamProperty =
-        //    DependencyProperty.Register(nameof(Exam), typeof(Exam), typeof(RoadmapSectionView), new PropertyMetadata(null));
-
-        //public static readonly DependencyProperty SectionProperty =
-        //    DependencyProperty.Register(nameof(Section), typeof(Exam), typeof(RoadmapSectionView), new PropertyMetadata(null));
-
-        //public static readonly DependencyProperty OpenQuizPreviewCommandProperty =
-        //DependencyProperty.Register(
-        //    nameof(OpenQuizPreviewCommand),
-        //    typeof(ICommand),
-        //    typeof(RoadmapSectionView),
-        //    new PropertyMetadata(null));
-
-        //public ICommand OpenQuizPreviewCommand
-        //{
-        //    get => (ICommand)GetValue(OpenQuizPreviewCommandProperty);
-        //    set => SetValue(OpenQuizPreviewCommandProperty, value);
-        //}
-
         public RoadmapSectionView()
         {
             this.InitializeComponent();
         }
-
-        //public ObservableCollection<Quiz> Quizzes
-        //{
-        //    get => (ObservableCollection<Quiz>)GetValue(QuizzesProperty);
-        //    set => SetValue(QuizzesProperty, value);
-        //}
-
-        //public Exam Exam
-        //{
-        //    get => (Exam)GetValue(ExamProperty);
-        //    set
-        //    {
-        //        SetValue(ExamProperty, value);
-        //    }
-        //}
-        //public string Section
-        //{
-        //    get => (string)GetValue(SectionProperty);
-        //    set => SetValue(SectionProperty, value);
-        //}
 
         private void Quiz_Click(object sender, RoutedEventArgs e)
         {

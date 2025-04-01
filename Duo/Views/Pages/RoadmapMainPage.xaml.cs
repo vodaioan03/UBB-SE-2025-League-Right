@@ -36,6 +36,8 @@ namespace Duo.Views.Pages
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            //var ViewModel = (RoadmapMainPageViewModel)(App.serviceProvider.GetService(typeof(RoadmapMainPageViewModel)));
+            await ViewModel.SetupViewModel();
             base.OnNavigatedTo(e);
         }
 
@@ -52,5 +54,5 @@ namespace Duo.Views.Pages
             //{
             //    "Bucharest", "Sofia", "Chisinau"
             //};
-        }
+    }
 }

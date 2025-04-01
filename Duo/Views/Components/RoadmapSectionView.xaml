@@ -11,14 +11,10 @@
     xmlns:viewmodel="using:Duo.ViewModels.Roadmap"
     mc:Ignorable="d">
 
-    <UserControl.DataContext>
-        <viewmodel:RoadmapSectionViewModel x:Name="ViewModel"/>
-    </UserControl.DataContext>
-
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Orientation="Vertical" Spacing="0" HorizontalAlignment="Center" Margin="0">
+        <StackPanel Orientation="Vertical" Spacing="0" HorizontalAlignment="Center" Margin="0" x:Name="MainStackPanel">
             <TextBlock 
-                Text="Section title goes here"
+                Text="{Binding Section.Title}"
                 HorizontalAlignment="Left" 
                 FontSize="32"
                 Margin="50, 50, 0, 0"/>
@@ -44,7 +40,6 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <!--<local:QuizRoadmapButton ButtonClick="OnExamRoadmapButtonClick" QuizId="{x:Bind Exam.Id}" Margin="0" IsExam="True"/> -->
                     <local:QuizRoadmapButton 
                          ButtonClick="Quiz_Click"
                          QuizId="{Binding ExamButtonTemplate.Quiz.Id}" 

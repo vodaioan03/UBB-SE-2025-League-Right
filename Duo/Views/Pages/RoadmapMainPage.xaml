@@ -37,8 +37,21 @@
                    HorizontalAlignment="Center" 
                    FontSize="32"/>
 
-            <components:RoadmapSectionView x:Name="RoadmapSectionView"
-                                       Grid.Row="1"/>
+            <ScrollViewer VerticalScrollBarVisibility="auto" Height="750">
+                <ItemsControl ItemsSource="{Binding SectionViewModels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodel:RoadmapSectionViewModel">
+                            <components:RoadmapSectionView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Page>
