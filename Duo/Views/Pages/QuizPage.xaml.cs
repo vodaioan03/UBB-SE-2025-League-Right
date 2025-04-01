@@ -117,9 +117,16 @@ namespace Duo.Views.Pages
                 else
                 {
                     NextExerciseButton.Visibility = Visibility.Collapsed;
-                    ExerciseContentControl.Content = null;
 
-                    //ADD END SCREEN;
+                    var endScreen = new Components.QuizEndScreen()
+                    {
+                        CorrectAnswersText = ViewModel.CorrectAnswersText,
+                        PassingPercentText = ViewModel.PassingPercentText,
+                        IsPassedText = ViewModel.IsPassedText
+                    };
+
+                    ExerciseContentControl.Content = endScreen;
+
                 }
 
             }

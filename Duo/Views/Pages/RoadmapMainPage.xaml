@@ -16,7 +16,7 @@
         <viewmodel:RoadmapMainPageViewModel x:Name="ViewModel"/>
     </Page.DataContext>
 
-    <Grid>
+    <Grid Padding="50">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -32,15 +32,13 @@
                 <!-- Quiz Preview -->
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Quiz page" 
+            <TextBlock Text="Roadmap page" 
                    Grid.Row="0"
                    HorizontalAlignment="Center" 
                    FontSize="32"/>
 
             <components:RoadmapSectionView x:Name="RoadmapSectionView"
                                        Grid.Row="1"/>
-
-            <components:RoadmapQuizPreview Grid.Row="2"/>
         </Grid>
     </Grid>
 </Page>

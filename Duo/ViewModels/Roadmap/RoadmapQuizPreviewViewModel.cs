@@ -39,9 +39,9 @@ namespace Duo.ViewModels.Roadmap
             {
                 if (_quiz == null) return "-1";
                 if (_quiz is Exam)
-                    return "Exam";
+                    return "Final Exam";
                 if (_quiz is Quiz quiz)
-                    return quiz.OrderNumber.ToString() ?? "-1";
+                    return $"Quiz nr. {quiz.OrderNumber.ToString()}" ?? "-1";
                 return "-1";
             }
             set
@@ -87,29 +87,6 @@ namespace Duo.ViewModels.Roadmap
 
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         }
-
-        //public async Task OpenForQuiz(int quizId, bool isExam)
-        //{
-        //    _isPreviewVisible = Visibility.Visible;
-        //    OnPropertyChanged(nameof(IsPreviewVisible));
-        //    if (isExam)
-        //    {
-        //        _quiz = await _quizService.GetExamById(quizId);
-        //    }
-        //    else
-        //    {
-        //        _quiz = await _quizService.GetQuizById(quizId);
-        //        Debug.WriteLine($"Opening quiz: {_quiz}");
-        //    }
-        //    _section = await _sectionService.GetSectionById((int)_quiz.SectionId);
-        //    // Notify UI that Quiz and Section have changed
-        //    OnPropertyChanged(nameof(Quiz));
-        //    OnPropertyChanged(nameof(SectionTitle));
-        //    OnPropertyChanged(nameof(QuizOrderNumber));
-
-
-        //    Debug.WriteLine($"VALUE OF QUIZ: {QuizOrderNumber}, {SectionTitle}, {IsPreviewVisible}");
-        //}
 
         public async Task OpenForQuiz(int quizId, bool isExam)
         {

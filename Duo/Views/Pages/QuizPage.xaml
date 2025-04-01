@@ -46,7 +46,7 @@
                            Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
                            HorizontalAlignment="Stretch"/>
 
-                <ContentControl x:Name="ExerciseContentControl" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+                <ContentControl x:Name="ExerciseContentControl" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
                 <!-- Horizontal Line -->
                 <Rectangle Grid.Row="1"

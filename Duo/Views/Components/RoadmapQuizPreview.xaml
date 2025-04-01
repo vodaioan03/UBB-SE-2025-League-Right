@@ -10,15 +10,11 @@
     xmlns:viewmodels="using:Duo.ViewModels.Roadmap"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </UserControl.Resources>
-
     <UserControl.DataContext>
         <viewmodels:RoadmapQuizPreviewViewModel x:Name="ViewModel" />
     </UserControl.DataContext>
 
-    <StackPanel Visibility="{Binding IsPreviewVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+    <StackPanel Padding="100">
         <TextBlock Text="{Binding SectionTitle, Mode=OneWay}" 
                    HorizontalAlignment="Center" 
                    FontSize="32"/>
@@ -28,11 +24,6 @@
         <Button Content="Start quiz" 
                 HorizontalAlignment="Center" 
                 Margin="0,20,0,0"
-                Command="{Binding StartQuizCommand}"
-                CommandParameter="{Binding Quiz}"/>
-        <Button Content="Back" 
-                HorizontalAlignment="Center" 
-                Margin="0,20,0,0"
-                Command="{Binding BackButtonCommand}"/>
+                Click="OpenQuizButton_Click"/>
     </StackPanel>
 </UserControl>

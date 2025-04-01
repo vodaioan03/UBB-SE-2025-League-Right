@@ -4,6 +4,8 @@ using Microsoft.UI.Xaml.Data;
 using Duo.ViewModels.Roadmap;
 using System;
 using Microsoft.UI.Xaml.Media;
+using Duo.Views.Pages;
+using System.Diagnostics;
 
 namespace Duo.Views.Components
 {
@@ -16,85 +18,24 @@ namespace Duo.Views.Components
             //BuildUI();
         }
 
-        //private void BuildUI()
-        //{
-        //    var stackPanel = new StackPanel();
+        public void OpenQuizButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
 
-        //    // Bind Visibility to IsPreviewVisible
-        //    var visibilityBinding = new Binding
-        //    {
-        //        Source = ViewModel,
-        //        Path = new PropertyPath("IsPreviewVisible"),
-        //        Converter = (IValueConverter)Resources["BoolToVisibilityConverter"],
-        //        Mode = BindingMode.OneWay
-        //    };
-        //    stackPanel.SetBinding(StackPanel.VisibilityProperty, visibilityBinding);
+                Frame parentFrame = Helpers.Helpers.FindParent<Frame>(this);
+                if (parentFrame != null)
+                {
+                    parentFrame.Navigate(typeof(QuizPage), ViewModel.Quiz.Id);
+                }
 
-        //    // Section Title
-        //    var sectionTitleTextBlock = new TextBlock
-        //    {
-        //        FontSize = 32,
-        //        HorizontalAlignment = HorizontalAlignment.Center
-        //    };
-        //    sectionTitleTextBlock.SetBinding(TextBlock.TextProperty, new Binding
-        //    {
-        //        Source = ViewModel,
-        //        Path = new PropertyPath("SectionTitle"),
-        //        Mode = BindingMode.OneWay
-        //    });
+            }
+        }
 
-        //    // Quiz Order Number
-        //    var quizOrderTextBlock = new TextBlock
-        //    {
-        //        FontSize = 32,
-        //        HorizontalAlignment = HorizontalAlignment.Center
-        //    };
-        //    quizOrderTextBlock.SetBinding(TextBlock.TextProperty, new Binding
-        //    {
-        //        Source = ViewModel,
-        //        Path = new PropertyPath("QuizOrderNumber"),
-        //        Mode = BindingMode.OneWay
-        //    });
+        public async void Load(int quizId, bool isExam)
+        {
+            await ViewModel.OpenForQuiz(quizId, isExam);
+        }
 
-        //    // Start Quiz Button
-        //    var startQuizButton = new Button
-        //    {
-        //        Content = "Start quiz",
-        //        HorizontalAlignment = HorizontalAlignment.Center,
-        //        Margin = new Thickness(0, 20, 0, 0)
-        //    };
-        //    startQuizButton.SetBinding(Button.CommandProperty, new Binding
-        //    {
-        //        Source = ViewModel,
-        //        Path = new PropertyPath("StartQuizCommand")
-        //    });
-        //    startQuizButton.SetBinding(Button.CommandParameterProperty, new Binding
-        //    {
-        //        Source = ViewModel,
-        //        Path = new PropertyPath("Quiz")
-        //    });
-
-        //    // Back Button
-        //    var backButton = new Button
-        //    {
-        //        Content = "Back",
-        //        HorizontalAlignment = HorizontalAlignment.Center,
-        //        Margin = new Thickness(0, 20, 0, 0)
-        //    };
-        //    backButton.SetBinding(Button.CommandProperty, new Binding
-        //    {
-        //        Source = ViewModel,
-        //        Path = new PropertyPath("BackButtonCommand")
-        //    });
-
-        //    // Add controls to stack panel
-        //    stackPanel.Children.Add(sectionTitleTextBlock);
-        //    stackPanel.Children.Add(quizOrderTextBlock);
-        //    stackPanel.Children.Add(startQuizButton);
-        //    stackPanel.Children.Add(backButton);
-
-        //    // Add stack panel to the main container
-        //    MainContainer.Children.Add(stackPanel);
-        //}
     }
 }

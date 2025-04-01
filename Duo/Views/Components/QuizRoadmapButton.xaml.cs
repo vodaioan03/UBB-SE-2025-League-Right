@@ -141,7 +141,7 @@ namespace Duo.Views.Components
             // Bind the command and command parameter to the button if they are set
             if (Command != null)
             {
-                circularButton.Tag = CommandParameter;  // Optionally set a Tag for the command parameter if needed
+                circularButton.Tag = CommandParameter; 
             }
 
             // Add elements to the StackPanel content

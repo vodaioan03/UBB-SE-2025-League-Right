@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
 using System.Windows.Input;
+using Duo.Helpers;
 using Duo.Views.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -79,58 +80,16 @@ namespace Duo.Views.Components
 
         private void Quiz_Click(object sender, RoutedEventArgs e)
         {
-            var clickedButton = sender as QuizRoadmapButton;
-            Debug.WriteLine(clickedButton.QuizId);
-            var args = new Tuple<int, bool>(clickedButton.QuizId, clickedButton.IsExam);
-            ViewModel.OpenQuizPreviewCommand.Execute(args);
-        }
-
-        private void Exam_Click(object sender, RoutedEventArgs e)
-        {
-            // HANDLE EXAM CLICK/
-        }
-
-        public void OnQuizRoadmapButtonClick(object sender, RoutedEventArgs e)
-        {
             if (sender is QuizRoadmapButton button)
             {
                 Debug.WriteLine($"Quiz with ID {button.QuizId} clicked!");
 
-                Frame parentFrame = FindParent<Frame>(this);
+                Frame parentFrame = Helpers.Helpers.FindParent<Frame>(this);
                 if (parentFrame != null)
                 {
-                    parentFrame.Navigate(typeof(QuizPage), button.QuizId);
+                    parentFrame.Navigate(typeof(QuizPreviewPage), (button.QuizId, button.IsExam));
                 }
-
-                // You can perform any additional logic here based on the button that was clicked
             }
-        }
-
-        public void OnExamRoadmapButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is QuizRoadmapButton button)
-            {
-                Debug.WriteLine($"Exam with ID {button.QuizId} clicked!");
-
-                Frame parentFrame = FindParent<Frame>(this);
-                if (parentFrame != null)
-                {
-                    parentFrame.Navigate(typeof(ExamPage), button.QuizId);
-                }
-                // You can perform any additional logic here based on the button that was clicked
-            }
-        }
-
-        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(child);
-            while (parent != null)
-            {
-                if (parent is T tParent)
-                    return tParent;
-                parent = VisualTreeHelper.GetParent(parent);
-            }
-            return null;
         }
 
     }

@@ -84,6 +84,9 @@
     <Page Update="Views\Components\FillInTheBlankExercise.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\Components\QuizEndScreen.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\Components\Section\SectionView.xaml">
       <SubType>Designer</SubType>
     </Page>
