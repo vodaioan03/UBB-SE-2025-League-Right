@@ -45,6 +45,7 @@ namespace Duo.Services
 
         public async Task CreateExercise(Exercise exercise)
         {
+            ValidationHelper.ValidateGenericExercise(exercise);
             await _exerciseRepository.AddExerciseAsync(exercise);
         }
     }

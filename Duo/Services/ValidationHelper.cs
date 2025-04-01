@@ -47,23 +47,7 @@ namespace Duo.Services
 
             foreach (var exercise in exam.ExerciseList)
             {
-                switch (exercise)
-                {
-                    case MultipleChoiceExercise mcEx:
-                        ValidateMultipleChoiceExercise(mcEx);
-                        break;
-                    case AssociationExercise assocEx:
-                        ValidateAssociationExercise(assocEx);
-                        break;
-                    case FillInTheBlankExercise fibEx:
-                        ValidateFillInTheBlankExercise(fibEx);
-                        break;
-                    case FlashcardExercise flashEx:
-                        ValidateFlashCardExercise(flashEx);
-                        break;
-                    default:
-                        throw new ValidationException($"Unknown exercise type: {exercise.GetType().Name}");
-                }
+                ValidationHelper.ValidateGenericExercise(exercise);
             }
         }
 
@@ -80,23 +64,7 @@ namespace Duo.Services
 
             foreach (var exercise in quiz.ExerciseList)
             {
-                switch (exercise)
-                {
-                    case MultipleChoiceExercise mcEx:
-                        ValidateMultipleChoiceExercise(mcEx);
-                        break;
-                    case AssociationExercise assocEx:
-                        ValidateAssociationExercise(assocEx);
-                        break;
-                    case FillInTheBlankExercise fibEx:
-                        ValidateFillInTheBlankExercise(fibEx);
-                        break;
-                    case FlashcardExercise flashEx:
-                        ValidateFlashCardExercise(flashEx);
-                        break;
-                    default:
-                        throw new ValidationException($"Unknown exercise type: {exercise.GetType().Name}");
-                }
+                ValidationHelper.ValidateGenericExercise(exercise);
             }
         }
 
@@ -117,7 +85,7 @@ namespace Duo.Services
                     ValidateFillInTheBlankExercise(fibEx);
                     break;
                 case FlashcardExercise flashEx:
-                    ValidateFlashCardExercise(flashEx);
+                    ValidateFlashcardExercise(flashEx);
                     break;
                 default:
                     throw new ValidationException($"Unsupported exercise type: {exercise.GetType().Name}");
@@ -171,7 +139,7 @@ namespace Duo.Services
                 throw new ValidationException("Number of blanks does not match number of provided answers");
         }
 
-        static public void ValidateFlashCardExercise(FlashcardExercise ex)
+        static public void ValidateFlashcardExercise(FlashcardExercise ex)
         {
             if (ex.Question.Length < 1 || ex.Question.Length > 50)
                 throw new ValidationException("Flash card question length must be between 1 and 50 characters");
