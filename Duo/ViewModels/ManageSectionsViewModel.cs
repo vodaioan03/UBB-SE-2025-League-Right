@@ -38,7 +38,7 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
             }
             LoadSectionsAsync();
-            DeleteSectionCommand = new RelayCommandWithParameter<Quiz>(DeleteSection);
+            DeleteSectionCommand = new RelayCommandWithParameter<Section>(DeleteSection);
         }
         public Section SelectedSection
         {
@@ -68,14 +68,33 @@ namespace Duo.ViewModels
             }
         }
 
-        public void UpdateSectionQuizes(Section selectedSection)
+        public async void UpdateSectionQuizes(Section selectedSection)
         {
+            Debug.WriteLine("Updating quiz exercises...");
+            SectionQuizes.Clear();
+            if (SelectedSection == null)
+                return;
 
+            List<Quiz> quizzesOfSelectedQuiz = await _quizService.GetAllQuizzesFromSection(selectedSection.Id);
+            foreach (var quiz in quizzesOfSelectedQuiz)
+            {
+                Debug.WriteLine(quiz);
+                SectionQuizes.Add(quiz);
+            }
         }
 
-        public void DeleteSection(Quiz quizToBeDeleted)
+        public async void DeleteSection(Section sectionToBeDeleted)
         {
+            Debug.WriteLine("Deleting section...");
 
+            if (sectionToBeDeleted == SelectedSection)
+            {
+                SelectedSection = null;
+            }
+
+            await _sectionService.DeleteSection(sectionToBeDeleted.Id);
+
+            Sections.Remove(sectionToBeDeleted);
         }
     }
 }
