@@ -51,9 +51,7 @@ namespace Duo.Views.Pages
             new Quiz(2, null, null),
             new Quiz(3, null, null),
             new Quiz(4, null, null),
-            new Quiz(5, null, null),
-            new Quiz(6, null, null),
-            new Quiz(7, null, null)
+            new Quiz(5, null, null)
         };
 
 
