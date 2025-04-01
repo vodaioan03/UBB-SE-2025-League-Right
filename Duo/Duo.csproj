@@ -24,6 +24,7 @@
     <Compile Remove="TutorialDatabaseSetup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Views\Components\AdminPageManageCard.xaml" />
     <None Remove="Views\Components\CreateAssociationExercise.xaml" />
     <None Remove="Views\Components\CreateExerciseComponents\CreateFlashcardExercise.xaml" />
     <None Remove="Views\Components\CreateFillInTheBlankExercise.xaml" />
@@ -134,6 +135,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Components\AdminPageManageCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Pages\ManageSectionsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

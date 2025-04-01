@@ -44,28 +44,41 @@
                            Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
                            HorizontalAlignment="Stretch"/>
 
-                <StackPanel Orientation="Horizontal"
-                            Spacing="12">
-                    <components:QuizAdminButton Text="Create section"
-                                                Click="CreateSection_Click"/>
-                    <components:QuizAdminButton Text="Create quiz"
-                                                Click="CreateQuiz_Click"/>
-                    <components:QuizAdminButton Text="Create exam"
-                                                Click="CreateExam_Click"/>
-                    <components:QuizAdminButton Text="Create exercise"
-                                                Click="OpenCreateExamPage_Click"/>
-                </StackPanel>
+                <components:AdminPageManageCard 
+                    x:Name="ManageSectionsCard"
+                    Title="Manage Sections" 
+                    ButtonText="add section">
+                    <components:AdminPageManageCard.Icon>
+                        <FontIcon Glyph="&#xE8F1;" FontSize="24" Margin="10" />
+                    </components:AdminPageManageCard.Icon>
+                </components:AdminPageManageCard>
 
-                <StackPanel Orientation="Horizontal"
-                            Spacing="12">
-                    <components:QuizAdminButton Text="Manage sections"
-                                                Click="OpenManageSectionsPage_Click"/>
-                    <components:QuizAdminButton Text="Manage quizes"
-                                                Click="OpenManageQuizesPage_Click"/>
-                    <components:QuizAdminButton Text="Manage exams"/>
-                    <components:QuizAdminButton Text="Manage exercises"
-                                                Click="OpenManageExercisesPage_Click"/>
-                </StackPanel>
+                <components:AdminPageManageCard  
+                    x:Name="ManageQuizesCard"
+                    Title="Manage Quizzes"
+                    ButtonText="add quiz">
+                    <components:AdminPageManageCard.Icon>
+                        <FontIcon Glyph="&#xF22E;" FontSize="24" Margin="10" />
+                    </components:AdminPageManageCard.Icon>
+                </components:AdminPageManageCard>
+
+                <components:AdminPageManageCard 
+                    x:Name="ManageExamsCard"
+                    Title="Manage Exams"
+                    ButtonText="add exam">
+                    <components:AdminPageManageCard.Icon>
+                        <FontIcon Glyph="&#xE82D;" FontSize="24" Margin="10" />
+                    </components:AdminPageManageCard.Icon>
+                </components:AdminPageManageCard>
+
+                <components:AdminPageManageCard 
+                    x:Name="ManageExercisesCard"
+                    Title="Manage Exercises"
+                    ButtonText="add exercise">
+                    <components:AdminPageManageCard.Icon>
+                        <FontIcon Glyph="&#xE8A5;" FontSize="24" Margin="10" />
+                    </components:AdminPageManageCard.Icon>
+                </components:AdminPageManageCard>
 
             </StackPanel>
         </ScrollViewer>
