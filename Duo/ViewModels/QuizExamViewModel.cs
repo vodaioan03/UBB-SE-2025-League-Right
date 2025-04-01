@@ -112,6 +112,30 @@ namespace Duo.ViewModels
             }
         }
 
+        public string CorrectAnswersText { get
+            {
+                if (QuizId != -1)
+                    return $"{CurrentQuiz.GetNumberOfCorrectAnswers()}/{CurrentQuiz.GetNumberOfAnswersGiven()}";
+                return $"{CurrentExam.GetNumberOfCorrectAnswers()}/{CurrentExam.GetNumberOfAnswersGiven()}";
+            }
+        }
+        public string PassingPercentText
+        {
+            get
+            {
+                return $"{(int)Math.Round(GetPercentageCorrect() * 100)}%";
+            }
+        }
+        public string IsPassedText
+        {
+            get
+            {
+                if (IsPassed())
+                    return "Great job! You passed this one.";
+                return "You need to redo this one.";
+            }
+        }
+
         public QuizExamViewModel(ExerciseService exerciseService)
         {
             _exerciseService = exerciseService;
@@ -161,10 +185,12 @@ namespace Duo.ViewModels
                 if (QuizId != -1)
                 {
                     Exercises = await _exerciseService.GetAllExercisesFromQuiz(QuizId);
+                    CurrentQuiz.ExerciseList = Exercises;
                 }
                 else
                 {
                     Exercises = await _exerciseService.GetAllExercisesFromExam(ExamId);
+                    CurrentExam.ExerciseList = Exercises;
                 }
 
                 CurrentExerciseIndex = 0;
@@ -182,23 +208,13 @@ namespace Duo.ViewModels
         private void UpdateQuiz(bool? isExerciseValid)
         {
             if (isExerciseValid == true)
-            {
                 CurrentQuiz.IncrementCorrectAnswers();
-                CurrentQuiz.IncrementNumberOfAnswersGiven();
-            }
-            else
-                CurrentQuiz.IncrementNumberOfAnswersGiven();
         }
 
         private void UpdateExam(bool? isExerciseValid)
         {
             if (isExerciseValid == true)
-            {
                 CurrentExam.IncrementCorrectAnswers();
-                CurrentExam.IncrementNumberOfAnswersGiven();
-            }
-            else
-                CurrentExam.IncrementNumberOfAnswersGiven();
         }
 
         public bool? ValidateCurrentExercise(object responses)
@@ -245,12 +261,25 @@ namespace Duo.ViewModels
 
         public float GetPercentageDone()
         {
-            return CurrentQuiz.ExerciseList.Count / CurrentQuiz.GetNumberOfAnswersGiven();
+            if (QuizId != -1)
+                return (float)CurrentQuiz.GetNumberOfAnswersGiven() / Exercises.Count;
+            return (float)CurrentExam.ExerciseList.Count / CurrentExam.GetNumberOfAnswersGiven();
+
         }
 
-        public float GetPercentageCorrect()
+        private float GetPercentageCorrect()
         {
-            return CurrentQuiz.ExerciseList.Count / CurrentQuiz.GetNumberOfCorrectAnswers();
+            if (QuizId != -1)
+                return (float)CurrentQuiz.GetNumberOfCorrectAnswers() / Exercises.Count;
+            return (float)CurrentExam.ExerciseList.Count / CurrentExam.GetNumberOfCorrectAnswers();
+        }
+
+        private bool IsPassed()
+        {
+            int percentCorrect = (int)Math.Round(GetPercentageCorrect() * 100);
+            if (QuizId != -1)
+                return percentCorrect >= CurrentQuiz.GetPassingThreshold();
+            return percentCorrect >= CurrentExam.GetPassingThreshold();
         }
 
         public string GetCurrentExerciseCorrectAnswer()

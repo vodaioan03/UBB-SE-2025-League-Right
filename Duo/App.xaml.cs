@@ -22,6 +22,7 @@ using Duo.ViewModels.ExerciseViewModels;
 using Duo.Services;
 using Duo.Repositories;
 using Duo.ViewModels;
+using Duo.ViewModels.Roadmap;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -81,6 +82,9 @@ namespace Duo
             services.AddTransient<CreateQuizViewModel>();
             services.AddTransient<CreateSectionViewModel>();
 
+            services.AddSingleton<RoadmapMainPageViewModel>();
+            services.AddSingleton<RoadmapSectionViewModel>();
+            services.AddSingleton<RoadmapQuizPreviewViewModel>();
 
             serviceProvider = services.BuildServiceProvider();
         }

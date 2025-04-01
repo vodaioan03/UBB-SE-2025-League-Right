@@ -49,7 +49,7 @@ public abstract class BaseQuiz
 
     public int GetNumberOfAnswersGiven()
     {
-        return numberOfAnswersGiven;
+        return ExerciseList.Count;
     }
 
     public int GetNumberOfCorrectAnswers()
@@ -60,11 +60,6 @@ public abstract class BaseQuiz
     public void IncrementCorrectAnswers()
     {
         numberOfCorrectAnswers++;
-    }
-
-    public void IncrementNumberOfAnswersGiven()
-    {
-        numberOfAnswersGiven++;
     }
 
     public override string ToString()
