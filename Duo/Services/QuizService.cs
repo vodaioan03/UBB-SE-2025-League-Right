@@ -49,11 +49,13 @@ namespace Duo.Services
 
         public async Task UpdateQuiz(Quiz quiz)
         {
+            ValidationHelper.ValidateQuiz(quiz);
             await _quizRepository.UpdateAsync(quiz);
         }
 
         public Task<int> CreateQuiz(Quiz quiz)
         {
+            ValidationHelper.ValidateQuiz(quiz);
             return _quizRepository.AddAsync(quiz);
         }
 
@@ -82,11 +84,13 @@ namespace Duo.Services
 
         public async Task UpdateExam(Exam exam)
         {
+            ValidationHelper.ValidateExam(exam);
             await _examRepository.UpdateAsync(exam);
         }
 
         public Task CreateExam(Exam exam)
         {
+            ValidationHelper.ValidateExam(exam);
             return _examRepository.AddAsync(exam);
         }
 
