@@ -189,4 +189,29 @@ public class UserRepository
         
         throw new KeyNotFoundException($"User with ID {userId} not found.");
     }
+
+    public async Task IncrementUserProgressAsync(int userId)
+    {
+
+        if (userId <= 0)
+        {
+            throw new ArgumentException("User ID must be greater than 0.");
+        }
+
+        using var connection = await _databaseConnection.CreateConnectionAsync();
+        using var command = connection.CreateCommand();
+    
+        command.CommandText = "sp_ProgressUserByOne";
+        command.CommandType = System.Data.CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@UserId", userId);
+        try
+        {
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while incrementing user progress: {ex.Message}", ex);
+        }
+    }
 }

@@ -93,4 +93,14 @@ public class UserService
         var user = await _userRepository.GetByIdAsync(userId);
         await _userRepository.UpdateUserQuizProgressAsync(user, newLastQuizCompleted);
     }
+
+    public async Task IncrementUserProgressAsync(int userId)
+    {
+        if (userId <= 0)
+        {
+            throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
+        }
+
+        await _userRepository.IncrementUserProgressAsync(userId);
+    }
 }
