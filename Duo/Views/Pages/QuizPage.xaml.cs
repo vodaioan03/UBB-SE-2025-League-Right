@@ -199,6 +199,8 @@ namespace Duo.Views.Pages
                 {
                     NextExerciseButton.Visibility = Visibility.Collapsed;
 
+                    ViewModel.MarkUserProgression();
+
                     var endScreen = new Components.QuizEndScreen()
                     {
                         CorrectAnswersText = ViewModel.CorrectAnswersText,
