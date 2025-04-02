@@ -48,13 +48,13 @@ namespace Duo.ViewModels
             }
         }
 
-        private async void LoadQuizData()
+        private async Task LoadQuizData()
         {
             await LoadQuiz();
             await LoadExercises();
         }
 
-        private async void LoadExamData()
+        private async Task LoadExamData()
         {
             await LoadExam();
             await LoadExercises();
