@@ -9,10 +9,6 @@ BEGIN
             RAISERROR ('Quiz not found', 16, 1) WITH NOWAIT;
         END
 
-        -- Delete quiz exercises first
-        DELETE FROM QuizExercises
-        WHERE QuizId = @quizId;
-
         -- Delete the quiz
         DELETE FROM Quizzes
         WHERE Id = @quizId;
@@ -23,4 +19,4 @@ BEGIN
         SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
         RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
     END CATCH
-END; 
+END;

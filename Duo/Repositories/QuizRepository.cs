@@ -17,7 +17,7 @@ public class QuizRepository
         _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
-    public async Task<IEnumerable<Quiz>> GetAllAsync()
+    public async Task<List<Quiz>> GetAllAsync()
     {
         try
         {
@@ -84,7 +84,7 @@ public class QuizRepository
         }
     }
 
-    public async Task<IEnumerable<Quiz>> GetBySectionIdAsync(int sectionId)
+    public async Task<List<Quiz>> GetBySectionIdAsync(int sectionId)
     {
         if (sectionId <= 0)
         {
@@ -120,7 +120,7 @@ public class QuizRepository
         }
     }
 
-    public async Task<IEnumerable<Quiz>> GetUnassignedAsync()
+    public async Task<List<Quiz>> GetUnassignedAsync()
     {
         try
         {
@@ -374,6 +374,72 @@ public class QuizRepository
         catch (SqlException ex)
         {
             throw new Exception($"Database error while updating quiz section: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<int> LastOrderNumberBySectionIdAsync(int sectionId)
+    {
+        if (sectionId <= 0)
+        {
+            throw new ArgumentException("Section ID must be greater than 0.", nameof(sectionId));
+        }
+
+        try
+        {
+            var lastOrderNumber = 0;
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_LastOrderQuizBySectionId";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@sectionId", sectionId);
+            
+            await connection.OpenAsync();
+            using var reader = await command.ExecuteReaderAsync();
+            
+            if (await reader.ReadAsync())
+            {
+                lastOrderNumber = reader.GetInt32(reader.GetOrdinal("LastOrderNumber"));
+            }
+
+            return lastOrderNumber;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while retrieving last order number for section {sectionId}: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<int> CountBySectionIdAsync(int sectionId)
+    {
+        if (sectionId <= 0)
+        {
+            throw new ArgumentException("Section ID must be greater than 0.", nameof(sectionId));
+        }
+
+        try
+        {
+            var countOfQuizzes = 0;
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_CountQuizzesBySectionId";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@sectionId", sectionId);
+            
+            await connection.OpenAsync();
+            using var reader = await command.ExecuteReaderAsync();
+            
+            if (await reader.ReadAsync())
+            {
+                countOfQuizzes = reader.GetInt32(reader.GetOrdinal("QuizCount"));
+            }
+
+            return countOfQuizzes;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while retrieving quiz count for section {sectionId}: {ex.Message}", ex);
         }
     }
 } 

@@ -17,5 +17,4 @@ BEGIN
 
     INSERT INTO QuizExercises (QuizId, ExerciseId)
     VALUES (@quizId, @exerciseId);
-
 END;

@@ -104,7 +104,7 @@ INSERT INTO QuizExercises (QuizId, ExerciseId) VALUES
 (1, 12);
 
 -- Insert Exam
-INSERT INTO Exams (SectionId) VALUES (1);
+INSERT INTO Exams (SectionId) VALUES (3);
 DECLARE @examId INT = SCOPE_IDENTITY();
 
 -- Link Exercises to Exam
@@ -116,3 +116,7 @@ INSERT INTO ExamExercises (ExamId, ExerciseId) VALUES
 -- Update Users' last completed sections and quizzes
 UPDATE Users SET LastCompletedSectionId = 1, LastCompletedQuizId = 1 WHERE Username = 'geo_learner1';
 UPDATE Users SET LastCompletedSectionId = 2, LastCompletedQuizId = 2 WHERE Username = 'map_master';
+
+
+--
+DELETE FROM Exams WHERE Id = 3;

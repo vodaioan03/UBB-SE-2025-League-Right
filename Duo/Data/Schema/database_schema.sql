@@ -19,21 +19,20 @@ drop table if exists Difficulties;
 CREATE TABLE Difficulties (
     Id INT PRIMARY KEY,
     Name VARCHAR(50) NOT NULL UNIQUE,
-    Description VARCHAR(255)
 );
 
 -- Insert difficulty values
-INSERT INTO Difficulties (Id, Name, Description) VALUES
-(1, 'Easy', 'Beginner level'),
-(2, 'Medium', 'Intermediate level'),
-(3, 'Hard', 'Advanced level');
+INSERT INTO Difficulties (Id, Name) VALUES
+(1, 'Easy'),
+(2, 'Medium'),
+(3, 'Hard');
 
 -- Create Users table
 CREATE TABLE Users (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Username VARCHAR(100) NOT NULL UNIQUE,
-    LastCompletedSectionId INT NULL,
-    LastCompletedQuizId INT NULL
+    NumberOfCompletedSections INT DEFAULT 0,
+    NumberOfCompletedQuizzesInSection INT DEFAULT 0
 );
 
 -- Create Roadmap table
@@ -111,7 +110,7 @@ CREATE TABLE Quizzes (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     SectionId INT DEFAULT NULL,
     OrderNumber INT DEFAULT NULL,
-    FOREIGN KEY (SectionId) REFERENCES Sections(Id),
+    FOREIGN KEY (SectionId) REFERENCES Sections(Id) ON DELETE SET NULL
 );
 
 -- Create QuizExercises table (junction table between Quizzes and Exercises)
@@ -127,7 +126,7 @@ CREATE TABLE QuizExercises (
 CREATE TABLE Exams (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     SectionId INT DEFAULT NULL,
-    FOREIGN KEY (SectionId) REFERENCES Sections(Id)
+    FOREIGN KEY (SectionId) REFERENCES Sections(Id) ON DELETE SET NULL
 );
 
 -- Create ExamExercises table (junction table between Exams and Exercises)
@@ -145,12 +144,3 @@ CREATE TABLE FlashcardExercises (
     Answer VARCHAR(100) NOT NULL,
     FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
 );
-
--- Add foreign key constraints for Users table after all tables are created
-ALTER TABLE Users
-ADD CONSTRAINT FK_Users_LastCompletedSection
-    FOREIGN KEY (LastCompletedSectionId) REFERENCES Sections(Id);
-
-ALTER TABLE Users
-ADD CONSTRAINT FK_Users_LastCompletedQuiz
-    FOREIGN KEY (LastCompletedQuizId) REFERENCES Quizzes(Id);
