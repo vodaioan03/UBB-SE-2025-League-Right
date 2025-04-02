@@ -59,25 +59,25 @@ namespace Duo.ViewModels
         public ICommand OpenSelectExercisesCommand { get; }
         public ICommand RemoveExerciseFromQuizCommand { get; }
 
-        public async void DeleteExam(Exam quizToBeDeleted)
+        public async void DeleteExam(Exam examToBeDeleted)
         {
             Debug.WriteLine("Deleting quiz...");
 
-            if (quizToBeDeleted == SelectedExam)
+            if (examToBeDeleted == SelectedExam)
             {
                 SelectedExam = null;
                 UpdateExamExercises(SelectedExam);
             }
 
-            foreach (var exercise in quizToBeDeleted.ExerciseList)
+            foreach (var exercise in examToBeDeleted.ExerciseList)
             {
                 AvailableExercises.Add(exercise);
             }
 
             try
             {
-                await _quizService.DeleteQuiz(quizToBeDeleted.Id);
-                Exams.Remove(quizToBeDeleted);
+                await _quizService.DeleteExam(examToBeDeleted.Id);
+                Exams.Remove(examToBeDeleted);
             }
             catch (Exception ex)
             {
