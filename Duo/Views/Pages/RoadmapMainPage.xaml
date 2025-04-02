@@ -26,19 +26,13 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Title -->
-                <RowDefinition Height="*"/>
                 <!-- Section View -->
                 <RowDefinition Height="Auto"/>
                 <!-- Quiz Preview -->
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Roadmap page" 
-                   Grid.Row="0"
-                       Style="{ThemeResource TitleLargeTextBlockStyle}"
-                   HorizontalAlignment="Center" 
-                   FontSize="32"/>
-
             <ScrollViewer VerticalScrollBarVisibility="auto" Height="750">
+                
                 <ItemsControl ItemsSource="{Binding SectionViewModels}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

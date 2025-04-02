@@ -82,7 +82,7 @@ namespace Duo.Views.Pages
 
                 if (currentExercise != null)
                 {
-                    // Remove any existing difficulty indicators
+                    // Remove any existing difficulty indicators and progress bars
                     var mainStackPanel = ExerciseContentControl.Parent as StackPanel;
                     if (mainStackPanel != null)
                     {
@@ -93,6 +93,37 @@ namespace Duo.Views.Pages
                         {
                             mainStackPanel.Children.Remove(indicator);
                         }
+
+                        var existingProgressGrids = mainStackPanel.Children.OfType<Grid>()
+                            .Where(g => g.Children.OfType<ProgressBar>().Any())
+                            .ToList();
+                        foreach (var grid in existingProgressGrids)
+                        {
+                            mainStackPanel.Children.Remove(grid);
+                        }
+                    }
+
+                    var progressGrid = new Grid
+                    {
+                        Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Margin = new Thickness(0, 0, 0, 16),
+                        Height = 16
+                    };
+
+                    var progressBar = new ProgressBar
+                    {
+                        Value = (double)ViewModel.CurrentExerciseIndex / ViewModel.Exercises.Count * 100,
+                        Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
+                        Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green)
+                    };
+
+                    progressGrid.Children.Add(progressBar);
+
+                    // Add the progress bar to the main StackPanel
+                    if (mainStackPanel != null)
+                    {
+                        mainStackPanel.Children.Insert(1, progressGrid); // Insert after the back button
                     }
 
                     // Add difficulty indicator
@@ -122,17 +153,17 @@ namespace Duo.Views.Pages
                     switch (currentExercise.Difficulty)
                     {
                         case Difficulty.Easy:
-                            icon.Glyph = "\uE73E"; // Checkmark
+                            icon.Glyph = "\uE73E";
                             text.Text = "Easy";
                             text.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
                             break;
                         case Difficulty.Normal:
-                            icon.Glyph = "\uE7C3"; // Warning
+                            icon.Glyph = "\uE7C3";
                             text.Text = "Normal";
                             text.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Orange);
                             break;
                         case Difficulty.Hard:
-                            icon.Glyph = "\uE783"; // Star
+                            icon.Glyph = "\uE783";
                             text.Text = "Hard";
                             text.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
                             break;
@@ -147,7 +178,7 @@ namespace Duo.Views.Pages
                     // Add the difficulty indicator to the main StackPanel
                     if (mainStackPanel != null)
                     {
-                        mainStackPanel.Children.Insert(1, difficultyGrid); // Insert after the back button
+                        mainStackPanel.Children.Insert(2, difficultyGrid); // Insert after the progress bar
                     }
 
                     if (currentExercise is Models.Exercises.AssociationExercise associationExercise)
@@ -197,6 +228,16 @@ namespace Duo.Views.Pages
                 }
                 else
                 {
+                    var mainStackPanel = ExerciseContentControl.Parent as StackPanel;
+
+                    var existingProgressGrids = mainStackPanel.Children.OfType<Grid>()
+                            .Where(g => g.Children.OfType<ProgressBar>().Any())
+                            .ToList();
+                    foreach (var grid in existingProgressGrids)
+                    {
+                        mainStackPanel.Children.Remove(grid);
+                    }
+
                     NextExerciseButton.Visibility = Visibility.Collapsed;
 
                     var endScreen = new Components.QuizEndScreen()
