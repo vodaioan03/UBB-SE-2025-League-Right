@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
-    internal class ManageSectionsViewModel:ViewModelBase
+    internal class ManageSectionsViewModel: AdminBaseViewModel
     {
         private readonly SectionService _sectionService;
         private readonly QuizService _quizService;
@@ -65,6 +65,7 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
             }
         }
 
@@ -92,9 +93,16 @@ namespace Duo.ViewModels
                 SelectedSection = null;
             }
 
-            await _sectionService.DeleteSection(sectionToBeDeleted.Id);
-
-            Sections.Remove(sectionToBeDeleted);
+            try
+            {
+                await _sectionService.DeleteSection(sectionToBeDeleted.Id);
+                Sections.Remove(sectionToBeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
+            }
         }
     }
 }

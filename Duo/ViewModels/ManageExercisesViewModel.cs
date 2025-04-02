@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
-    class ManageExercisesViewModel: ViewModelBase
+    class ManageExercisesViewModel: AdminBaseViewModel
     {
         private readonly ExerciseService _exerciseService;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
@@ -29,6 +29,7 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
             }
             DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(DeleteExercise);
 
@@ -66,6 +67,7 @@ namespace Duo.ViewModels
             }
             catch(Exception ex)
             {
+                RaiseErrorMessage(ex.Message, "");
                 Debug.WriteLine(ex);
             }
 

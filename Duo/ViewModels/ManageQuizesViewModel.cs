@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
-    internal class ManageQuizesViewModel: ViewModelBase
+    internal class ManageQuizesViewModel: AdminBaseViewModel
     {
 
         private readonly ExerciseService _exerciseService;
@@ -26,7 +26,6 @@ namespace Duo.ViewModels
 
 
         public event Action<List<Exercise>> ShowListViewModal;
-        public event EventHandler RequestGoBack;
 
         private Quiz _selectedQuiz;
 
@@ -77,8 +76,17 @@ namespace Duo.ViewModels
             {
                 AvailableExercises.Add(exercise);
             }
-            await _quizService.DeleteQuiz(quizToBeDeleted.Id);
-            Quizes.Remove(quizToBeDeleted);
+
+            try
+            {
+                await _quizService.DeleteQuiz(quizToBeDeleted.Id);
+                Quizes.Remove(quizToBeDeleted);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                RaiseErrorMessage(ex.Message, "");
+            }
         }
 
         public async void initializeViewModel()
@@ -96,6 +104,7 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
             }
         }
 
@@ -138,16 +147,32 @@ namespace Duo.ViewModels
                 return;
             }
             SelectedQuiz.AddExercise(selectedExercise);
-            await _quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
+            try
+            {
+                await _quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
+            }
             UpdateQuizExercises(SelectedQuiz);
         }
 
         public async void RemoveExerciseFromQuiz(Exercise selectedExercise)
         {
             Debug.WriteLine("Removing exercise...");
-            SelectedQuiz.RemoveExercise(selectedExercise);
-            await _quizService.RemoveExerciseFromQuiz(SelectedQuiz.Id, selectedExercise.Id);
-            UpdateQuizExercises(SelectedQuiz);
+            try
+            {
+                await _quizService.RemoveExerciseFromQuiz(SelectedQuiz.Id, selectedExercise.Id);
+                SelectedQuiz.RemoveExercise(selectedExercise);
+                UpdateQuizExercises(SelectedQuiz);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
+            }
         }
 
     }

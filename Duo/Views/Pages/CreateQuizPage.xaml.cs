@@ -32,6 +32,25 @@ namespace Duo.Views.Pages
             this.InitializeComponent();
             ViewModel.ShowListViewModal += ViewModel_openSelectExercises;
             ViewModel.RequestGoBack += ViewModel_RequestGoBack;
+            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+        }
+        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        {
+            await ShowErrorMessage(e.Title, e.Message);
+        }
+
+
+        private async Task ShowErrorMessage(string title, string message)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = message,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+
+            await dialog.ShowAsync();
         }
 
         public void ViewModel_RequestGoBack(object sender, EventArgs e)
@@ -80,19 +99,6 @@ namespace Duo.Views.Pages
             {
                 this.Frame.GoBack();
             }
-        }
-
-        private async Task ShowErrorMessage(string title, string message)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = title,
-                Content = message,
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
-            };
-
-            await dialog.ShowAsync();
         }
     }
 }

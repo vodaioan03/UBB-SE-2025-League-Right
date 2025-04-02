@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
-    internal class CreateExamViewModel
+    internal class CreateExamViewModel : AdminBaseViewModel
     {
         private readonly QuizService _quizService;
         private readonly ExerciseService _exerciseService;
@@ -32,7 +32,6 @@ namespace Duo.ViewModels
         public ICommand SaveButtonCommand { get; }
         public ICommand OpenSelectExercisesCommand { get; }
 
-        public event EventHandler RequestGoBack;
         public CreateExamViewModel()
         {
             try
@@ -115,7 +114,7 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
             }
             Debug.WriteLine(newExam);
-            RequestGoBack?.Invoke(this, EventArgs.Empty);
+            GoBack();
         }
    
     }
