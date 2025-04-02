@@ -50,30 +50,6 @@ public class UserService
         return await _userRepository.CreateUserAsync(user);
     }
 
-    // maybe deprecate
-    public async Task<int> GetLastCompletedSectionAsync(int userId)
-    {
-        if (userId <= 0)
-        {
-            throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
-        }
-
-        var user = await _userRepository.GetByIdAsync(userId);
-        return user.NumberOfCompletedSections;
-    }
-
-    // maybe deprecate
-    public async Task<int> GetLastCompletedQuizAsync(int userId)
-    {
-        if (userId <= 0)
-        {
-            throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
-        }
-
-        var user = await _userRepository.GetByIdAsync(userId);
-        return user.NumberOfCompletedQuizzesInSection;
-    }
-
     public async Task UpdateUserSectionProgressAsync(int userId, int newNrOfSectionsCompleted, int newNrOfQuizzesInSectionCompleted)
     {
         if (userId <= 0)
