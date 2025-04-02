@@ -17,7 +17,8 @@
     </Page.DataContext>
 
 
-    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0"> 
+    <Grid  HorizontalAlignment="Stretch" MaxWidth="900" Margin="32,0,32,0">
+        
         <ScrollViewer
             HorizontalAlignment="Stretch" 
             HorizontalContentAlignment="Stretch"
@@ -33,6 +34,8 @@
                         Content="Back"
                         Click="BackButton_Click"
                         Margin="0,16,0,16"/>
+
+
                 <TextBlock Text="Quiz"
                            FontWeight="SemiBold"
                            FontSize="32"/>
