@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
+using System.Windows.Input;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,6 +55,34 @@ namespace Duo.Views.Components
             set => SetValue(IsExamProperty, value);
         }
 
+        public static readonly DependencyProperty CommandProperty =
+            DependencyProperty.Register(
+                nameof(Command),
+                typeof(ICommand),
+                typeof(QuizRoadmapButton),
+                new PropertyMetadata(null));
+
+        public static readonly DependencyProperty CommandParameterProperty =
+            DependencyProperty.Register(
+                nameof(CommandParameter),
+                typeof(object),
+                typeof(QuizRoadmapButton),
+                new PropertyMetadata(null));
+
+        public ICommand Command
+        {
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
+        }
+
+        public object CommandParameter
+        {
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
+        }
+
+
+
         public QuizRoadmapButton()
         {
             this.InitializeComponent();
@@ -83,8 +112,10 @@ namespace Duo.Views.Components
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            circularButton.Click += OnButtonClick;
 
+            circularButton.Click += OnButtonClick;  // Link button click to OnButtonClick handler
+
+            // Set the background and dynamic text depending on whether it's an exam or quiz
             if (IsExam)
             {
                 circularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
@@ -95,9 +126,9 @@ namespace Duo.Views.Components
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = new Thickness(10)
                 };
-
             }
             else
+            {
                 dynamicTextBlock = new TextBlock
                 {
                     Text = $"Quiz {newQuizId}",
@@ -105,8 +136,15 @@ namespace Duo.Views.Components
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = new Thickness(10)
                 };
+            }
 
+            // Bind the command and command parameter to the button if they are set
+            if (Command != null)
+            {
+                circularButton.Tag = CommandParameter; 
+            }
 
+            // Add elements to the StackPanel content
             if (this.Content is StackPanel stackPanel)
             {
                 stackPanel.Children.Add(circularButton);
@@ -116,7 +154,21 @@ namespace Duo.Views.Components
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
-            ButtonClick?.Invoke(this, e);
+            Debug.WriteLine($"Button clicked: {QuizId}");
+            Debug.WriteLine("");
+            Debug.WriteLine($"Click Command: {Command}");
+            Debug.WriteLine($"Button clicked: {CommandParameter}");
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            if (Command?.CanExecute(CommandParameter) == true)
+            {
+                Command.Execute(CommandParameter);
+            }
+            else
+            {
+                ButtonClick?.Invoke(this, e);  // Fallback to the event if the command is not set or cannot execute
+            }
         }
+
     }
 }
