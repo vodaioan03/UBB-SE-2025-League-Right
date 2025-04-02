@@ -35,10 +35,18 @@ namespace Duo.Views.Pages
             ViewModel.ShowListViewModalExams += ViewModel_openSelectExams;
 
             ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+            ViewModel.RequestGoBack += ViewModel_RequestGoBack;
         }
         private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
         {
             await ShowErrorMessage(e.Title, e.Message);
+        }
+        public void ViewModel_RequestGoBack(object sender, EventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
 

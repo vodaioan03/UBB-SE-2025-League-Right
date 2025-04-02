@@ -67,10 +67,10 @@ Padding="0,16,0,16">
                                 <TextBlock Text="{Binding Id}"/>
                             </StackPanel>
                             <Button Grid.Column="1"
-                    Content="Remove" 
-                    Command="{x:Bind ViewModel.DeleteSectionCommand}"
-                    CommandParameter="{Binding}"
-                    Style="{ThemeResource TextBlockButtonStyle}"/>
+                                Content="Remove" 
+                                Command="{x:Bind ViewModel.DeleteSectionCommand}"
+                                CommandParameter="{Binding}"
+                                Style="{ThemeResource TextBlockButtonStyle}"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

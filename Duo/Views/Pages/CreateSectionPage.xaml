@@ -16,7 +16,7 @@
     
     <Page.Resources>
         <!-- Template for the main list with remove button -->
-        <DataTemplate x:Key="QuizItemTemplate">
+        <DataTemplate x:Key="ExamItemTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -24,12 +24,11 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal"
                         Spacing="8">
-                    <TextBlock Text="Quiz #"/>
+                    <TextBlock Text="Exam #"/>
                     <TextBlock Text="{Binding Id}"/>
                 </StackPanel>
                 <Button Grid.Column="1"
                     Content="Remove"
-                    Click="RemoveQuiz_Click"
                     Style="{ThemeResource TextBlockButtonStyle}"/>
             </Grid>
         </DataTemplate>
@@ -98,8 +97,28 @@
                           Height="200"
                           BorderThickness="1"
                           BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                          Padding="8"
-                          ItemTemplate="{StaticResource QuizItemTemplate}"/>
+                          Padding="8">
+                        <ListView.ItemTemplate>
+                            <DataTemplate  x:DataType="local1:Quiz">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <TextBlock Text="Quiz #"/>
+                                    <TextBlock Text="{Binding Id}"/>
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Content="Remove"
+                                    Command="{x:Bind ViewModel.RemoveQuizCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{ThemeResource TextBlockButtonStyle}"/>
+                            </Grid>
+                            </DataTemplate>
+                            </ListView.ItemTemplate>
+                    </ListView>
 
                     <!-- Exam Selection -->
                     <Grid>
@@ -125,9 +144,8 @@
                           BorderThickness="1"
                           BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
                           Padding="8"
-                          ItemTemplate="{StaticResource QuizSelectionItemTemplate}">
-                        
-                        
+                          ItemTemplate="{StaticResource ExamItemTemplate}">
+
                     </ListView>
                 </StackPanel>
             </ScrollViewer>
