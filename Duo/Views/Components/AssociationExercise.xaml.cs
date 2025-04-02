@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Documents;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Shapes;
+using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,11 +40,12 @@ namespace Duo.Views.Components
             DependencyProperty.Register(nameof(SecondAnswersList), typeof(ObservableCollection<string>), typeof(AssociationExercise), new PropertyMetadata(new ObservableCollection<string>()));
 
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-        private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Microsoft.UI.Colors.Coral);
-        private static readonly SolidColorBrush MappedBrush = new SolidColorBrush(Microsoft.UI.Colors.Gray);
+        private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
+        private static readonly SolidColorBrush MappedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
+        private static readonly SolidColorBrush DefaultBorderBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+        private static readonly SolidColorBrush LineBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
 
-        private List<Tuple<Button, Button>> pairs = new List<Tuple<Button, Button>>();
-
+        private List<Tuple<Button, Button, Line>> pairs = new List<Tuple<Button, Button, Line>>();
 
         public AssociationExercise()
         {
@@ -77,29 +79,33 @@ namespace Duo.Views.Components
             if (selectedButton == clickedButton)
             {
                 selectedButton.Background = TransparentBrush;
+                selectedButton.BorderBrush = DefaultBorderBrush;
                 selectedButton = null;
             }
             else if (selectedButton != clickedButton && selectedButton != null)
             {
                 selectedButton.Background = TransparentBrush;
+                selectedButton.BorderBrush = DefaultBorderBrush;
 
                 selectedButton = clickedButton;
                 selectedButton.Background = SelectedBrush;
+                selectedButton.BorderBrush = SelectedBrush;
             }
             else
             {
                 selectedButton = clickedButton;
                 selectedButton.Background = SelectedBrush;
+                selectedButton.BorderBrush = SelectedBrush;
             }
         }
 
         private void DestroyExistingConnections(Button clickedButton)
         {
-
-            foreach (var mapping in pairs)
+            foreach (var mapping in pairs.ToList())
             {
                 Button leftButtonContent = mapping.Item1;
                 Button rightButtonContent = mapping.Item2;
+                Line line = mapping.Item3;
 
                 if (leftButtonContent == clickedButton || rightButtonContent == clickedButton)
                 {
@@ -107,6 +113,7 @@ namespace Duo.Views.Components
                     leftButtonContent.Background = TransparentBrush;
                     rightButtonContent.Background = TransparentBrush;
                     clickedButton.Background = SelectedBrush;
+                    LinesCanvas.Children.Remove(line);
 
                     return;
                 }
@@ -118,19 +125,63 @@ namespace Duo.Views.Components
             if (_selectedLeftButton == null || _selectedRightButton == null)
                 return;
 
-            pairs.Add(new Tuple<Button, Button>(_selectedLeftButton, _selectedRightButton));
+            var line = new Line
+            {
+                Stroke = LineBrush,
+                StrokeThickness = 2,
+                X1 = GetCirclePosition(_selectedLeftButton, true).X,
+                Y1 = GetCirclePosition(_selectedLeftButton, true).Y,
+                X2 = GetCirclePosition(_selectedRightButton, false).X,
+                Y2 = GetCirclePosition(_selectedRightButton, false).Y
+            };
+
+            LinesCanvas.Children.Add(line);
+            pairs.Add(new Tuple<Button, Button, Line>(_selectedLeftButton, _selectedRightButton, line));
 
             _selectedLeftButton.Background = MappedBrush;
             _selectedRightButton.Background = MappedBrush;
             _selectedLeftButton = null;
             _selectedRightButton = null;
+        }
 
+        private Point GetCirclePosition(Button button, bool isLeftCircle)
+        {
+            var transform = button.TransformToVisual(LinesCanvas);
+            var buttonPosition = transform.TransformPoint(new Point(0, 0));
+            
+            // Calculate the center of the button
+            var buttonCenterY = buttonPosition.Y + (button.ActualHeight / 2);
+            
+            // Find the circle element within the button's parent StackPanel
+            var stackPanel = button.Parent as StackPanel;
+            if (stackPanel != null)
+            {
+                var circle = stackPanel.Children.OfType<Ellipse>().FirstOrDefault();
+                if (circle != null)
+                {
+                    // Get the circle's position relative to the button
+                    var circleTransform = circle.TransformToVisual(LinesCanvas);
+                    var circlePosition = circleTransform.TransformPoint(new Point(0, 0));
+                    
+                    // Return the center of the circle
+                    return new Point(
+                        circlePosition.X + (circle.ActualWidth / 2),
+                        circlePosition.Y + (circle.ActualHeight / 2)
+                    );
+                }
+            }
+            
+            // Fallback calculation if circle not found
+            var circleX = isLeftCircle 
+                ? buttonPosition.X + button.ActualWidth + 12  // 12 is half of the circle width (24/2)
+                : buttonPosition.X - 12;  // 12 is half of the circle width (24/2)
+            
+            return new Point(circleX, buttonCenterY);
         }
 
         private void LeftOption_Click(object sender, RoutedEventArgs e)
         {
             var clickedButton = sender as Button;
-
             HandleOptionClick(ref _selectedLeftButton, clickedButton);
             DestroyExistingConnections(clickedButton);
             CheckConnection();
@@ -139,7 +190,6 @@ namespace Duo.Views.Components
         private void RightOption_Click(object sender, RoutedEventArgs e)
         {
             var clickedButton = sender as Button;
-
             HandleOptionClick(ref _selectedRightButton, clickedButton);
             DestroyExistingConnections(clickedButton);
             CheckConnection();

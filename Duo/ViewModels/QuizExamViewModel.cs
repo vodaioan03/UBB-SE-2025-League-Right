@@ -256,6 +256,8 @@ namespace Duo.ViewModels
             else
                 CurrentExercise = Exercises[CurrentExerciseIndex];
 
+            ValidatedCurrent = null;
+
             return true;
         }
 
@@ -288,19 +290,23 @@ namespace Duo.ViewModels
 
             if (CurrentExercise is AssociationExercise associationExercise)
             {
-                for (int i = 0; i < associationExercise.FirstAnswersList.Count; i++) {
+                for (int i = 0; i < associationExercise.FirstAnswersList.Count; i++)
+                {
                     correctAnswers += associationExercise.FirstAnswersList[i] + " - " + associationExercise.SecondAnswersList[i] + "\n";
-                 }
+                }
             }
             else if (CurrentExercise is FillInTheBlankExercise fillInTheBlanksExercise)
             {
-                foreach(var answer in fillInTheBlanksExercise.PossibleCorrectAnswers)
+                foreach (var answer in fillInTheBlanksExercise.PossibleCorrectAnswers)
                     correctAnswers += answer + "\n";
 
             }
             else if (CurrentExercise is MultipleChoiceExercise multipleChoiceExercise)
             {
-                correctAnswers += multipleChoiceExercise.Choices.Select(choice => choice.IsCorrect == true).First();
+                correctAnswers += multipleChoiceExercise.Choices
+                    .Where(choice => choice.IsCorrect)
+                    .Select(choice => choice.Answer)
+                    .First();
             }
 
             return correctAnswers;

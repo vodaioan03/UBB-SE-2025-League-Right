@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
+using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -40,7 +41,8 @@ namespace Duo.Views.Components
 
 
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-        private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Microsoft.UI.Colors.Coral);
+        private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
+        private static readonly SolidColorBrush DefaultBorderBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
 
         private List<Button> selectedButtons = new List<Button>();
 
@@ -70,11 +72,13 @@ namespace Duo.Views.Components
             if (selectedButtons.Contains(clickedButton))
             {
                 clickedButton.Background = TransparentBrush;
+                clickedButton.BorderBrush = DefaultBorderBrush;
                 selectedButtons.Remove(clickedButton);
             }
             else
             {
-                clickedButton.Background = SelectedBrush;
+                clickedButton.Background = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
+                clickedButton.BorderBrush = SelectedBrush;
                 selectedButtons.Add(clickedButton);
             }
         }
