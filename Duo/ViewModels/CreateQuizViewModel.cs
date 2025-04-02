@@ -17,7 +17,7 @@ using Duo.Models.Quizzes;
 
 namespace Duo.ViewModels
 {
-    internal class CreateQuizViewModel: ViewModelBase
+    internal class CreateQuizViewModel: AdminBaseViewModel
     {
         private readonly QuizService _quizService;
         private readonly ExerciseService _exerciseService;
@@ -36,7 +36,6 @@ namespace Duo.ViewModels
         public ICommand SaveButtonCommand { get; }
         public ICommand OpenSelectExercisesCommand { get; }
 
-        public event EventHandler RequestGoBack;
         public CreateQuizViewModel()
         {
             try
@@ -63,29 +62,6 @@ namespace Duo.ViewModels
                 Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
                 Exercises.Add(exercise);
             }
-        }
-
-        private void CreateSampleExercises()
-        {
-
-            try
-            {
-                // Fill in the blank exercises
-                Exercises.Add(new FillInTheBlankExercise(1, "The sky is ___.", Difficulty.Normal, new List<string> { "blue" }));
-                Exercises.Add(new FillInTheBlankExercise(2, "Water boils at ___ degrees Celsius.", Difficulty.Normal, new List<string> { "100" }));
-
-                // Association exercise - using fully qualified namespace
-                var firstList = new List<string> { "Dog", "Cat" };
-                var secondList = new List<string> { "Bark", "Meow" };
-                Exercises.Add(new Duo.Models.Exercises.AssociationExercise(3, "Match animals with their sounds", Difficulty.Hard, firstList, secondList));
-            }
-            catch (Exception ex)
-            {
-                // Add error handling for debugging
-                System.Diagnostics.Debug.WriteLine($"Error creating exercises: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
-
         }
 
         public void openSelectExercises()
@@ -135,13 +111,15 @@ namespace Duo.ViewModels
             try {
                 int quizId = await _quizService.CreateQuiz(newQuiz);
                 await _quizService.AddExercisesToQuiz(quizId, newQuiz.ExerciseList);
+                GoBack();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
+                
             }
             Debug.WriteLine(newQuiz);
-            RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
     }
 }

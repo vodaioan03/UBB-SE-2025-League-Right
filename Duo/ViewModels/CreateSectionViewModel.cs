@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
-    internal class CreateSectionViewModel : ViewModelBase
+    internal class CreateSectionViewModel : AdminBaseViewModel
     {
         private readonly SectionService _sectionService;
         private readonly QuizService _quizService;
@@ -123,12 +123,28 @@ namespace Duo.ViewModels
         }
         public async void CreateSection()
         {
-            Section newSection = new Section(0,1,SubjectText,"",1,null);
-            newSection.Quizzes = SelectedQuizes.ToList();
-            newSection.Exam = SelectedExams.ToList()[0];
-            int sectionId = await _sectionService.AddSection(newSection);
-            //_sectionService.AddQuizzesToSection(sectionId, SelectedQuizes.ToList());
-            Debug.WriteLine("Section created: " + newSection);
+            try
+            {
+                Section newSection = new Section(0, 1, SubjectText, "placeholder description", 1, null);
+                newSection.Quizzes = SelectedQuizes.ToList();
+                if(SelectedExams.Count != 1)
+                {
+                    RaiseErrorMessage("You must have exactly one exam selected!", "");
+                    return;
+                }
+                    
+                newSection.Exam = SelectedExams.ToList()[0];
+                int sectionId = await _sectionService.AddSection(newSection);
+                //_sectionService.AddQuizzesToSection(sectionId, SelectedQuizes.ToList());
+
+                Debug.WriteLine("Section created: " + newSection);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+                RaiseErrorMessage(ex.Message, "");
+            }
+            GoBack();
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -32,6 +33,26 @@ namespace Duo.Views.Pages
             this.InitializeComponent();
             ViewModel.ShowListViewModalQuizes += ViewModel_openSelectQuizes;
             ViewModel.ShowListViewModalExams += ViewModel_openSelectExams;
+
+            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+        }
+        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        {
+            await ShowErrorMessage(e.Title, e.Message);
+        }
+
+
+        private async Task ShowErrorMessage(string title, string message)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = message,
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+
+            await dialog.ShowAsync();
         }
 
         private async void ViewModel_openSelectExams(List<Exam> exams)

@@ -17,7 +17,7 @@ using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
-    class ExerciseCreationViewModel : ViewModelBase
+    class ExerciseCreationViewModel : AdminBaseViewModel
     {
         private readonly ExerciseService _exerciseService;
         private object _selectedExerciseContent;
@@ -36,13 +36,10 @@ namespace Duo.ViewModels
         private object _currentExerciseViewModel;
 
 
-        public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; } = new();
-        public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; } = new();
+        public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; }
+        public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; }
         public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; }
         public CreateFlashcardExerciseViewModel CreateFlashcardExerciseViewModel { get; } = new();
-
-        public event EventHandler RequestGoBack;
-        public event EventHandler<(string Title, string Message)> ShowErrorMessageRequested;
 
         public ExerciseCreationViewModel(ExerciseService exerciseService) 
         {
@@ -61,6 +58,8 @@ namespace Duo.ViewModels
             }
 
             CreateMultipleChoiceExerciseViewModel = new CreateMultipleChoiceExerciseViewModel(this);
+            CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
+            CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
             SaveButtonCommand = new RelayCommand(CreateExercise);
             ExerciseTypes = new ObservableCollection<string>
@@ -159,11 +158,6 @@ namespace Duo.ViewModels
             //Task.Delay(3000).ContinueWith(_ => IsSuccessMessageVisible = false);
         }
 
-        public void RaiseErrorMessage(string title, string message)
-        {
-            ShowErrorMessageRequested?.Invoke(this, (title, message));
-        }
-
 
         private void UpdateExerciseContent(string exerciseType)
         {
@@ -229,9 +223,9 @@ namespace Duo.ViewModels
                 await _exerciseService.CreateExercise(newExercise);
                 Debug.WriteLine(newExercise);
                 ShowSuccessMessage();
-                RequestGoBack?.Invoke(this, EventArgs.Empty);
+                GoBack();
             }
-            catch(ArgumentException ex)
+            catch(Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message,"");
@@ -247,9 +241,9 @@ namespace Duo.ViewModels
                 await _exerciseService.CreateExercise(newExercise);
                 Debug.WriteLine(newExercise);
                 ShowSuccessMessage();
-                RequestGoBack?.Invoke(this, EventArgs.Empty);
+                GoBack();
             }
-            catch(ArgumentException ex)
+            catch(Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message,"");
@@ -265,9 +259,9 @@ namespace Duo.ViewModels
                 await _exerciseService.CreateExercise(newExercise);
                 Debug.WriteLine(newExercise);
                 ShowSuccessMessage();
-                RequestGoBack?.Invoke(this, EventArgs.Empty);
+                GoBack();
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, "");
@@ -283,9 +277,9 @@ namespace Duo.ViewModels
                 await _exerciseService.CreateExercise(newExercise);
                 Debug.WriteLine(newExercise);
                 ShowSuccessMessage();
-                RequestGoBack?.Invoke(this, EventArgs.Empty);
+                GoBack();
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, "");
