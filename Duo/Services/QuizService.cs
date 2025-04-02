@@ -22,6 +22,11 @@ namespace Duo.Services
             return await _quizRepository.GetAllAsync();
         }
 
+        public async Task<List<Exam>> GetAllAvailableExams()
+        {
+            return (List<Exam>)await _examRepository.GetUnassignedAsync();
+        }
+
         public async Task<Quiz> GetQuizById(int quizId)
         {
             return await _quizRepository.GetByIdAsync(quizId);

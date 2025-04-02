@@ -30,7 +30,7 @@ namespace Duo.Services
         {
             return await _exerciseRepository.GetQuizExercisesAsync(quizId);
         }
-        public async Task<List<Exercise>> GetAllExercisesFromExam(int quizId)
+        public async Task<List<Exercise>> GetAllExercisesFromExam(int examId)
         {
             return await _exerciseRepository.GetExamExercisesAsync(quizId);
         }
