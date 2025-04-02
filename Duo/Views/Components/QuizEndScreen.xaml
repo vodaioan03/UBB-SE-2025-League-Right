@@ -16,7 +16,7 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="20" MinWidth="500">
         <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center" MaxWidth="800">
             <TextBlock 
-                Text="Quiz Complete!"
+                Text="Completed!"
                 HorizontalAlignment="Center" 
                 FontSize="28"
                 FontWeight="SemiBold"

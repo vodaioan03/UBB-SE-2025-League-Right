@@ -28,25 +28,11 @@ namespace Duo.ViewModels
         public int QuizId
         {
             get => _quizId;
-            set
-            {
-                _quizId = value;
-                _examId = -1;
-                OnPropertyChanged(nameof(QuizId));
-                LoadQuizData();
-            }
         }
 
         public int ExamId
         {
             get => _examId;
-            set
-            {
-                _examId = value;
-                _quizId = -1;
-                OnPropertyChanged(nameof(ExamId));
-                LoadExamData();
-            }
         }
 
         private async Task LoadQuizData()
@@ -57,9 +43,27 @@ namespace Duo.ViewModels
 
         private async Task LoadExamData()
         {
+            Debug.WriteLine("Salut, intra in chestia de load data de la exam, adica e bine");
             await LoadExam();
             await LoadExercises();
         }
+
+        public async Task SetQuizIdAsync(int value)
+        {
+            _quizId = value;
+            _examId = -1;
+            OnPropertyChanged(nameof(QuizId));
+            await LoadQuizData();
+        }
+
+        public async Task SetExamIdAsync(int value)
+        {
+            _examId = value;
+            _quizId = -1;
+            OnPropertyChanged(nameof(ExamId));
+            await LoadExamData();
+        }
+
 
         public List<Exercise> Exercises
         {
@@ -167,6 +171,7 @@ namespace Duo.ViewModels
         {
             try
             {
+            Debug.WriteLine("We load qwuiz");
                 CurrentQuiz = await _quizService.GetQuizById(_quizId);
             }
             catch (Exception ex)
@@ -177,9 +182,10 @@ namespace Duo.ViewModels
 
         public async Task LoadExam()
         {
+            Debug.WriteLine("We load exam");
             try
             {
-                CurrentExam = await _quizService.GetExamById(_quizId);
+                CurrentExam = await _quizService.GetExamById(_examId);
             }
             catch (Exception ex)
             {
@@ -278,7 +284,7 @@ namespace Duo.ViewModels
         {
             if (QuizId != -1)
                 return (float)CurrentQuiz.GetNumberOfAnswersGiven() / Exercises.Count;
-            return (float)CurrentExam.ExerciseList.Count / CurrentExam.GetNumberOfAnswersGiven();
+            return (float)CurrentExam.GetNumberOfAnswersGiven() / Exercises.Count;
 
         }
 
@@ -286,7 +292,7 @@ namespace Duo.ViewModels
         {
             if (QuizId != -1)
                 return (float)CurrentQuiz.GetNumberOfCorrectAnswers() / Exercises.Count;
-            return (float)CurrentExam.ExerciseList.Count / CurrentExam.GetNumberOfCorrectAnswers();
+            return (float)CurrentExam.GetNumberOfCorrectAnswers() / Exercises.Count;
         }
 
         private bool IsPassed()

@@ -6,6 +6,7 @@ using System;
 using Microsoft.UI.Xaml.Media;
 using Duo.Views.Pages;
 using System.Diagnostics;
+using Duo.Models.Quizzes;
 
 namespace Duo.Views.Components
 {
@@ -26,7 +27,13 @@ namespace Duo.Views.Components
                 Frame parentFrame = Helpers.Helpers.FindParent<Frame>(this);
                 if (parentFrame != null)
                 {
-                    parentFrame.Navigate(typeof(QuizPage), ViewModel.Quiz.Id);
+                    if (ViewModel.Quiz is Exam)
+                    {
+                        Debug.WriteLine("HEI");
+                        parentFrame.Navigate(typeof(QuizPage), (ViewModel.Quiz.Id, true));
+                    }
+                    else
+                        parentFrame.Navigate(typeof(QuizPage), (ViewModel.Quiz.Id, false));
                 }
 
             }

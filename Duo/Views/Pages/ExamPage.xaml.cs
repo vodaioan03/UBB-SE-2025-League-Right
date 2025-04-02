@@ -41,20 +41,6 @@ namespace Duo.Views.Pages
             this.InitializeComponent();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            if (e.Parameter is int quizId)
-            {
-                Debug.WriteLine($"ExamPage received ExamId: {quizId}");
-                ViewModel.ExamId = quizId;
-
-                await ViewModel.LoadExercises();
-                LoadCurrentExercise();
-            }
-        }
-
 
         public void BackButton_Click(object sender, RoutedEventArgs e)
         {

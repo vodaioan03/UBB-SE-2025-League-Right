@@ -46,12 +46,19 @@ namespace Duo.Views.Pages
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter is int quizId)
+            if (e.Parameter is ValueTuple<int, bool> parameters)
             {
-                Debug.WriteLine($"QuizPage received QuizId: {quizId}");
-                ViewModel.QuizId = quizId;
+                int quizId = parameters.Item1;
+                bool isExam = parameters.Item2;
 
-                await ViewModel.LoadExercises();
+
+                Debug.WriteLine($"QuizPage received QuizId: {quizId}, with isExam {isExam}");
+
+                if(isExam == true)
+                    await ViewModel.SetExamIdAsync(quizId);
+                else
+                    await ViewModel.SetQuizIdAsync(quizId);
+
                 LoadCurrentExercise();
             }
         }
@@ -257,6 +264,14 @@ namespace Duo.Views.Pages
 
         private async void ShowMessage(FrameworkElement parentElement, bool valid)
         {
+            if (ViewModel.QuizId == -1)
+            {
+                var loadedNext = ViewModel.LoadNext();
+
+                if (loadedNext)
+                    LoadCurrentExercise();
+                return;
+            }
 
             var feedbackPopup = new AnswerFeedbackPopup();
             feedbackPopup.XamlRoot = parentElement.XamlRoot;

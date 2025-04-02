@@ -35,11 +35,6 @@
                         Click="BackButton_Click"
                         Margin="0,16,0,16"/>
 
-
-                <TextBlock Text="Quiz"
-                           FontWeight="SemiBold"
-                           FontSize="32"/>
-
                 <!-- Horizontal Line -->
                 <Rectangle Grid.Row="1"
                            Grid.Column="0"
