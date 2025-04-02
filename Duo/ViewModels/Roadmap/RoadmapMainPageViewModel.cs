@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Duo;
 using Duo.Commands;
+using Duo.Models;
 using Duo.Models.Quizzes;
 using Duo.Models.Sections;
 using Duo.Services;
@@ -21,14 +22,12 @@ namespace Duo.ViewModels.Roadmap
 {
     public class RoadmapMainPageViewModel : ViewModelBase
     {
-
-        //✅ No explicit DataContext set
-        //✅ Binds properties from RoadmapSectionViewModel
-        //✅ Works inside ItemsControl without manual setup
-
-
-        private Duo.Models.Roadmap.Roadmap _roadmap;
         private RoadmapService _roadmapService;
+        private Duo.Models.Roadmap.Roadmap _roadmap;
+
+        private UserService _userService;
+        private User _user;
+
         private BaseQuiz _selectedQuiz;
 
         private ObservableCollection<RoadmapSectionViewModel> _sectionViewModels;
@@ -45,7 +44,7 @@ namespace Duo.ViewModels.Roadmap
         public RoadmapMainPageViewModel()
         {
             _roadmapService = (RoadmapService)App.serviceProvider.GetService(typeof(RoadmapService));
-
+            _userService = (UserService)App.serviceProvider.GetService(typeof(UserService));
 
             StartQuizCommand = new RelayCommand(StartQuiz);
             OpenQuizPreviewCommand = new RelayCommandWithParameter<Tuple<int, bool>>(OpenQuizPreview);
@@ -54,16 +53,36 @@ namespace Duo.ViewModels.Roadmap
         public async Task SetupViewModel()
         {
             _roadmap = await _roadmapService.GetRoadmapById(1);
+            _user = await _userService.GetByIdAsync(1);
+
             SectionService sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
-            List<Section> sections = (List<Section>)(await sectionService.GetByRoadmapId(1));
+            List<Section> sections = (List<Section>)await sectionService.GetByRoadmapId(1);
 
             _sectionViewModels = new ObservableCollection<RoadmapSectionViewModel>();
-            sections.ForEach(section =>
+            //sections.ForEach(section =>
+            //{
+            //    var sectionViewModel = (RoadmapSectionViewModel)App.serviceProvider.GetService(typeof(RoadmapSectionViewModel));
+            //    sectionViewModel.SetupForSection(section.Id);
+            //    _sectionViewModels.Add(sectionViewModel);
+            //});
+
+            for (int i = 1; i <= sections.Count; i += 1)
             {
                 var sectionViewModel = (RoadmapSectionViewModel)App.serviceProvider.GetService(typeof(RoadmapSectionViewModel));
-                sectionViewModel.SetupForSection(section.Id);
+                if (i <= _user.NumberOfCompletedSections)
+                {
+                    await sectionViewModel.SetupForSection(sections[i - 1].Id, true, 0);
+                }
+                else if (i == _user.NumberOfCompletedSections + 1)
+                {
+                    await sectionViewModel.SetupForSection(sections[i - 1].Id, false, _user.NumberOfCompletedQuizzesInSection);
+                }
+                else
+                {
+                    await sectionViewModel.SetupForSection(sections[i - 1].Id, false, -1);
+                }
                 _sectionViewModels.Add(sectionViewModel);
-            });
+            }
 
             OnPropertyChanged(nameof(SectionViewModels));
         }
@@ -76,6 +95,7 @@ namespace Duo.ViewModels.Roadmap
             await quizPreviewViewModel.OpenForQuiz(args.Item1, args.Item2);
         }
 
+        // MAYBE MAKE THIS OBSOLETE
         private void StartQuiz()
         {
             Console.WriteLine($"Starting quiz with ID: {_selectedQuiz?.Id}");

@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
 using System.Windows.Input;
+using static Duo.ViewModels.Roadmap.RoadmapButtonTemplate;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,6 +44,13 @@ namespace Duo.Views.Components
                 typeof(QuizRoadmapButton),
                 new PropertyMetadata(false, OnIsExamChanged));
 
+        public static readonly DependencyProperty QuizStatusProperty =
+            DependencyProperty.Register(
+            nameof(QuizStatus),
+            typeof(QUIZ_STATUS),
+            typeof(QuizRoadmapButton),
+            new PropertyMetadata(1));
+
         public int QuizId
         {
             get => (int)GetValue(QuizIdProperty);
@@ -53,6 +61,12 @@ namespace Duo.Views.Components
         {
             get => (bool)GetValue(IsExamProperty);
             set => SetValue(IsExamProperty, value);
+        }
+
+        public QUIZ_STATUS QuizStatus
+        {
+            get => (QUIZ_STATUS)GetValue(QuizStatusProperty);
+            set => SetValue(QuizStatusProperty, value);
         }
 
         public static readonly DependencyProperty CommandProperty =
@@ -138,14 +152,41 @@ namespace Duo.Views.Components
                 // Apply special styling for exams
                 if (isExam)
                 {
-                    CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed);
+                    switch (QuizStatus)
+                    {
+                        case QUIZ_STATUS.LOCKED:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkGray);
+                            break;
+                        case QUIZ_STATUS.INCOMPLETE:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Olive);
+                            break;
+                        case QUIZ_STATUS.COMPLETED:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed);
+                            break;
+                        default:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkGray);
+                            break;
+                    }
                     CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
                 }
                 else
                 {
-                    // Use theme resources for standard quiz buttons
-                    CircularButton.ClearValue(Button.BackgroundProperty);
-                    CircularButton.ClearValue(Button.ForegroundProperty);
+                    switch (QuizStatus)
+                    {
+                        case QUIZ_STATUS.LOCKED:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Gray);
+                            break;
+                        case QUIZ_STATUS.INCOMPLETE:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Olive);
+                            break;
+                        case QUIZ_STATUS.COMPLETED:
+                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Green);
+                            break;
+                        default:
+                            CircularButton.ClearValue(Button.BackgroundProperty);
+                            break;
+                    }
+                    CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
                 }
             }
 
@@ -160,6 +201,12 @@ namespace Duo.Views.Components
         {
             Debug.WriteLine($"Button clicked: {QuizId}");
             Debug.WriteLine($"Is Exam: {IsExam}");
+            Debug.WriteLine($"Quiz Status: {QuizStatus}");
+
+            if (QuizStatus == QUIZ_STATUS.LOCKED)
+            {
+                return;
+            }
 
             if (Command?.CanExecute(CommandParameter) == true)
             {

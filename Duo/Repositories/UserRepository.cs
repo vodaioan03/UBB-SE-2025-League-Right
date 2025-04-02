@@ -39,8 +39,8 @@ public class UserRepository
             return new User(
                 reader.GetInt32(reader.GetOrdinal("Id")),
                 reader.GetString(reader.GetOrdinal("Username")),
-                reader.GetInt32(reader.GetOrdinal("LastCompletedSectionId")),
-                reader.GetInt32(reader.GetOrdinal("LastCompletedQuizId"))
+                reader.GetInt32(reader.GetOrdinal("NumberOfCompletedSections")),
+                reader.GetInt32(reader.GetOrdinal("NumberOfCompletedQuizzesInSection"))
             );
         }
         
@@ -88,16 +88,12 @@ public class UserRepository
         }
     }
 
-    public async Task UpdateUserSectionProgressAsync(User user, int newLastSectionCompletedId)
+    public async Task UpdateUserProgressAsync(int userId, int newNrOfSectionsCompleted, int newNrOfQuizzesCompletedInSection)
     {
-        if (user == null)
-        {
-            throw new ArgumentNullException(nameof(user));
-        }
 
-        if (user.Id <= 0)
+        if (userId <= 0)
         {
-            throw new ArgumentException("User ID must be greater than 0.", nameof(user));
+            throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
         }
 
         using var connection = await _databaseConnection.CreateConnectionAsync();
@@ -105,58 +101,18 @@ public class UserRepository
         
         command.CommandText = "sp_UpdateUserProgress";
         command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@UserId", user.Id);
-        command.Parameters.AddWithValue("@LastCompletedSectionId", newLastSectionCompletedId);
-        command.Parameters.AddWithValue("@LastCompletedQuizId", DBNull.Value);
+        command.Parameters.AddWithValue("@UserId", userId);
+        command.Parameters.AddWithValue("@NumberOfCompletedSections", newNrOfSectionsCompleted);
+        command.Parameters.AddWithValue("@NumberOfCompletedQuizzesInSection", newNrOfQuizzesCompletedInSection);
         
         try
         {
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
-        }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"User with ID {user.Id} not found.", ex);
         }
         catch (SqlException ex)
         {
             throw new Exception($"Database error while updating user section progress: {ex.Message}", ex);
-        }
-    }
-
-    public async Task UpdateUserQuizProgressAsync(User user, int newLastQuizCompletedId)
-    {
-        if (user == null)
-        {
-            throw new ArgumentNullException(nameof(user));
-        }
-
-        if (user.Id <= 0)
-        {
-            throw new ArgumentException("User ID must be greater than 0.", nameof(user));
-        }
-
-        using var connection = await _databaseConnection.CreateConnectionAsync();
-        using var command = connection.CreateCommand();
-        
-        command.CommandText = "sp_UpdateUserProgress";
-        command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@UserId", user.Id);
-        command.Parameters.AddWithValue("@LastCompletedSectionId", DBNull.Value);
-        command.Parameters.AddWithValue("@LastCompletedQuizId", newLastQuizCompletedId);
-        
-        try
-        {
-            await connection.OpenAsync();
-            await command.ExecuteNonQueryAsync();
-        }
-        catch (SqlException ex) when (ex.Number == 50001)
-        {
-            throw new KeyNotFoundException($"User with ID {user.Id} not found.", ex);
-        }
-        catch (SqlException ex)
-        {
-            throw new Exception($"Database error while updating user quiz progress: {ex.Message}", ex);
         }
     }
 
@@ -172,7 +128,7 @@ public class UserRepository
         
         command.CommandText = "sp_GetUserById";
         command.CommandType = System.Data.CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("@Id", userId);
+        command.Parameters.AddWithValue("@userId", userId);
         
         await connection.OpenAsync();
         using var reader = await command.ExecuteReaderAsync();
@@ -182,8 +138,8 @@ public class UserRepository
             return new User(
                 reader.GetInt32(reader.GetOrdinal("Id")),
                 reader.GetString(reader.GetOrdinal("Username")),
-                reader.GetInt32(reader.GetOrdinal("LastCompletedSectionId")),
-                reader.GetInt32(reader.GetOrdinal("LastCompletedQuizId"))
+                reader.GetInt32(reader.GetOrdinal("NumberOfCompletedSections")),
+                reader.GetInt32(reader.GetOrdinal("NumberOfCompletedQuizzesInSection"))
             );
         }
         
