@@ -44,7 +44,7 @@ Padding="0,16,0,16">
                 <StackPanel
                 Orientation="Horizontal"
                 Spacing="16">
-                    <TextBlock Text="Manage Quizes"
+                    <TextBlock Text="Manage Exams"
                FontWeight="SemiBold"
                FontSize="32"/>
 
@@ -66,6 +66,7 @@ Padding="0,16,0,16">
 
                 <ListView ItemsSource="{Binding Exams}"
                       SelectedItem="{Binding SelectedExam, Mode=TwoWay}"
+                          MaxHeight="200"
                         >
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local1:Exam">

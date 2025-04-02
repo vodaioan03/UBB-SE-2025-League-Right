@@ -44,8 +44,6 @@
                                     <Grid Margin="0,4">
                                         <StackPanel Orientation="Horizontal" Spacing="16">
                                             <Button Background="Transparent"
-                                                    BorderThickness="1"
-                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                                     Padding="16,12"
                                                     Content="{Binding}" 
                                                     Click="LeftOption_Click"
@@ -53,7 +51,6 @@
                                                     Height="48"
                                                     CornerRadius="4">
                                                 <Button.Resources>
-                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent"/>
                                                     <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
                                                 </Button.Resources>
                                             </Button>

@@ -13,7 +13,7 @@
         <local:FillInTheBlanksExercise x:Key="FillInTheBlanksConverter"/>
     </UserControl.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="20">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="20" CornerRadius="8">
         <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center" MaxWidth="800">
             <TextBlock 
                 Text="Fill in the blank fields"
@@ -24,11 +24,9 @@
                 Margin="0, 0, 0, 32"
             />
             
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            <Border 
                     CornerRadius="8"
-                    Padding="24"
-                    BorderThickness="1"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                    Padding="24">
                 <ItemsControl ItemsSource="{x:Bind QuestionElements}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

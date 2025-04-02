@@ -20,6 +20,7 @@ using Duo.Models.Exercises;
 using System.Text.RegularExpressions;
 using static Duo.Views.Components.AssociationExercise;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -61,6 +62,8 @@ namespace Duo.Views.Components
         {
             QuestionElements.Clear();
             var parts = Regex.Split(question, @"({})");
+            var uiSettings = new UISettings();
+            SolidColorBrush textColor = new SolidColorBrush(uiSettings.GetColorValue(UIColorType.Foreground));
 
             foreach (var part in parts)
             {
@@ -104,7 +107,7 @@ namespace Duo.Views.Components
                     {
                         Text = part,
                         FontSize = 16,
-                        Foreground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51)),
+                        Foreground = textColor,
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(4)
                     };

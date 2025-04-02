@@ -25,6 +25,8 @@
             <!-- Button -->
             <Button Grid.Column="2" x:Name="AddButton" Content="{x:Bind ButtonText, Mode=OneWay}" 
                     Margin="10" Padding="16,8"
+                    Width="120"
+                    HorizontalAlignment="Center"
                     Background="{ThemeResource AccentTextFillColorTertiaryBrush}" 
                     Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" 
                     CornerRadius="4"

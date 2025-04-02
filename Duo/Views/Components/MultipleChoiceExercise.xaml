@@ -9,7 +9,8 @@
     xmlns:models="using:Duo.Models.Exercises"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="20">
+    <Grid Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="20"
+                    CornerRadius="8">
         <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center" MaxWidth="800">
             <TextBlock 
                 Text="{x:Bind Question, Mode=OneWay}"
@@ -20,11 +21,9 @@
                 Margin="0, 0, 0, 32"
             />
             
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            <Border
                     CornerRadius="8"
-                    Padding="24"
-                    BorderThickness="1"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                    Padding="24">
                 <ItemsControl ItemsSource="{x:Bind Answers, Mode=OneWay}" Grid.Column="0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -33,9 +32,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:MultipleChoiceAnswerModel">
-                            <Button Background="Transparent"
-                                    BorderThickness="1"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            <Button Background="{ThemeResource SubtleFillColorTransparentBrush}"
                                     Padding="16,12"
                                     Click="Option_Click"
                                     Content="{x:Bind Answer}"
@@ -44,8 +41,7 @@
                                     Margin="0,4"
                                     CornerRadius="4">
                                 <Button.Resources>
-                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent"/>
-                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource AccentTextFillColorTertiaryBrush}"/>
                                 </Button.Resources>
                             </Button>
                         </DataTemplate>

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,8 +42,6 @@ namespace Duo.Views.Components
 
 
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-        private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
-        private static readonly SolidColorBrush DefaultBorderBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
 
         private List<Button> selectedButtons = new List<Button>();
 
@@ -64,21 +63,41 @@ namespace Duo.Views.Components
             get => (ObservableCollection<MultipleChoiceAnswerModel>)GetValue(AnswersProperty);
             set => SetValue(AnswersProperty, value);
         }
+        public Color GetSystemAccentColor()
+        {
+            var uiSettings = new UISettings();
+            return uiSettings.GetColorValue(UIColorType.Accent);
+        }
+        public Color GetSystemAccentTextColor()
+        {
+            var uiSettings = new UISettings();
+            return uiSettings.GetColorValue(UIColorType.Complement);
+        }
+
+        private void SetDefaultButtonStyles(Button clickedButton)
+        {
+            clickedButton.Background = TransparentBrush;
+        }
+
 
         private void Option_Click(object sender, RoutedEventArgs e)
         {
             var clickedButton = sender as Button;
 
+
             if (selectedButtons.Contains(clickedButton))
             {
-                clickedButton.Background = TransparentBrush;
-                clickedButton.BorderBrush = DefaultBorderBrush;
+                SetDefaultButtonStyles(clickedButton);
                 selectedButtons.Remove(clickedButton);
             }
             else
             {
-                clickedButton.Background = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
-                clickedButton.BorderBrush = SelectedBrush;
+                foreach (var selectedButton in selectedButtons)
+                {
+                    SetDefaultButtonStyles(selectedButton);
+                }
+                selectedButtons.Clear();
+                clickedButton.Background = new SolidColorBrush(GetSystemAccentColor());
                 selectedButtons.Add(clickedButton);
             }
         }

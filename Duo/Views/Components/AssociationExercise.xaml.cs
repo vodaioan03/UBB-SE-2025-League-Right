@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,6 +40,9 @@ namespace Duo.Views.Components
         public static readonly DependencyProperty SecondAnswersListProperty =
             DependencyProperty.Register(nameof(SecondAnswersList), typeof(ObservableCollection<string>), typeof(AssociationExercise), new PropertyMetadata(new ObservableCollection<string>()));
 
+        private static readonly UISettings uiSettings = new UISettings();
+        private readonly SolidColorBrush accentBrush;
+
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
         private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
         private static readonly SolidColorBrush MappedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
@@ -50,6 +54,7 @@ namespace Duo.Views.Components
         public AssociationExercise()
         {
             this.InitializeComponent();
+            accentBrush = new SolidColorBrush(uiSettings.GetColorValue(UIColorType.Accent));
         }
 
         public string Question
@@ -79,23 +84,20 @@ namespace Duo.Views.Components
             if (selectedButton == clickedButton)
             {
                 selectedButton.Background = TransparentBrush;
-                selectedButton.BorderBrush = DefaultBorderBrush;
                 selectedButton = null;
             }
             else if (selectedButton != clickedButton && selectedButton != null)
             {
                 selectedButton.Background = TransparentBrush;
-                selectedButton.BorderBrush = DefaultBorderBrush;
 
                 selectedButton = clickedButton;
-                selectedButton.Background = SelectedBrush;
-                selectedButton.BorderBrush = SelectedBrush;
+                selectedButton.Background = accentBrush;
+                selectedButton.BorderBrush = accentBrush;
             }
             else
             {
                 selectedButton = clickedButton;
-                selectedButton.Background = SelectedBrush;
-                selectedButton.BorderBrush = SelectedBrush;
+                selectedButton.Background = accentBrush;
             }
         }
 
@@ -112,7 +114,7 @@ namespace Duo.Views.Components
                     pairs.Remove(mapping);
                     leftButtonContent.Background = TransparentBrush;
                     rightButtonContent.Background = TransparentBrush;
-                    clickedButton.Background = SelectedBrush;
+                    clickedButton.Background = accentBrush;
                     LinesCanvas.Children.Remove(line);
 
                     return;
@@ -127,7 +129,7 @@ namespace Duo.Views.Components
 
             var line = new Line
             {
-                Stroke = LineBrush,
+                Stroke = accentBrush,
                 StrokeThickness = 2,
                 X1 = GetCirclePosition(_selectedLeftButton, true).X,
                 Y1 = GetCirclePosition(_selectedLeftButton, true).Y,
@@ -138,8 +140,8 @@ namespace Duo.Views.Components
             LinesCanvas.Children.Add(line);
             pairs.Add(new Tuple<Button, Button, Line>(_selectedLeftButton, _selectedRightButton, line));
 
-            _selectedLeftButton.Background = MappedBrush;
-            _selectedRightButton.Background = MappedBrush;
+            _selectedLeftButton.Background = accentBrush;
+            _selectedRightButton.Background = accentBrush;
             _selectedLeftButton = null;
             _selectedRightButton = null;
         }
