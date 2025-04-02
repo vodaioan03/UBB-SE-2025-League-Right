@@ -17,11 +17,13 @@ namespace Duo.ViewModels.CreateExerciseViewModels
     class CreateFillInTheBlankExerciseViewModel : CreateExerciseViewModelBase
     {
 
+        private ExerciseCreationViewModel _parentViewModel;
         public ObservableCollection<Answer> Answers { get; set; } = new ObservableCollection<Answer>();
+        public const int MAX_ANSWERS = 3;
 
-        public CreateFillInTheBlankExerciseViewModel() 
+        public CreateFillInTheBlankExerciseViewModel(ExerciseCreationViewModel parentViewModel)
         {
-
+            _parentViewModel = parentViewModel;
             Answers.Add(new Answer(""));
             AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
         }
@@ -47,6 +49,11 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         public void AddNewAnswer()
         {
+            if (Answers.Count >= MAX_ANSWERS)
+            {
+                _parentViewModel.RaiseErrorMessage("You can only have 3 answers for a fill in the blank exercise.", "");
+                return;
+            }
             Answers.Add(new Answer(""));
         }
 

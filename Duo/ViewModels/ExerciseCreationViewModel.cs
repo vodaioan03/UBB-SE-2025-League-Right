@@ -36,8 +36,8 @@ namespace Duo.ViewModels
         private object _currentExerciseViewModel;
 
 
-        public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; } = new();
-        public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; } = new();
+        public CreateAssociationExerciseViewModel CreateAssociationExerciseViewModel { get; }
+        public CreateFillInTheBlankExerciseViewModel CreateFillInTheBlankExerciseViewModel { get; }
         public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; }
         public CreateFlashcardExerciseViewModel CreateFlashcardExerciseViewModel { get; } = new();
 
@@ -61,6 +61,8 @@ namespace Duo.ViewModels
             }
 
             CreateMultipleChoiceExerciseViewModel = new CreateMultipleChoiceExerciseViewModel(this);
+            CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
+            CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
             SaveButtonCommand = new RelayCommand(CreateExercise);
             ExerciseTypes = new ObservableCollection<string>
@@ -231,7 +233,7 @@ namespace Duo.ViewModels
                 ShowSuccessMessage();
                 RequestGoBack?.Invoke(this, EventArgs.Empty);
             }
-            catch(ArgumentException ex)
+            catch(Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message,"");
@@ -249,7 +251,7 @@ namespace Duo.ViewModels
                 ShowSuccessMessage();
                 RequestGoBack?.Invoke(this, EventArgs.Empty);
             }
-            catch(ArgumentException ex)
+            catch(Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message,"");
@@ -267,7 +269,7 @@ namespace Duo.ViewModels
                 ShowSuccessMessage();
                 RequestGoBack?.Invoke(this, EventArgs.Empty);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, "");
@@ -285,7 +287,7 @@ namespace Duo.ViewModels
                 ShowSuccessMessage();
                 RequestGoBack?.Invoke(this, EventArgs.Empty);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, "");

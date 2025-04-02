@@ -18,13 +18,15 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 {
     class CreateAssociationExerciseViewModel : CreateExerciseViewModelBase
     {
-
+        private ExerciseCreationViewModel _parentViewModel;
         public ObservableCollection<Answer> LeftSideAnswers { get; set; } = new ObservableCollection<Answer>();
 
         public ObservableCollection<Answer> RightSideAnswers { get; set; } = new ObservableCollection<Answer>();
-        
-        public CreateAssociationExerciseViewModel()
+        public const int MINIMUM_ANSWERS = 2;
+        public const int MAXIMUM_ANSWERS = 5;
+        public CreateAssociationExerciseViewModel(ExerciseCreationViewModel parentViewModel)
         {
+            _parentViewModel = parentViewModel;
             LeftSideAnswers.Add(new Answer(""));
             RightSideAnswers.Add(new Answer(""));
             AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
@@ -34,6 +36,11 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         private void AddNewAnswer()
         {
+            if(LeftSideAnswers.Count >= MAXIMUM_ANSWERS || RightSideAnswers.Count >= MAXIMUM_ANSWERS)
+            {
+                _parentViewModel.RaiseErrorMessage("You can only have up to 5 answers","");
+                return;
+            }
             Debug.WriteLine($"New answer");
             LeftSideAnswers.Add(new Answer(""));
             RightSideAnswers.Add(new Answer(""));
