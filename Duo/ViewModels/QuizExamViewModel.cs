@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
+using Duo.Models.Sections;
 using Duo.Services;
 using Duo.ViewModels.Base;
 using System;
@@ -326,6 +327,43 @@ namespace Duo.ViewModels
             }
 
             return correctAnswers;
+        }
+
+        public async Task MarkUserProgression()
+        {
+            if (GetPercentageDone() != 1)
+                return;
+            if (IsPassed())
+            {
+                UserService userService = (UserService)App.serviceProvider.GetService(typeof(UserService));
+                SectionService sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
+
+                int nrOfCompletedQuizzesInSection = (await userService.GetByIdAsync(1)).NumberOfCompletedQuizzesInSection;
+
+                List<Section> sections = await sectionService.GetByRoadmapId(1);
+                Section currentUserSection = sections[sections.Count - 1];
+                List<Quiz> currentSectionQuizzes = await _quizService.GetAllQuizzesFromSection(currentUserSection.Id);
+
+                if (_quizId == -1)
+                {
+                    if (_currentExam == null)
+                        return;
+                    if (nrOfCompletedQuizzesInSection != currentSectionQuizzes.Count())
+                        return;
+                    if (currentUserSection.GetFinalExam().Id != _examId)
+                        return;
+                }
+                else
+                {
+                     if (_currentQuiz == null)
+                        return;
+                    if (nrOfCompletedQuizzesInSection == currentSectionQuizzes.Count())
+                        return;
+                    if (currentSectionQuizzes[nrOfCompletedQuizzesInSection].Id != _quizId)
+                        return;
+                }
+                userService.IncrementUserProgressAsync(1);
+            }
         }
     }
 }
