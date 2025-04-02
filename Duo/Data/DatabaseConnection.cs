@@ -18,7 +18,6 @@ public class DatabaseConnection
 
         _connectionString = configuration["DbConnection"];
 
-        // INFO: best approach is to return a new connection each time
         try {
             _connection = new SqlConnection(_connectionString);
         }
@@ -39,13 +38,11 @@ public class DatabaseConnection
         return connection;
     }
 
-    // INFO: best approach is to return a new connection each time
     public SqlConnection GetConnection()
     {
         return _connection;
     }
 
-    // INFO: best approach is to return a new connection each time
     public void Dispose()
     {
         _connection?.Close();
