@@ -183,6 +183,17 @@ namespace Duo.Views.Pages
 
                         ExerciseContentControl.Content = multipleChoiceControl;
                     }
+                    else if (currentExercise is Models.Exercises.FlashcardExercise flashcardExercise)
+                    {
+                        var flashcardControl = new Components.FlashcardExercise()
+                        {
+                            Question = flashcardExercise.Question,
+                            Answer = flashcardExercise.Answer
+                        };
+                        flashcardControl.OnSendClicked += FlashcardControl_OnSendClicked;
+
+                        ExerciseContentControl.Content = flashcardControl;
+                    }
                 }
                 else
                 {
@@ -248,6 +259,15 @@ namespace Duo.Views.Pages
             {
                 var contentPairs = e.ContentPairs;
 
+                var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
+                ShowMessage((FrameworkElement)sender, valid);
+            }
+        }
+        private void FlashcardControl_OnSendClicked(object sender, FlashcardExerciseEventArgs e)
+        {
+            if (ViewModel.ValidatedCurrent == null)
+            {
+                var contentPairs = e.ContentPairs;
                 var valid = (bool)ViewModel.ValidateCurrentExercise(contentPairs);
                 ShowMessage((FrameworkElement)sender, valid);
             }

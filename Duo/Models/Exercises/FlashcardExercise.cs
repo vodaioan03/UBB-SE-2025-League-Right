@@ -58,7 +58,11 @@ namespace Duo.Models.Exercises
                 _ => 30
             };
         }
-        
+        public string GetCorrectAnswer()
+        {
+            return Answer;
+        }
+
         // Validation method from develop branch
         public bool ValidateAnswer(string userAnswer)
         {

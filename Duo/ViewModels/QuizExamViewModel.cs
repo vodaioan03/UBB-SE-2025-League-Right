@@ -244,6 +244,10 @@ namespace Duo.ViewModels
             {
                 isValid = multipleChoiceExercise.ValidateAnswer((List<string>)responses);
             }
+            else if (CurrentExercise is FlashcardExercise flashcardExercise)
+            {
+                isValid = flashcardExercise.ValidateAnswer((string)responses);
+            }
             ValidatedCurrent = isValid;
             if (QuizId != -1)
                 UpdateQuiz(ValidatedCurrent);
@@ -315,6 +319,10 @@ namespace Duo.ViewModels
                     .Where(choice => choice.IsCorrect)
                     .Select(choice => choice.Answer)
                     .First();
+            }
+            else if (CurrentExercise is FlashcardExercise flashcardExercise)
+            {
+                correctAnswers += string.Join(", ", flashcardExercise.GetCorrectAnswer());
             }
 
             return correctAnswers;

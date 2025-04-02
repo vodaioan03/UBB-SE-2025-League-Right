@@ -24,8 +24,6 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="Quiz" Icon="Help" ToolTipService.ToolTip="Quiz" Tag="QuizParent">
                 </NavigationViewItem>
-                <NavigationViewItem Content="Flashcards" Icon="Page" ToolTipService.ToolTip="Flashcards" Tag="FlashcardsParent">
-                </NavigationViewItem>
                 <NavigationViewItem Content="Community" Icon="Folder" ToolTipService.ToolTip="Community" Tag="CommunityParent">
                 </NavigationViewItem>
                 <NavigationViewItem Content="Quiz Admin"  Icon="Admin" ToolTipService.ToolTip="Admin" Tag="QuizAdminParent">
