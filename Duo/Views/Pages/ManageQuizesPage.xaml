@@ -65,6 +65,7 @@
                    HorizontalAlignment="Stretch"/>
                 
                 <ListView ItemsSource="{Binding Quizes}"
+                          MaxHeight="200"
                           SelectedItem="{Binding SelectedQuiz, Mode=TwoWay}"
                             >
                     <ListView.ItemTemplate>

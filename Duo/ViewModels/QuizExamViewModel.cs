@@ -31,10 +31,8 @@ namespace Duo.ViewModels
             {
                 _quizId = value;
                 _examId = -1;
-
-                LoadQuiz();
                 OnPropertyChanged(nameof(QuizId));
-                LoadExercises();
+                LoadQuizData();
             }
         }
 
@@ -45,11 +43,21 @@ namespace Duo.ViewModels
             {
                 _examId = value;
                 _quizId = -1;
-
-                LoadExam();
                 OnPropertyChanged(nameof(ExamId));
-                LoadExercises();
+                LoadExamData();
             }
+        }
+
+        private async void LoadQuizData()
+        {
+            await LoadQuiz();
+            await LoadExercises();
+        }
+
+        private async void LoadExamData()
+        {
+            await LoadExam();
+            await LoadExercises();
         }
 
         public List<Exercise> Exercises
