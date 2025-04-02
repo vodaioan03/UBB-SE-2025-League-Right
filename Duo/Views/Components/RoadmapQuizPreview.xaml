@@ -11,19 +11,78 @@
     mc:Ignorable="d">
 
     <UserControl.DataContext>
-        <viewmodels:RoadmapQuizPreviewViewModel x:Name="ViewModel" />
+        <viewmodels:RoadmapQuizPreviewViewModel x:Name="ViewModel"/>
     </UserControl.DataContext>
 
-    <StackPanel Padding="100">
-        <TextBlock Text="{Binding SectionTitle, Mode=OneWay}" 
-                   HorizontalAlignment="Center" 
-                   FontSize="32"/>
-        <TextBlock Text="{Binding QuizOrderNumber, Mode=OneWay}" 
-                   HorizontalAlignment="Center" 
-                   FontSize="32"/>
-        <Button Content="Start quiz" 
-                HorizontalAlignment="Center" 
-                Margin="0,20,0,0"
-                Click="OpenQuizButton_Click"/>
-    </StackPanel>
+    <UserControl.Resources>
+        <ThemeShadow x:Name="CardShadow"/>
+    </UserControl.Resources>
+
+    <Grid MaxWidth="800"
+          Padding="40">
+        <Border
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="12"
+            Shadow="{StaticResource CardShadow}"
+            Translation="0,0,32"
+            Padding="32">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <StackPanel Grid.Row="0"
+                            Spacing="8"
+                            Margin="0,0,0,24">
+                    <TextBlock Text="{Binding SectionTitle, Mode=OneWay}"
+                               Style="{ThemeResource BodyStrongTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock Text="{Binding QuizOrderNumber, Mode=OneWay}"
+                               Style="{ThemeResource TitleLargeTextBlockStyle}"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <!-- Description/Content -->
+                <TextBlock Grid.Row="1"
+                           x:Name="DescriptionText"
+                           Text="Get ready to test your knowledge with this quiz. Answer the questions to progress through the roadmap."
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,32"
+                           Style="{ThemeResource BodyTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+                <!-- Stats or other information can go here -->
+                <Grid Grid.Row="2"
+                      Margin="0,0,0,24">
+                    <StackPanel>
+                        <!-- If you have stats, they would go here -->
+                    </StackPanel>
+                </Grid>
+
+                <!-- Action Button -->
+                <StackPanel Grid.Row="3"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Spacing="12">
+                    <Button Content="Start Quiz"
+                            Style="{ThemeResource AccentButtonStyle}"
+                            Padding="24,12"
+                            Click="OpenQuizButton_Click">
+                        <Button.Resources>
+                            <ResourceDictionary>
+                                <x:Double x:Key="ButtonMinHeight">40</x:Double>
+                            </ResourceDictionary>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

@@ -11,43 +11,82 @@
     xmlns:viewmodel="using:Duo.ViewModels.Roadmap"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <!-- Drop shadow effect for cards -->
+        <ThemeShadow x:Name="SharedShadow"/>
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Orientation="Vertical" Spacing="0" HorizontalAlignment="Center" Margin="0" x:Name="MainStackPanel">
-            <TextBlock 
-                Text="{Binding Section.Title}"
-                HorizontalAlignment="Left" 
-                FontSize="32"
-                Margin="50, 50, 0, 0"/>
+        <Grid Padding="32,24,32,48">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                <StackPanel Orientation="Horizontal" Spacing="0" Margin="0">
+            <!-- Section Header -->
+            <Grid Grid.Row="0"
+                  Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <ItemsControl ItemsSource="{Binding QuizButtonTemplates, Mode=OneWay}" Margin="0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                <TextBlock
+                    Text="{Binding Section.Title}"
+                    Style="{ThemeResource TitleLargeTextBlockStyle}"
+                    FontWeight="SemiBold"
+                    Margin="0"/>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:QuizRoadmapButton 
-                                    QuizId="{Binding Quiz.Id}"
-                                    IsExam="False"
-                                    Margin="0"
-                                    ButtonClick="Quiz_Click"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                <!-- Additional controls can be added here in the future -->
+            </Grid>
 
-                    <local:QuizRoadmapButton 
-                         ButtonClick="Quiz_Click"
-                         QuizId="{Binding ExamButtonTemplate.Quiz.Id}" 
-                         IsExam="True"
-                         Margin="0"/>
-                </StackPanel>
-            </ScrollViewer>
-        </StackPanel>
+            <!-- Roadmap Content -->
+            <Grid Grid.Row="1">
+                <Border
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Shadow="{StaticResource SharedShadow}"
+                    Translation="0,0,24">
+
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled"
+                        Padding="24,20">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="32">
+                            <!-- Quiz Items -->
+                            <ItemsControl
+                                ItemsSource="{Binding QuizButtonTemplates, Mode=OneWay}"
+                                Margin="0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"
+                                                    Spacing="32"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:QuizRoadmapButton
+                                            QuizId="{Binding Quiz.Id}"
+                                            IsExam="False"
+                                            ButtonClick="Quiz_Click"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Exam Button -->
+                            <local:QuizRoadmapButton
+                                ButtonClick="Quiz_Click"
+                                QuizId="{Binding ExamButtonTemplate.Quiz.Id}"
+                                IsExam="True"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
     </ScrollViewer>
 
 </UserControl>
