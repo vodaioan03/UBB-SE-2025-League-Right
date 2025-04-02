@@ -72,7 +72,8 @@
                                         <local:QuizRoadmapButton
                                             QuizId="{Binding Quiz.Id}"
                                             IsExam="False"
-                                            ButtonClick="Quiz_Click"/>
+                                            ButtonClick="Quiz_Click"
+                                            QuizStatus="{Binding QuizStatus}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -81,7 +82,8 @@
                             <local:QuizRoadmapButton
                                 ButtonClick="Quiz_Click"
                                 QuizId="{Binding ExamButtonTemplate.Quiz.Id}"
-                                IsExam="True"/>
+                                IsExam="True"
+                                QuizStatus="{Binding ExamButtonTemplate.QuizStatus}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Border>
