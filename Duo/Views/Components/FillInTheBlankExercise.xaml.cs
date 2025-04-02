@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Duo.Models.Exercises;
 using System.Text.RegularExpressions;
 using static Duo.Views.Components.AssociationExercise;
+using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -62,18 +63,54 @@ namespace Duo.Views.Components
             var parts = Regex.Split(question, @"({})");
 
             foreach (var part in parts)
+            {
                 if (part.Contains("{}"))
-                    QuestionElements.Add(new TextBox
+                {
+                    var textBox = new TextBox
                     {
-                        Width = 100,
-                        Margin = new Thickness(5)
-                    });
+                        Width = 150,
+                        Height = 40,
+                        FontSize = 16,
+                        PlaceholderText = "Type here...",
+                        BorderThickness = new Thickness(1),
+                        BorderBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200)),
+                        Background = new SolidColorBrush(Color.FromArgb(255, 245, 245, 245)),
+                        Padding = new Thickness(8, 4, 8, 4),
+                        Margin = new Thickness(4),
+                        CornerRadius = new CornerRadius(4),
+                        SelectionHighlightColor = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215)),
+                        SelectionHighlightColorWhenNotFocused = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215)),
+                        VerticalContentAlignment = VerticalAlignment.Center
+                    };
+
+                    // Add focus visual style
+                    textBox.GotFocus += (s, e) =>
+                    {
+                        textBox.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
+                        textBox.Background = new SolidColorBrush(Microsoft.UI.Colors.White);
+                    };
+
+                    textBox.LostFocus += (s, e) =>
+                    {
+                        textBox.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+                        textBox.Background = new SolidColorBrush(Color.FromArgb(255, 245, 245, 245));
+                    };
+
+                    QuestionElements.Add(textBox);
+                }
                 else
-                    QuestionElements.Add(new TextBlock
+                {
+                    var textBlock = new TextBlock
                     {
                         Text = part,
-                        Margin = new Thickness(5)
-                    });
+                        FontSize = 16,
+                        Foreground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51)),
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(4)
+                    };
+                    QuestionElements.Add(textBlock);
+                }
+            }
         }
 
 

@@ -9,33 +9,63 @@
     xmlns:models="using:Duo.Models.Exercises"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
-        <TextBlock 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="20">
+        <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center" MaxWidth="800">
+            <TextBlock 
                 Text="{x:Bind Question, Mode=OneWay}"
                 HorizontalAlignment="Center" 
-                FontSize="32"
-                Margin="0, 0, 0,100"
-                />
-        <ItemsControl ItemsSource="{x:Bind Answers, Mode=OneWay}" Grid.Column="0" HorizontalAlignment="Center">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="models:MultipleChoiceAnswerModel">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Button Background="Transparent"
-                                BorderThickness="1"
-                                Padding="12"
-                                Click="Option_Click"
-                                Content="{x:Bind Answer}" 
-                                Width="150" Margin="5"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <Button Background="Transparent"
-                HorizontalAlignment="Center"
-                BorderThickness="5"
-                Padding="12"  
-                Click="Send_Click" 
-                Width="150" Margin="40">Send</Button>
-    </StackPanel>
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                Margin="0, 0, 0, 32"
+            />
+            
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="8"
+                    Padding="24"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                <ItemsControl ItemsSource="{x:Bind Answers, Mode=OneWay}" Grid.Column="0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:MultipleChoiceAnswerModel">
+                            <Button Background="Transparent"
+                                    BorderThickness="1"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    Padding="16,12"
+                                    Click="Option_Click"
+                                    Content="{x:Bind Answer}"
+                                    Width="300"
+                                    Height="48"
+                                    Margin="0,4"
+                                    CornerRadius="4">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
+                                </Button.Resources>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+
+            <Button Style="{StaticResource AccentButtonStyle}"
+                    HorizontalAlignment="Center"
+                    Padding="24,12"
+                    Click="Send_Click" 
+                    Width="180"
+                    Height="48"
+                    Margin="0, 24, 0, 0">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE724;" FontSize="16"/>
+                    <TextBlock Text="Submit Answer" FontSize="16"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
 
 </UserControl>

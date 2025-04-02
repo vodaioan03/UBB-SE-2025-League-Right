@@ -8,61 +8,123 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
-        <TextBlock 
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="20">
+        <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center" MaxWidth="800">
+            <TextBlock 
                 Text="{x:Bind Question, Mode=OneWay}"
                 HorizontalAlignment="Center" 
-                FontSize="32"
-                Margin="0, 0, 0,100"
-                />
-        <Grid HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              ColumnSpacing="200">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <ItemsControl ItemsSource="{x:Bind FirstAnswersList, Mode=OneWay}" Grid.Column="0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="5">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <Button Background="Transparent"
-                                BorderThickness="1"
-                                Padding="12"
-                                Content="{Binding}" 
-                                Click="LeftOption_Click" Width="150" Margin="5"/>
-                                <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black"  StrokeThickness="5" Name="FirstCircle"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                Margin="0, 0, 0, 32"
+            />
+            
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="8"
+                    Padding="24"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+                <Grid>
+                    <Grid HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          ColumnSpacing="200">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <ItemsControl ItemsSource="{x:Bind FirstAnswersList, Mode=OneWay}" Grid.Column="0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <StackPanel Orientation="Horizontal" Spacing="16">
+                                            <Button Background="Transparent"
+                                                    BorderThickness="1"
+                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                    Padding="16,12"
+                                                    Content="{Binding}" 
+                                                    Click="LeftOption_Click"
+                                                    Width="200"
+                                                    Height="48"
+                                                    CornerRadius="4">
+                                                <Button.Resources>
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent"/>
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
+                                                </Button.Resources>
+                                            </Button>
+                                            <Ellipse Width="24" 
+                                                     Height="24" 
+                                                     Fill="Transparent" 
+                                                     Stroke="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                     StrokeThickness="2" 
+                                                     Name="FirstCircle"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-            <Grid Grid.Column="1"/>
+                        <ItemsControl ItemsSource="{x:Bind SecondAnswersList, Mode=OneWay}" Grid.Column="1">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <StackPanel Orientation="Horizontal" Spacing="16">
+                                            <Ellipse Width="24" 
+                                                     Height="24" 
+                                                     Fill="Transparent" 
+                                                     Stroke="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                     StrokeThickness="2" 
+                                                     Name="SecondCircle"/>
+                                            <Button Background="Transparent"
+                                                    BorderThickness="1"
+                                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                    Padding="16,12"
+                                                    Content="{Binding}" 
+                                                    Click="RightOption_Click"
+                                                    Width="200"
+                                                    Height="48"
+                                                    CornerRadius="4">
+                                                <Button.Resources>
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent"/>
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
+                                                </Button.Resources>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                    <Canvas x:Name="LinesCanvas" 
+                            Background="Transparent"
+                            IsHitTestVisible="False"
+                            ZIndex="0"/>
+                </Grid>
+            </Border>
 
-            <ItemsControl ItemsSource="{x:Bind SecondAnswersList, Mode=OneWay}" Grid.Column="1">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="5">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black"  StrokeThickness="5" Name="SecondCircle"/>
-                                <Button Background="Transparent"
-                                BorderThickness="1"
-                                Padding="12" 
-                                Content="{Binding}" Click="RightOption_Click" Width="150" Margin="5"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
-        <Button Background="Transparent"
-                HorizontalAlignment="Center"
-                BorderThickness="5"
-                Padding="12"  
-                Click="Send_Click" 
-                Width="150" Margin="40">Send</Button>
-    </StackPanel>
-    
+            <Button Style="{StaticResource AccentButtonStyle}"
+                    HorizontalAlignment="Center"
+                    Padding="24,12"
+                    Click="Send_Click" 
+                    Width="180"
+                    Height="48"
+                    Margin="0, 24, 0, 0">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE724;" FontSize="16"/>
+                    <TextBlock Text="Submit Answer" FontSize="16"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+
 </UserControl>
