@@ -55,14 +55,12 @@ namespace Duo.ViewModels
             var exercises = await _exerciseService.GetAllExercises();
             foreach (var exercise in exercises)
             {
-                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
                 Exercises.Add(exercise);
             }
         }
 
         public void openSelectExercises()
         {
-            Debug.WriteLine("Opening select exercises...");
             ShowListViewModal?.Invoke(GetAvailableExercises());
         }
 
