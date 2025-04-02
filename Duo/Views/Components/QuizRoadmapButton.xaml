@@ -10,8 +10,51 @@
     xmlns:quizmodels="using:Duo.Models.Quizzes"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" Spacing="6" HorizontalAlignment="Center" Margin="100">
-        
+    <UserControl.Resources>
+        <ThemeShadow x:Name="ButtonShadow"/>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Vertical"
+                Spacing="8"
+                HorizontalAlignment="Center"
+                Width="120">
+        <Button x:Name="CircularButton"
+                Width="65"
+                Height="65"
+                HorizontalAlignment="Center"
+                CornerRadius="65"
+                Click="OnButtonClick">
+            <Button.Resources>
+                <ResourceDictionary>
+                    <Style TargetType="Button"
+                           BasedOn="{StaticResource DefaultButtonStyle}">
+                        <Setter Property="Background"
+                                Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                        <Setter Property="BorderBrush"
+                                Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+                        <Setter Property="BorderThickness"
+                                Value="2"/>
+                        <Setter Property="Shadow"
+                                Value="{StaticResource ButtonShadow}"/>
+
+                    </Style>
+                </ResourceDictionary>
+            </Button.Resources>
+
+            <TextBlock x:Name="ButtonNumber"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+        </Button>
+
+        <TextBlock x:Name="ButtonLabel"
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   TextWrapping="Wrap"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
     </StackPanel>
 
 </UserControl>

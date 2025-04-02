@@ -41,7 +41,7 @@ namespace Duo.Views.Components
                 nameof(IsExam),
                 typeof(bool),
                 typeof(QuizRoadmapButton),
-                new PropertyMetadata(false));
+                new PropertyMetadata(false, OnIsExamChanged));
 
         public int QuizId
         {
@@ -81,11 +81,16 @@ namespace Duo.Views.Components
             set => SetValue(CommandParameterProperty, value);
         }
 
-
-
         public QuizRoadmapButton()
         {
             this.InitializeComponent();
+            this.Loaded += QuizRoadmapButton_Loaded;
+        }
+
+        private void QuizRoadmapButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateQuizId(QuizId);
+            UpdateExamStatus(IsExam);
         }
 
         private static void OnQuizIdChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -98,68 +103,64 @@ namespace Duo.Views.Components
             }
         }
 
+        private static void OnIsExamChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is QuizRoadmapButton button)
+            {
+                bool isExam = (bool)e.NewValue;
+                button.UpdateExamStatus(isExam);
+            }
+        }
+
         private void UpdateQuizId(int newQuizId)
         {
-            TextBlock dynamicTextBlock;
-
-            Button circularButton = new Button
+            if (ButtonNumber != null)
             {
-                Width = 50,
-                Height = 50,
-                BorderThickness = new Thickness(2),
-                BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Black),
-                CornerRadius = new Microsoft.UI.Xaml.CornerRadius(50),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
+                ButtonNumber.Text = newQuizId.ToString();
+            }
 
-            circularButton.Click += OnButtonClick;  // Link button click to OnButtonClick handler
-
-            // Set the background and dynamic text depending on whether it's an exam or quiz
-            if (IsExam)
+            if (ButtonLabel != null)
             {
-                circularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
-                dynamicTextBlock = new TextBlock
+                ButtonLabel.Text = IsExam ? $"Exam {newQuizId}" : $"Quiz {newQuizId}";
+            }
+
+            // Bind command parameter if set
+            if (Command != null && CircularButton != null)
+            {
+                CircularButton.Tag = CommandParameter;
+            }
+        }
+
+        private void UpdateExamStatus(bool isExam)
+        {
+            if (CircularButton != null)
+            {
+                // Apply special styling for exams
+                if (isExam)
                 {
-                    Text = $"Exam {newQuizId}",
-                    FontSize = 12,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(10)
-                };
-            }
-            else
-            {
-                dynamicTextBlock = new TextBlock
+                    CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed);
+                    CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
+                }
+                else
                 {
-                    Text = $"Quiz {newQuizId}",
-                    FontSize = 12,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(10)
-                };
+                    // Use theme resources for standard quiz buttons
+                    CircularButton.ClearValue(Button.BackgroundProperty);
+                    CircularButton.ClearValue(Button.ForegroundProperty);
+                }
             }
 
-            // Bind the command and command parameter to the button if they are set
-            if (Command != null)
+            // Update label text
+            if (ButtonLabel != null && ButtonNumber != null)
             {
-                circularButton.Tag = CommandParameter; 
-            }
-
-            // Add elements to the StackPanel content
-            if (this.Content is StackPanel stackPanel)
-            {
-                stackPanel.Children.Add(circularButton);
-                stackPanel.Children.Add(dynamicTextBlock);
+                ButtonLabel.Text = isExam ? $"Exam {QuizId}" : $"Quiz {QuizId}";
             }
         }
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine($"Button clicked: {QuizId}");
-            Debug.WriteLine("");
-            Debug.WriteLine($"Click Command: {Command}");
-            Debug.WriteLine($"Button clicked: {CommandParameter}");
-            Debug.WriteLine("");
-            Debug.WriteLine("");
+            Debug.WriteLine($"Is Exam: {IsExam}");
+
             if (Command?.CanExecute(CommandParameter) == true)
             {
                 Command.Execute(CommandParameter);
@@ -169,6 +170,5 @@ namespace Duo.Views.Components
                 ButtonClick?.Invoke(this, e);  // Fallback to the event if the command is not set or cannot execute
             }
         }
-
     }
 }
