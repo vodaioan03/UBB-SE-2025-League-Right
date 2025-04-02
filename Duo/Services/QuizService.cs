@@ -19,7 +19,7 @@ namespace Duo.Services
 
         public async Task<List<Quiz>> Get()
         {
-            return (List<Quiz>)await _quizRepository.GetAllAsync();
+            return await _quizRepository.GetAllAsync();
         }
 
         public async Task<Quiz> GetQuizById(int quizId)
@@ -34,10 +34,20 @@ namespace Duo.Services
 
         public async Task<List<Quiz>> GetAllQuizzesFromSection(int sectionId)
         {
-            return (List<Quiz>)await _quizRepository.GetBySectionIdAsync(sectionId);
+            return await _quizRepository.GetBySectionIdAsync(sectionId);
         }
 
-        public async Task<Exam> GetExamFromSection(int sectionId)
+        public async Task<int> CountQuizzesFromSection(int sectionId)
+        {
+            return await _quizRepository.CountBySectionIdAsync(sectionId);
+        }
+
+        public async Task<int> LastOrderNumberFromSection(int sectionId)
+        {
+            return await _quizRepository.LastOrderNumberBySectionIdAsync(sectionId);
+        }
+
+        public async Task<Exam?> GetExamFromSection(int sectionId)
         {
             return await _examRepository.GetBySectionIdAsync(sectionId);
         }

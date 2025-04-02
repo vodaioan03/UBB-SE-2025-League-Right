@@ -17,7 +17,7 @@ namespace Duo.Services
             _roadmapRepository = roadmapRepository;
         }
 
-        public Task<IEnumerable<Roadmap>> GetAllRoadmaps()
+        public Task<List<Roadmap>> GetAllRoadmaps()
         {
             return _roadmapRepository.GetAllAsync();
         }

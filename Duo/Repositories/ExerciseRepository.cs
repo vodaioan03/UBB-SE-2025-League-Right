@@ -68,7 +68,7 @@ public class ExerciseRepository
         return mergedExercises;
     }
 
-    public async Task<IEnumerable<Exercise>> GetAllExercisesAsync()
+    public async Task<List<Exercise>> GetAllExercisesAsync()
     {
         try
         {
@@ -205,7 +205,7 @@ public class ExerciseRepository
         }
     }
 
-    public async Task<IEnumerable<Exercise>> GetQuizExercisesAsync(int quizId)
+    public async Task<List<Exercise>> GetQuizExercisesAsync(int quizId)
     {
         if (quizId <= 0)
         {
@@ -281,7 +281,7 @@ public class ExerciseRepository
         }
     }
 
-    public async Task<IEnumerable<Exercise>> GetExamExercisesAsync(int examId)
+    public async Task<List<Exercise>> GetExamExercisesAsync(int examId)
     {
         if (examId <= 0)
         {

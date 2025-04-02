@@ -16,7 +16,7 @@ public class ExamRepository
         _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
-    public async Task<IEnumerable<Exam>> GetAllAsync()
+    public async Task<List<Exam>> GetAllAsync()
     {
         try
         {
@@ -81,7 +81,7 @@ public class ExamRepository
         }
     }
 
-    public async Task<Exam> GetBySectionIdAsync(int sectionId)
+    public async Task<Exam?> GetBySectionIdAsync(int sectionId)
     {
         if (sectionId <= 0)
         {
@@ -108,7 +108,7 @@ public class ExamRepository
                 );
             }
             
-            throw new KeyNotFoundException($"Exam for section {sectionId} not found.");
+            return null;
         }
         catch (SqlException ex)
         {
@@ -116,7 +116,7 @@ public class ExamRepository
         }
     }
 
-    public async Task<IEnumerable<Exam>> GetUnassignedAsync()
+    public async Task<List<Exam>> GetUnassignedAsync()
     {
         try
         {
