@@ -22,7 +22,7 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Courses" Icon="Library" ToolTipService.ToolTip="Courses" Tag="CoursesParent">
                 </NavigationViewItem>
-                <NavigationViewItem Content="Quiz" Icon="Help" ToolTipService.ToolTip="Quiz" Tag="QuizParent">
+                <NavigationViewItem Content="Roadmap" Icon="Help" ToolTipService.ToolTip="Quiz" Tag="QuizParent">
                 </NavigationViewItem>
                 <NavigationViewItem Content="Community" Icon="Folder" ToolTipService.ToolTip="Community" Tag="CommunityParent">
                 </NavigationViewItem>
