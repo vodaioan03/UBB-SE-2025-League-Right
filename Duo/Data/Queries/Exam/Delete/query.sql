@@ -9,10 +9,6 @@ BEGIN
             RAISERROR ('Exam not found', 16, 1) WITH NOWAIT;
         END
 
-        -- Delete exam exercises first
-        DELETE FROM ExamExercises
-        WHERE ExamId = @examId;
-
         -- Delete the exam
         DELETE FROM Exams
         WHERE Id = @examId;

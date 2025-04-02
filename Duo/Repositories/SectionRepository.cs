@@ -16,7 +16,7 @@ public class SectionRepository
         _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
-    public async Task<IEnumerable<Section>> GetAllAsync()
+    public async Task<List<Section>> GetAllAsync()
     {
         try
         {
@@ -91,7 +91,7 @@ public class SectionRepository
         }
     }
 
-    public async Task<IEnumerable<Section>> GetByRoadmapIdAsync(int roadmapId)
+    public async Task<List<Section>> GetByRoadmapIdAsync(int roadmapId)
     {
         if (roadmapId <= 0)
         {
@@ -131,6 +131,73 @@ public class SectionRepository
             throw new Exception($"Database error while retrieving sections for roadmap {roadmapId}: {ex.Message}", ex);
         }
     }
+
+    public async Task<int> LastOrderNumberByRoadmapIdAsync(int roadmapId)
+    {
+        if (roadmapId <= 0)
+        {
+            throw new ArgumentException("Roadmap ID must be greater than 0.", nameof(roadmapId));
+        }
+
+        try
+        {
+            var lastOrderNumber = 0;
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_LastOrderSectionByRoadmapId";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@roadmapId", roadmapId);
+            
+            await connection.OpenAsync();
+            using var reader = await command.ExecuteReaderAsync();
+            
+            if (await reader.ReadAsync())
+            {
+                lastOrderNumber = reader.GetInt32(reader.GetOrdinal("LastOrderNumber"));
+            }
+
+            return lastOrderNumber;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while retrieving last order number for roadmap {roadmapId}: {ex.Message}", ex);
+        }
+    }
+
+    public async Task<int> CountByRoadmapIdAsync(int roadmapId)
+    {
+        if (roadmapId <= 0)
+        {
+            throw new ArgumentException("Roadmap ID must be greater than 0.", nameof(roadmapId));
+        }
+
+        try
+        {
+            var countOfSections = 0;
+            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var command = connection.CreateCommand();
+            
+            command.CommandText = "sp_CountSectionsByRoadmapId";
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@roadmapId", roadmapId);
+            
+            await connection.OpenAsync();
+            using var reader = await command.ExecuteReaderAsync();
+            
+            if (await reader.ReadAsync())
+            {
+                countOfSections = reader.GetInt32(reader.GetOrdinal("SectionCount"));
+            }
+
+            return countOfSections;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Database error while retrieving section count for roadmap {roadmapId}: {ex.Message}", ex);
+        }
+    }
+
 
     public async Task<int> AddAsync(Section section)
     {

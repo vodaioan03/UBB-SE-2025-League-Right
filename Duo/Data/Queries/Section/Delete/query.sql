@@ -19,11 +19,6 @@ BEGIN
         WHERE ExamId IN (SELECT Id FROM Exams WHERE SectionId = @sectionId);
         DELETE FROM Exams WHERE SectionId = @sectionId;
 
-        -- Update any users who had this as their last completed section
-        UPDATE Users
-        SET LastCompletedSectionId = NULL
-        WHERE LastCompletedSectionId = @sectionId;
-
         -- Finally delete the section
         DELETE FROM Sections
         WHERE Id = @sectionId;

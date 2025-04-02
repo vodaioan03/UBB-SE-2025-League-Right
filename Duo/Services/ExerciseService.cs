@@ -18,8 +18,7 @@ namespace Duo.Services
 
         public async Task<List<Exercise>> GetAllExercises()
         {
-            var exercises = await _exerciseRepository.GetAllExercisesAsync();
-            return exercises.ToList();
+            return await _exerciseRepository.GetAllExercisesAsync();
         }
 
         public async Task<Exercise> GetExerciseById(int exerciseId)
@@ -29,13 +28,11 @@ namespace Duo.Services
 
         public async Task<List<Exercise>> GetAllExercisesFromQuiz(int quizId)
         {
-            var exercises = await _exerciseRepository.GetQuizExercisesAsync(quizId);
-            return exercises.ToList();
+            return await _exerciseRepository.GetQuizExercisesAsync(quizId);
         }
         public async Task<List<Exercise>> GetAllExercisesFromExam(int examId)
         {
-            var exercises = await _exerciseRepository.GetExamExercisesAsync(examId);
-            return exercises.ToList();
+            return await _exerciseRepository.GetExamExercisesAsync(quizId);
         }
 
         public async Task DeleteExercise(int exerciseId)

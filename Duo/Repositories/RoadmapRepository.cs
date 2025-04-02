@@ -16,7 +16,7 @@ public class RoadmapRepository
         _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
-    public async Task<IEnumerable<Roadmap>> GetAllAsync()
+    public async Task<List<Roadmap>> GetAllAsync()
     {
         try
         {

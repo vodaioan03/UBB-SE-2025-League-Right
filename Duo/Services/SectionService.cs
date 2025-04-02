@@ -18,7 +18,7 @@ namespace Duo.Services
 
         public async Task<List<Section>> GetAllSections()
         {
-            return (List<Section>)await _sectionRepository.GetAllAsync();
+            return await _sectionRepository.GetAllAsync();
         }
 
         public Task<Section> GetSectionById(int sectionId)
@@ -26,9 +26,19 @@ namespace Duo.Services
             return _sectionRepository.GetByIdAsync(sectionId);
         }
 
-        public Task<IEnumerable<Section>> GetByRoadmapId(int roadmapId)
+        public Task<List<Section>> GetByRoadmapId(int roadmapId)
         {
             return _sectionRepository.GetByRoadmapIdAsync(roadmapId);
+        }
+
+        public async Task<int> CountSectionsFromRoadmap(int roadmapId)
+        {
+            return await _sectionRepository.CountByRoadmapIdAsync(roadmapId);
+        }
+
+        public async Task<int> LastOrderNumberFromRoadmap(int roadmapId)
+        {
+            return await _sectionRepository.LastOrderNumberByRoadmapIdAsync(roadmapId);
         }
 
         public async Task<int> AddSection(Section section)
