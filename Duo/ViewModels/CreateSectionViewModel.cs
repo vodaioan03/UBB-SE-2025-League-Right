@@ -135,7 +135,11 @@ namespace Duo.ViewModels
                     
                 newSection.Exam = SelectedExams.ToList()[0];
                 int sectionId = await _sectionService.AddSection(newSection);
-                //_sectionService.AddQuizzesToSection(sectionId, SelectedQuizes.ToList());
+                foreach(var quiz in SelectedQuizes.ToList())
+                {
+                    quiz.SectionId = sectionId;
+                    await _quizService.UpdateQuiz(quiz);
+                }
 
                 Debug.WriteLine("Section created: " + newSection);
             }
