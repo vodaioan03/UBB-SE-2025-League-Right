@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media.Animation;
 using Duo.Models.Exercises;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Duo.Views.Components
 {
@@ -23,6 +25,7 @@ namespace Duo.Views.Components
     /// </summary>
     public sealed partial class FlashcardExercise : UserControl
     {
+        public event EventHandler<FlashcardExerciseEventArgs> OnSendClicked;
         private DispatcherTimer _timer;
         private int _timerDuration; // Maximum time in seconds
         private TimeSpan _remainingTime; // Time remaining
@@ -426,30 +429,13 @@ namespace Duo.Views.Components
             UpdateDifficultyIndicator(exercise.Difficulty);
         }
 
-        // This is a temporary function that would be replaced with actual data from a database
-        private string DetermineTopicFromExercise(Models.Exercises.FlashcardExercise exercise)
-        {
-            // This is just a placeholder function that extracts topic from question content
-            // In a real implementation, the exercise would have a Topic property from the database
-            string question = exercise.Question?.ToLower() ?? string.Empty;
-            
-            if (question.Contains("mountain"))
-                return "Mountains";
-            else if (question.Contains("capital"))
-                return "Capitals";
-            else if (question.Contains("river"))
-                return "Rivers";
-            else if (question.Contains("country"))
-                return "Countries";
-            else if (question.Contains("ocean") || question.Contains("sea"))
-                return "Bodies of Water";
-            else
-                return "General Knowledge";
-        }
 
         // Common method for flipping the card to avoid code duplication
         private void PerformCardFlip()
         {
+            var contentPairs = UserAnswer;
+            OnSendClicked?.Invoke(this, new FlashcardExerciseEventArgs(contentPairs));
+
             // Store elapsed time in the exercise data
             if (_exerciseData != null)
             {
@@ -543,6 +529,7 @@ namespace Duo.Views.Components
 
             // Notify listeners that the card was completed
             ExerciseCompleted?.Invoke(this, IsAnswerCorrect());
+            
         }
 
         public void Reset()
@@ -642,6 +629,18 @@ namespace Duo.Views.Components
             {
                 System.Diagnostics.Debug.WriteLine($"Error updating difficulty indicator: {ex.Message}");
             }
+        }
+
+
+    }
+
+    public class FlashcardExerciseEventArgs : EventArgs
+    {
+        public string ContentPairs { get; }
+
+        public FlashcardExerciseEventArgs(string contentPairs)
+        {
+            ContentPairs = contentPairs;
         }
     }
 } 
