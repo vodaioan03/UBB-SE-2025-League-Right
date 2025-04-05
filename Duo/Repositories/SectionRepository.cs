@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Repositories;
 
-public class SectionRepository
+public class SectionRepository:ISectionRepository
 {
     private readonly DatabaseConnection _databaseConnection;
 
