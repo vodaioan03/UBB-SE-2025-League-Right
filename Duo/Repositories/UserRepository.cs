@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly DatabaseConnection _databaseConnection;
 
