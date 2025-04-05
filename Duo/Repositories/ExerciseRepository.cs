@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Repositories;
 
-public class ExerciseRepository
+public class ExerciseRepository:IExerciseRepository
 {
     private readonly DatabaseConnection _databaseConnection;
 
