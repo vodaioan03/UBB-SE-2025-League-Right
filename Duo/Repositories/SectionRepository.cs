@@ -1,19 +1,20 @@
-﻿using Duo.Data;
-using Duo.Models.Sections;
-using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duo.Data;
+using Duo.Models.Sections;
+using Microsoft.Data.SqlClient;
 
 namespace Duo.Repositories;
 
-public class SectionRepository:ISectionRepository
+public class SectionRepository : ISectionRepository
 {
-    private readonly DatabaseConnection _databaseConnection;
+    private readonly DatabaseConnection databaseConnection;
 
     public SectionRepository(DatabaseConnection databaseConnection)
     {
-        _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
+        ArgumentNullException.ThrowIfNull(databaseConnection);
+        this.databaseConnection = databaseConnection;
     }
 
     public async Task<List<Section>> GetAllAsync()
@@ -21,15 +22,15 @@ public class SectionRepository:ISectionRepository
         try
         {
             var sections = new List<Section>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetAllSections";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 sections.Add(new Section
@@ -42,7 +43,7 @@ public class SectionRepository:ISectionRepository
                     OrderNumber = reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 });
             }
-            
+
             return sections;
         }
         catch (SqlException ex)
@@ -60,16 +61,16 @@ public class SectionRepository:ISectionRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetSectionById";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@sectionId", sectionId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             if (await reader.ReadAsync())
             {
                 return new Section
@@ -82,7 +83,7 @@ public class SectionRepository:ISectionRepository
                     OrderNumber = reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 };
             }
-            
+
             throw new KeyNotFoundException($"Section with ID {sectionId} not found.");
         }
         catch (SqlException ex)
@@ -101,16 +102,16 @@ public class SectionRepository:ISectionRepository
         try
         {
             var sections = new List<Section>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetSectionsByRoadmapId";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@roadmapId", roadmapId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 sections.Add(new Section
@@ -123,7 +124,7 @@ public class SectionRepository:ISectionRepository
                     OrderNumber = reader.GetInt32(reader.GetOrdinal("OrderNumber"))
                 });
             }
-            
+
             return sections;
         }
         catch (SqlException ex)
@@ -141,23 +142,17 @@ public class SectionRepository:ISectionRepository
 
         try
         {
-            var lastOrderNumber = 0;
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_LastOrderSectionByRoadmapId";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@roadmapId", roadmapId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
-            if (await reader.ReadAsync())
-            {
-                lastOrderNumber = reader.GetInt32(reader.GetOrdinal("LastOrderNumber"));
-            }
 
-            return lastOrderNumber;
+            return await reader.ReadAsync() ? reader.GetInt32(reader.GetOrdinal("LastOrderNumber")) : 0;
         }
         catch (SqlException ex)
         {
@@ -174,23 +169,17 @@ public class SectionRepository:ISectionRepository
 
         try
         {
-            var countOfSections = 0;
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_CountSectionsByRoadmapId";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@roadmapId", roadmapId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
-            if (await reader.ReadAsync())
-            {
-                countOfSections = reader.GetInt32(reader.GetOrdinal("SectionCount"));
-            }
 
-            return countOfSections;
+            return await reader.ReadAsync() ? reader.GetInt32(reader.GetOrdinal("SectionCount")) : 0;
         }
         catch (SqlException ex)
         {
@@ -198,13 +187,9 @@ public class SectionRepository:ISectionRepository
         }
     }
 
-
     public async Task<int> AddAsync(Section section)
     {
-        if (section == null)
-        {
-            throw new ArgumentNullException(nameof(section));
-        }
+        ArgumentNullException.ThrowIfNull(section);
 
         if (string.IsNullOrWhiteSpace(section.Title))
         {
@@ -223,9 +208,9 @@ public class SectionRepository:ISectionRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_AddSection";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@subjectId", section.SubjectId);
@@ -233,13 +218,13 @@ public class SectionRepository:ISectionRepository
             command.Parameters.AddWithValue("@description", section.Description);
             command.Parameters.AddWithValue("@roadmapId", section.RoadmapId);
             command.Parameters.AddWithValue("@orderNumber", section.OrderNumber);
-            
+
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
             };
             command.Parameters.Add(newIdParam);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
@@ -252,10 +237,7 @@ public class SectionRepository:ISectionRepository
 
     public async Task UpdateAsync(Section section)
     {
-        if (section == null)
-        {
-            throw new ArgumentNullException(nameof(section));
-        }
+        ArgumentNullException.ThrowIfNull(section);
 
         if (section.Id <= 0)
         {
@@ -279,9 +261,9 @@ public class SectionRepository:ISectionRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_UpdateSection";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@sectionId", section.Id);
@@ -290,7 +272,7 @@ public class SectionRepository:ISectionRepository
             command.Parameters.AddWithValue("@description", section.Description);
             command.Parameters.AddWithValue("@roadmapId", section.RoadmapId);
             command.Parameters.AddWithValue("@orderNumber", section.OrderNumber);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
@@ -309,13 +291,13 @@ public class SectionRepository:ISectionRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_DeleteSection";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@sectionId", sectionId);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
