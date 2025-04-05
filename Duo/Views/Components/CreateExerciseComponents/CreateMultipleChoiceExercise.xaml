@@ -24,7 +24,7 @@ ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <RadioButton GroupName="Answers"
-                         IsChecked="{Binding isCorrect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"             
+                         IsChecked="{Binding IsCorrect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"             
                         Command="{Binding UpdateSelectedAnswerCommand, ElementName=RootUserControl}"
                         CommandParameter="{Binding Value}" >
                         <StackPanel Orientation="Horizontal">

@@ -7,7 +7,7 @@ using Duo.Repositories;
 
 namespace Duo.Services
 {
-    public class SectionService
+    public class SectionService : ISectionService
     {
         private SectionRepository _sectionRepository;
 

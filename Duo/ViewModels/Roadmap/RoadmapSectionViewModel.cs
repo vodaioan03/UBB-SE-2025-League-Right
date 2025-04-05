@@ -69,9 +69,9 @@ namespace Duo.ViewModels.Roadmap
 
         public RoadmapSectionViewModel()
         {
-            _sectionService = (SectionService)(App.serviceProvider.GetService(typeof(SectionService)));
+            _sectionService = (SectionService)(App.ServiceProvider.GetService(typeof(SectionService)));
 
-            var mainPageViewModel = (RoadmapMainPageViewModel)(App.serviceProvider.GetService(typeof(RoadmapMainPageViewModel)));
+            var mainPageViewModel = (RoadmapMainPageViewModel)(App.ServiceProvider.GetService(typeof(RoadmapMainPageViewModel)));
             OpenQuizPreviewCommand = mainPageViewModel.OpenQuizPreviewCommand;
             _quizButtonTemplates = new ObservableCollection<RoadmapButtonTemplate>();
         }
@@ -82,7 +82,7 @@ namespace Duo.ViewModels.Roadmap
             _sectionId = sectionId;
             _section = await _sectionService.GetSectionById(_sectionId);
 
-            QuizService quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+            QuizService quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
             _section.Quizzes = await quizService.GetAllQuizzesFromSection(_sectionId);
             _section.Exam = await quizService.GetExamFromSection(_sectionId);
             

@@ -159,8 +159,8 @@ namespace Duo.ViewModels
         {
             try
             {
-                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
-                _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+                _exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
+                _quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
             }
             catch (Exception ex)
             {
@@ -342,8 +342,8 @@ namespace Duo.ViewModels
                 return;
             if (IsPassed())
             {
-                UserService userService = (UserService)App.serviceProvider.GetService(typeof(UserService));
-                SectionService sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
+                UserService userService = (UserService)App.ServiceProvider.GetService(typeof(UserService));
+                SectionService sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
 
                 User user = await userService.GetByIdAsync(1);
 

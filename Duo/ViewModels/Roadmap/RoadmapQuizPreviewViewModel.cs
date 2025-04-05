@@ -73,11 +73,11 @@ namespace Duo.ViewModels.Roadmap
 
         public RoadmapQuizPreviewViewModel()
         {
-            _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
-            _sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
+            _quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+            _sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
             _isPreviewVisible = Visibility.Visible;
 
-            var mainPageViewModel= (RoadmapMainPageViewModel)App.serviceProvider.GetService(typeof(RoadmapMainPageViewModel));
+            var mainPageViewModel= (RoadmapMainPageViewModel)App.ServiceProvider.GetService(typeof(RoadmapMainPageViewModel));
             StartQuizCommand = mainPageViewModel.StartQuizCommand;
             BackButtonCommand = new RelayCommand(() =>
             {

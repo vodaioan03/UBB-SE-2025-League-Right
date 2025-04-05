@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly UserRepository _userRepository;
 

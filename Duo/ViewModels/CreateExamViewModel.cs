@@ -1,9 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models.Exercises;
-using Duo.Models.Quizzes;
-using Duo.Models;
-using Duo.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,14 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models;
+using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
+using Duo.Services;
 
 namespace Duo.ViewModels
 {
     internal class CreateExamViewModel : AdminBaseViewModel
     {
-        private readonly QuizService _quizService;
-        private readonly ExerciseService _exerciseService;
-        private readonly List<Exercise> _availableExercises;
+        private readonly IQuizService quizService;
+        private readonly IExerciseService exerciseService;
+        private readonly List<Exercise> availableExercises;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
         public ObservableCollection<Exercise> SelectedExercises { get; private set; } = new ObservableCollection<Exercise>();
 
@@ -36,8 +36,8 @@ namespace Duo.ViewModels
         {
             try
             {
-                _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
-                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
+                quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService));
+                exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
             }
             catch (Exception ex)
             {
@@ -45,21 +45,21 @@ namespace Duo.ViewModels
             }
             LoadExercisesAsync();
             SaveButtonCommand = new RelayCommand(CreateExam);
-            OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
+            OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
         }
 
         private async void LoadExercisesAsync()
         {
             Exercises.Clear(); // Clear the ObservableCollection
-            var exercises = await _exerciseService.GetAllExercises();
+            var exercises = await exerciseService.GetAllExercises();
             foreach (var exercise in exercises)
             {
                 Exercises.Add(exercise);
             }
         }
 
-        public void openSelectExercises()
+        public void OpenSelectExercises()
         {
             ShowListViewModal?.Invoke(GetAvailableExercises());
         }
@@ -70,14 +70,15 @@ namespace Duo.ViewModels
             foreach (var exercise in Exercises)
             {
                 if (!SelectedExercises.Contains(exercise))
+                {
                     availableExercises.Add(exercise);
+                }
             }
             return availableExercises;
         }
 
         public void AddExercise(Exercise selectedExercise)
         {
-
             if (SelectedExercises.Count < MAX_EXERCISES)
             {
                 SelectedExercises.Add(selectedExercise);
@@ -86,8 +87,8 @@ namespace Duo.ViewModels
             {
                 Debug.WriteLine("Cannot add more exercises", $"Maximum number of exercises ({MAX_EXERCISES}) reached.");
             }
-
         }
+
         public void RemoveExercise(Exercise exerciseToBeRemoved)
         {
             SelectedExercises.Remove(exerciseToBeRemoved);
@@ -104,8 +105,8 @@ namespace Duo.ViewModels
             }
             try
             {
-                int examId = await _quizService.CreateExam(newExam);
-                //await _quizService.AddExercisesToExam(examId, newExam.ExerciseList);
+                int examId = await quizService.CreateExam(newExam);
+                // await quizService.AddExercisesToExam(examId, newExam.ExerciseList);
             }
             catch (Exception ex)
             {
@@ -114,6 +115,5 @@ namespace Duo.ViewModels
             Debug.WriteLine(newExam);
             GoBack();
         }
-   
     }
 }

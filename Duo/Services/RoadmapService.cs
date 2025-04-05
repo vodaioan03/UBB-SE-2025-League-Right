@@ -8,7 +8,7 @@ using Duo.Repositories;
 
 namespace Duo.Services
 {
-    public class RoadmapService
+    public class RoadmapService : IRoadmapService
     {
         private RoadmapRepository _roadmapRepository;
 

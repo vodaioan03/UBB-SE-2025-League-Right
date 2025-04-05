@@ -1,9 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models;
-using Duo.Models.Exercises;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.ExerciseViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,20 +6,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models;
+using Duo.Models.Exercises;
+using Duo.ViewModels.Base;
+using Duo.ViewModels.ExerciseViewModels;
 
 namespace Duo.ViewModels.CreateExerciseViewModels
 {
-    class CreateFillInTheBlankExerciseViewModel : CreateExerciseViewModelBase
+    partial class CreateFillInTheBlankExerciseViewModel : CreateExerciseViewModelBase
     {
-
-        private ExerciseCreationViewModel _parentViewModel;
+        private ExerciseCreationViewModel parentViewModel;
         public ObservableCollection<Answer> Answers { get; set; } = new ObservableCollection<Answer>();
         public const int MAX_ANSWERS = 3;
 
         public CreateFillInTheBlankExerciseViewModel(ExerciseCreationViewModel parentViewModel)
         {
-            _parentViewModel = parentViewModel;
-            Answers.Add(new Answer(""));
+            this.parentViewModel = parentViewModel;
+            Answers.Add(new Answer(string.Empty));
             AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
         }
 
@@ -32,12 +31,11 @@ namespace Duo.ViewModels.CreateExerciseViewModels
 
         public override Exercise CreateExercise(string question, Difficulty difficulty)
         {
-            Debug.WriteLine("Fill in the blank!");
-            Exercise newExercise = new Models.Exercises.FillInTheBlankExercise(0, question, difficulty, generateAnswerList(Answers));
+            Exercise newExercise = new Models.Exercises.FillInTheBlankExercise(0, question, difficulty, GenerateAnswerList(Answers));
             return newExercise;
         }
 
-        public List<string> generateAnswerList(ObservableCollection<Answer> answers)
+        public List<string> GenerateAnswerList(ObservableCollection<Answer> answers)
         {
             List<string> answerList = new List<string>();
             foreach (Answer answer in answers)
@@ -51,28 +49,28 @@ namespace Duo.ViewModels.CreateExerciseViewModels
         {
             if (Answers.Count >= MAX_ANSWERS)
             {
-                _parentViewModel.RaiseErrorMessage("You can only have 3 answers for a fill in the blank exercise.", "");
+                parentViewModel.RaiseErrorMessage("You can only have 3 answers for a fill in the blank exercise.", string.Empty);
                 return;
             }
-            Answers.Add(new Answer(""));
+            Answers.Add(new Answer(string.Empty));
         }
 
         public class Answer : ViewModelBase
         {
-            private string _value;
+            private string value;
             public string Value
             {
-                get => _value;
+                get => value;
                 set
                 {
-                    _value = value;
+                    this.value = value;
                     OnPropertyChanged(nameof(Value));
                 }
             }
 
             public Answer(string value)
             {
-                _value = value;
+                this.value = value;
             }
         }
     }

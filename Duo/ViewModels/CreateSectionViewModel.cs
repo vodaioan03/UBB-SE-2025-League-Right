@@ -1,10 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models.Exercises;
-using Duo.Models.Quizzes;
-using Duo.Models.Sections;
-using Duo.Services;
-using Duo.ViewModels.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,20 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
+using Duo.Models.Sections;
+using Duo.Services;
+using Duo.ViewModels.Base;
 
 namespace Duo.ViewModels
 {
-    internal class CreateSectionViewModel : AdminBaseViewModel
+    internal partial class CreateSectionViewModel : AdminBaseViewModel
     {
-        private readonly SectionService _sectionService;
-        private readonly QuizService _quizService;
-        private readonly ExerciseService _exerciseService;
-        private string _subjectText;
+        private readonly ISectionService sectionService;
+        private readonly IQuizService quizService;
+        private readonly IExerciseService exerciseService;
+        private string subjectText;
         public ObservableCollection<Quiz> Quizes { get; set; } = new ObservableCollection<Quiz>();
         public ObservableCollection<Quiz> SelectedQuizes { get; private set; } = new ObservableCollection<Quiz>();
         public ObservableCollection<Exam> Exams { get; set; } = new ObservableCollection<Exam>();
         public ObservableCollection<Exam> SelectedExams { get; private set; } = new ObservableCollection<Exam>();
 
+        // commands and actions
         public event Action<List<Quiz>> ShowListViewModalQuizes;
         public event Action<List<Exam>> ShowListViewModalExams;
         public ICommand RemoveQuizCommand { get; }
@@ -33,14 +34,13 @@ namespace Duo.ViewModels
         public ICommand OpenSelectQuizesCommand { get; }
         public ICommand OpenSelectExamsCommand { get; }
 
-
         public CreateSectionViewModel()
         {
             try
             {
-                _sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
-                _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
-                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
+                sectionService = (ISectionService)App.ServiceProvider.GetService(typeof(ISectionService));
+                quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService));
+                exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
             }
             catch (Exception ex)
             {
@@ -51,30 +51,34 @@ namespace Duo.ViewModels
             SaveButtonCommand = new RelayCommand(CreateSection);
             RemoveQuizCommand = new RelayCommandWithParameter<Quiz>(RemoveSelectedQuiz);
             GetQuizesAsync();
-            GetExamsAsync();
+            GetExamAsync();
         }
+
         public string SubjectText
         {
-            get => _subjectText;
+            get => subjectText;
             set
             {
-                if (_subjectText != value)
+                if (subjectText != value)
                 {
-                    _subjectText = value;
+                    subjectText = value;
                     OnPropertyChanged(nameof(SubjectText)); // Notify UI
                 }
             }
         }
+
         public void RemoveSelectedQuiz(Quiz quizToBeRemoved)
         {
             Debug.WriteLine("Removing quiz...");
             SelectedQuizes.Remove(quizToBeRemoved);
         }
+
         public void OpenSelectQuizes()
         {
             Debug.WriteLine("Opening select quizes...");
             ShowListViewModalQuizes?.Invoke(GetAvailableQuizes());
         }
+
         public void OpenSelectExams()
         {
             Debug.WriteLine("Opening select exams...");
@@ -84,18 +88,22 @@ namespace Duo.ViewModels
         public async void GetQuizesAsync()
         {
             Quizes.Clear(); // Clear the ObservableCollection
-            List<Quiz> quizes = await _quizService.GetAllQuizzesFromSection(1);
+            List<Quiz> quizes = await quizService.GetAllQuizzesFromSection(1);
             foreach (var quiz in quizes)
             {
                 Debug.WriteLine(quiz); // Add each quiz to the ObservableCollection
                 Quizes.Add(quiz);
             }
         }
-        public async void GetExamsAsync()
+
+        public async void GetExamAsync()
         {
             Quizes.Clear(); // Clear the ObservableCollection
-            Exam exam = await _quizService.GetExamFromSection(1);
-            Exams.Add(exam);
+            Exam exam = await quizService.GetExamFromSection(1);
+            if (exam != null)
+            {
+                Exams.Add(exam);
+            }
         }
 
         public List<Exam> GetAvailableExams()
@@ -104,31 +112,38 @@ namespace Duo.ViewModels
             foreach (var exam in Exams)
             {
                 if (!SelectedExams.Contains(exam))
+                {
                     availableExams.Add(exam);
+                }
             }
             return availableExams;
         }
+
         public List<Quiz> GetAvailableQuizes()
         {
             List<Quiz> availableQuizes = new List<Quiz>();
             foreach (var quiz in Quizes)
             {
                 if (!SelectedQuizes.Contains(quiz))
+                {
                     availableQuizes.Add(quiz);
+                }
             }
             return availableQuizes;
         }
 
         public void AddQuiz(Quiz newQuiz)
         {
-            Debug.WriteLine("add quiz..."+ newQuiz.Id);
+            Debug.WriteLine("add quiz..." + newQuiz.Id);
             SelectedQuizes.Add(newQuiz);
         }
+
         public void AddExam(Exam newExam)
         {
             Debug.WriteLine("add exam..." + newExam.Id);
             SelectedExams.Add(newExam);
         }
+
         public async void CreateSection()
         {
             try
@@ -137,7 +152,7 @@ namespace Duo.ViewModels
                 newSection.Quizzes = SelectedQuizes.ToList();
                 foreach (var quiz in newSection.Quizzes)
                 {
-                    quiz.ExerciseList = await _exerciseService.GetAllExercisesFromQuiz(quiz.Id);
+                    quiz.ExerciseList = await exerciseService.GetAllExercisesFromQuiz(quiz.Id);
                 }
                 foreach (var quiz in newSection.Quizzes)
                 {
@@ -145,25 +160,25 @@ namespace Duo.ViewModels
                 }
                 if (SelectedExams.Count != 1)
                 {
-                    RaiseErrorMessage("You must have exactly one exam selected!", "");
+                    RaiseErrorMessage("You must have exactly one exam selected!", string.Empty);
                     return;
                 }
-                    
+
                 newSection.Exam = SelectedExams.ToList()[0];
-                newSection.Exam.ExerciseList = await _exerciseService.GetAllExercisesFromExam(newSection.Exam.Id);
-                int sectionId = await _sectionService.AddSection(newSection);
-                foreach(var quiz in SelectedQuizes.ToList())
+                newSection.Exam.ExerciseList = await exerciseService.GetAllExercisesFromExam(newSection.Exam.Id);
+                int sectionId = await sectionService.AddSection(newSection);
+                foreach (var quiz in SelectedQuizes.ToList())
                 {
                     quiz.SectionId = sectionId;
-                    await _quizService.UpdateQuiz(quiz);
+                    await quizService.UpdateQuiz(quiz);
                 }
 
                 Debug.WriteLine("Section created: " + newSection);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
             GoBack();
         }

@@ -1,11 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models;
-using Duo.Models.Exercises;
-using Duo.Services;
-using Duo.ViewModels.Base;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -13,20 +6,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models;
+using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
+using Duo.Services;
+using Duo.ViewModels.Base;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Duo.ViewModels
 {
-    internal class CreateQuizViewModel: AdminBaseViewModel
+    internal class CreateQuizViewModel : AdminBaseViewModel
     {
-        private readonly QuizService _quizService;
-        private readonly ExerciseService _exerciseService;
-        private readonly List<Exercise> _availableExercises;
+        private readonly IQuizService quizService;
+        private readonly IExerciseService exerciseService;
+        private readonly List<Exercise> availableExercises;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
         public ObservableCollection<Exercise> SelectedExercises { get; private set; } = new ObservableCollection<Exercise>();
 
-        public event Action<List<Exercise>> ShowListViewModal;
-
+        public event Action<List<Exercise>>? ShowListViewModal;
 
         private const int MAX_EXERCISES = 10;
         private const int NO_ORDER_NUMBER = -1;
@@ -40,8 +39,11 @@ namespace Duo.ViewModels
         {
             try
             {
-                _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
-                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
+                if (App.ServiceProvider != null)
+                {
+                    quizService = (IQuizService?)App.ServiceProvider.GetService(typeof(IQuizService));
+                    exerciseService = (IExerciseService?)App.ServiceProvider.GetService(typeof(IExerciseService));
+                }
             }
             catch (Exception ex)
             {
@@ -49,22 +51,23 @@ namespace Duo.ViewModels
             }
             LoadExercisesAsync();
             SaveButtonCommand = new RelayCommand(CreateQuiz);
-            OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
+            OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
         }
 
         private async void LoadExercisesAsync()
         {
             Exercises.Clear(); // Clear the ObservableCollection
-            var exercises = await _exerciseService.GetAllExercises();
+            var exercises = await exerciseService.GetAllExercises();
+
             foreach (var exercise in exercises)
             {
-                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                // Add each exercise to the ObservableCollection
                 Exercises.Add(exercise);
             }
         }
 
-        public void openSelectExercises()
+        public void OpenSelectExercises()
         {
             Debug.WriteLine("Opening select exercises...");
             ShowListViewModal?.Invoke(GetAvailableExercises());
@@ -75,15 +78,16 @@ namespace Duo.ViewModels
             List<Exercise> availableExercises = new List<Exercise>();
             foreach (var exercise in Exercises)
             {
-                if(!SelectedExercises.Contains(exercise))
+                if (!SelectedExercises.Contains(exercise))
+                {
                     availableExercises.Add(exercise);
+                }
             }
             return availableExercises;
         }
 
         public void AddExercise(Exercise selectedExercise)
         {
-
             if (SelectedExercises.Count < MAX_EXERCISES)
             {
                 SelectedExercises.Add(selectedExercise);
@@ -92,8 +96,8 @@ namespace Duo.ViewModels
             {
                 Debug.WriteLine("Cannot add more exercises", $"Maximum number of exercises ({MAX_EXERCISES}) reached.");
             }
-            
         }
+
         public void RemoveExercise(Exercise exerciseToBeRemoved)
         {
             SelectedExercises.Remove(exerciseToBeRemoved);
@@ -108,16 +112,16 @@ namespace Duo.ViewModels
             {
                 newQuiz.AddExercise(exercise);
             }
-            try {
-                int quizId = await _quizService.CreateQuiz(newQuiz);
-                await _quizService.AddExercisesToQuiz(quizId, newQuiz.ExerciseList);
+            try
+            {
+                int quizId = await quizService.CreateQuiz(newQuiz);
+                await quizService.AddExercisesToQuiz(quizId, newQuiz.ExerciseList);
                 GoBack();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
-                
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
             Debug.WriteLine(newQuiz);
         }
