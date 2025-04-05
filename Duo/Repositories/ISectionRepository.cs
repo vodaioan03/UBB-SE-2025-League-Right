@@ -1,6 +1,6 @@
-﻿using Duo.Models.Sections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duo.Models.Sections;
 
 namespace Duo.Repositories
 {
