@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Services
 {
-    public class QuizService
+    public class QuizService : IQuizService
     {
         private readonly QuizRepository _quizRepository;
         private readonly ExamRepository _examRepository;

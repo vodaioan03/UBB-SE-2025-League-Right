@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace Duo.Services
 {
-    public class ExerciseService
+    public class ExerciseService : IExerciseService
     {
         private readonly ExerciseRepository _exerciseRepository;
 
-        public ExerciseService(ExerciseRepository exerciseRepository) {
+        public ExerciseService(ExerciseRepository exerciseRepository)
+        {
             _exerciseRepository = exerciseRepository ?? throw new ArgumentNullException(nameof(exerciseRepository));
         }
 

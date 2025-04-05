@@ -43,8 +43,8 @@ namespace Duo.ViewModels.Roadmap
 
         public RoadmapMainPageViewModel()
         {
-            _roadmapService = (RoadmapService)App.serviceProvider.GetService(typeof(RoadmapService));
-            _userService = (UserService)App.serviceProvider.GetService(typeof(UserService));
+            _roadmapService = (RoadmapService)App.ServiceProvider.GetService(typeof(RoadmapService));
+            _userService = (UserService)App.ServiceProvider.GetService(typeof(UserService));
 
             StartQuizCommand = new RelayCommand(StartQuiz);
             OpenQuizPreviewCommand = new RelayCommandWithParameter<Tuple<int, bool>>(OpenQuizPreview);
@@ -55,7 +55,7 @@ namespace Duo.ViewModels.Roadmap
             _roadmap = await _roadmapService.GetRoadmapById(1);
             _user = await _userService.GetByIdAsync(1);
 
-            SectionService sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
+            SectionService sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
             List<Section> sections = (List<Section>)await sectionService.GetByRoadmapId(1);
 
             _sectionViewModels = new ObservableCollection<RoadmapSectionViewModel>();
@@ -68,7 +68,7 @@ namespace Duo.ViewModels.Roadmap
 
             for (int i = 1; i <= sections.Count; i += 1)
             {
-                var sectionViewModel = (RoadmapSectionViewModel)App.serviceProvider.GetService(typeof(RoadmapSectionViewModel));
+                var sectionViewModel = (RoadmapSectionViewModel)App.ServiceProvider.GetService(typeof(RoadmapSectionViewModel));
                 if (i <= _user.NumberOfCompletedSections)
                 {
                     await sectionViewModel.SetupForSection(sections[i - 1].Id, true, 0);
@@ -91,7 +91,7 @@ namespace Duo.ViewModels.Roadmap
         {
             Debug.WriteLine($"Opening quiz with ID: {args.Item1}");
 
-            var quizPreviewViewModel = (RoadmapQuizPreviewViewModel)App.serviceProvider.GetService(typeof(RoadmapQuizPreviewViewModel));
+            var quizPreviewViewModel = (RoadmapQuizPreviewViewModel)App.ServiceProvider.GetService(typeof(RoadmapQuizPreviewViewModel));
             await quizPreviewViewModel.OpenForQuiz(args.Item1, args.Item2);
         }
 

@@ -1,18 +1,20 @@
-﻿using Duo.ViewModels.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Duo.ViewModels.Base;
 
 namespace Duo.ViewModels
 {
-    internal class AdminBaseViewModel :ViewModelBase
+    internal partial class AdminBaseViewModel : ViewModelBase
     {
+        public event EventHandler? RequestGoBack;
+        public event EventHandler<(string Title, string Message)>? ShowErrorMessageRequested;
 
-        public event EventHandler RequestGoBack;
-        public event EventHandler<(string Title, string Message)> ShowErrorMessageRequested;
-        public AdminBaseViewModel() { }
+        public AdminBaseViewModel()
+        {
+        }
 
         public void GoBack()
         {

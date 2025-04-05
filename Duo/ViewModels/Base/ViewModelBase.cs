@@ -3,9 +3,8 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-
 namespace Duo.ViewModels.Base
-{ 
+{
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -18,7 +17,9 @@ namespace Duo.ViewModels.Base
         protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
+            {
                 return false;
+            }
 
             storage = value;
             OnPropertyChanged(propertyName);
@@ -28,14 +29,14 @@ namespace Duo.ViewModels.Base
         protected virtual bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
+            {
                 return false;
+            }
 
             storage = value;
             onChanged?.Invoke();
             OnPropertyChanged(propertyName);
             return true;
         }
-
     }
-
 }

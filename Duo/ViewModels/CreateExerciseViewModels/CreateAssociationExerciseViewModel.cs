@@ -1,9 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models;
-using Duo.Models.Exercises;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.ExerciseViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,77 +6,81 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models;
+using Duo.Models.Exercises;
+using Duo.ViewModels.Base;
+using Duo.ViewModels.ExerciseViewModels;
 using static Duo.ViewModels.CreateExerciseViewModels.CreateAssociationExerciseViewModel;
 using static Duo.ViewModels.CreateExerciseViewModels.CreateMultipleChoiceExerciseViewModel;
 
 namespace Duo.ViewModels.CreateExerciseViewModels
 {
-    class CreateAssociationExerciseViewModel : CreateExerciseViewModelBase
+    partial class CreateAssociationExerciseViewModel : CreateExerciseViewModelBase
     {
-        private ExerciseCreationViewModel _parentViewModel;
+        private readonly ExerciseCreationViewModel parentViewModel;
         public ObservableCollection<Answer> LeftSideAnswers { get; set; } = new ObservableCollection<Answer>();
 
         public ObservableCollection<Answer> RightSideAnswers { get; set; } = new ObservableCollection<Answer>();
         public const int MINIMUM_ANSWERS = 2;
         public const int MAXIMUM_ANSWERS = 5;
-        public CreateAssociationExerciseViewModel(ExerciseCreationViewModel parentViewModel)
-        {
-            _parentViewModel = parentViewModel;
-            LeftSideAnswers.Add(new Answer(""));
-            RightSideAnswers.Add(new Answer(""));
-            AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
-        }
 
         public ICommand AddNewAnswerCommand { get; }
 
+        public CreateAssociationExerciseViewModel(ExerciseCreationViewModel parentViewModel)
+        {
+            this.parentViewModel = parentViewModel;
+            LeftSideAnswers.Add(new Answer(string.Empty));
+            RightSideAnswers.Add(new Answer(string.Empty));
+            AddNewAnswerCommand = new RelayCommand(AddNewAnswer);
+        }
+
         private void AddNewAnswer()
         {
-            if(LeftSideAnswers.Count >= MAXIMUM_ANSWERS || RightSideAnswers.Count >= MAXIMUM_ANSWERS)
+            if (LeftSideAnswers.Count >= MAXIMUM_ANSWERS || RightSideAnswers.Count >= MAXIMUM_ANSWERS)
             {
-                _parentViewModel.RaiseErrorMessage("You can only have up to 5 answers","");
+                parentViewModel.RaiseErrorMessage("You can only have up to 5 answers", string.Empty);
                 return;
             }
             Debug.WriteLine($"New answer");
-            LeftSideAnswers.Add(new Answer(""));
-            RightSideAnswers.Add(new Answer(""));
+            LeftSideAnswers.Add(new Answer(string.Empty));
+            RightSideAnswers.Add(new Answer(string.Empty));
         }
 
         public override Exercise CreateExercise(string question, Difficulty difficulty)
         {
-            Exercise newExercise = new Models.Exercises.AssociationExercise(0, question, difficulty, generateAnswerList(LeftSideAnswers), generateAnswerList(RightSideAnswers));
+            Exercise newExercise = new Models.Exercises.AssociationExercise(0, question, difficulty, GenerateAnswerList(LeftSideAnswers), GenerateAnswerList(RightSideAnswers));
             return newExercise;
         }
 
-        public List<string> generateAnswerList(ObservableCollection<Answer> Answers)
+        public List<string> GenerateAnswerList(ObservableCollection<Answer> answers)
         {
-            List<Answer> finalAnswers = Answers.ToList();
-            List<string> AnswersList = new List<string>();
+            List<Answer> finalAnswers = answers.ToList();
+            List<string> answersList = new List<string>();
             foreach (Answer answer in finalAnswers)
             {
-                Debug.WriteLine(answer.Value);
-                AnswersList.Add(answer.Value);
+                answersList.Add(answer.Value);
             }
-            return AnswersList;
+            return answersList;
         }
 
         public class Answer : ViewModelBase
         {
-            private string _value;
+            private string value;
             public string Value
             {
-                get => _value;
+                get => value;
                 set
                 {
-                    _value = value;
+                    this.value = value;
                     OnPropertyChanged(nameof(Value));
                 }
             }
 
             public Answer(string value)
             {
-                _value = value;
+                this.value = value;
             }
         }
-
     }
 }

@@ -30,8 +30,8 @@ namespace Duo.ViewModels
         {
             try
             {
-                _sectionService = (SectionService)App.serviceProvider.GetService(typeof(SectionService));
-                _quizService = (QuizService)App.serviceProvider.GetService(typeof(QuizService));
+                _sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
+                _quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
             }
             catch (Exception ex)
             {

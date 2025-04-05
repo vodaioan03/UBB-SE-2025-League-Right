@@ -24,7 +24,7 @@ namespace Duo.ViewModels
         {
             try
             {
-                _exerciseService = (ExerciseService)App.serviceProvider.GetService(typeof(ExerciseService));
+                _exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
             }
             catch (Exception ex)
             {

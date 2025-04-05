@@ -1,8 +1,22 @@
-﻿namespace Duo.Models;
+﻿using System.Collections.Generic;
 
-public enum Difficulty
+namespace Duo.Models
 {
-    Easy = 1,
-    Normal = 2,
-    Hard = 3
+    public enum Difficulty
+    {
+        Easy = 1,
+        Normal = 2,
+        Hard = 3
+    }
+
+    // list with difficulties as strings
+    public static class DifficultyList
+    {
+        public static readonly List<string> DIFFICULTIES = new ()
+        {
+            "Easy",
+            "Normal",
+            "Hard"
+        };
+    }
 }
