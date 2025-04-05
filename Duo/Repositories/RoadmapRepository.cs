@@ -1,19 +1,20 @@
-﻿using Duo.Data;
-using Duo.Models.Roadmap;
-using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duo.Data;
+using Duo.Models.Roadmap;
+using Microsoft.Data.SqlClient;
 
 namespace Duo.Repositories;
 
-public class RoadmapRepository:IRoadmapRepository
+public class RoadmapRepository : IRoadmapRepository
 {
-    private readonly DatabaseConnection _databaseConnection;
+    private readonly DatabaseConnection databaseConnection;
 
     public RoadmapRepository(DatabaseConnection databaseConnection)
     {
-        _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
+        ArgumentNullException.ThrowIfNull(databaseConnection);
+        this.databaseConnection = databaseConnection;
     }
 
     public async Task<List<Roadmap>> GetAllAsync()
@@ -21,24 +22,24 @@ public class RoadmapRepository:IRoadmapRepository
         try
         {
             var roadmaps = new List<Roadmap>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetRoadmaps";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 roadmaps.Add(new Roadmap
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    Name = reader.GetString(reader.GetOrdinal("Name"))
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
                 });
             }
-            
+
             return roadmaps;
         }
         catch (SqlException ex)
@@ -56,25 +57,25 @@ public class RoadmapRepository:IRoadmapRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetRoadmapById";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@roadmapId", roadmapId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             if (await reader.ReadAsync())
             {
                 return new Roadmap
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    Name = reader.GetString(reader.GetOrdinal("Name"))
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
                 };
             }
-            
+
             throw new KeyNotFoundException($"Roadmap with ID {roadmapId} not found.");
         }
         catch (SqlException ex)
@@ -92,25 +93,25 @@ public class RoadmapRepository:IRoadmapRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetRoadmapByName";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@roadmapName", roadmapName);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             if (await reader.ReadAsync())
             {
                 return new Roadmap
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    Name = reader.GetString(reader.GetOrdinal("Name"))
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
                 };
             }
-            
+
             throw new KeyNotFoundException($"Roadmap with name '{roadmapName}' not found.");
         }
         catch (SqlException ex)
@@ -121,10 +122,7 @@ public class RoadmapRepository:IRoadmapRepository
 
     public async Task<int> AddAsync(Roadmap roadmap)
     {
-        if (roadmap == null)
-        {
-            throw new ArgumentNullException(nameof(roadmap));
-        }
+        ArgumentNullException.ThrowIfNull(roadmap);
 
         if (string.IsNullOrWhiteSpace(roadmap.Name))
         {
@@ -133,19 +131,19 @@ public class RoadmapRepository:IRoadmapRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_AddRoadmap";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@name", roadmap.Name);
-            
+
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
-                Direction = System.Data.ParameterDirection.Output
+                Direction = System.Data.ParameterDirection.Output,
             };
             command.Parameters.Add(newIdParam);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
@@ -165,13 +163,13 @@ public class RoadmapRepository:IRoadmapRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_DeleteRoadmap";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@roadmapId", roadmapId);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
