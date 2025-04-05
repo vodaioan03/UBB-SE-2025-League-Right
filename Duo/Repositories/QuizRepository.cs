@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Repositories;
 
-public class QuizRepository
+public class QuizRepository:IQuizRepository
 {
     private readonly DatabaseConnection _databaseConnection;
 

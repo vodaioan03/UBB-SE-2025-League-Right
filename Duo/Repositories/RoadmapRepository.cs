@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Repositories;
 
-public class RoadmapRepository
+public class RoadmapRepository:IRoadmapRepository
 {
     private readonly DatabaseConnection _databaseConnection;
 
