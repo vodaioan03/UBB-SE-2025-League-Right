@@ -1,6 +1,6 @@
-﻿using Duo.Models.Quizzes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duo.Models.Quizzes;
 
 namespace Duo.Repositories
 {
