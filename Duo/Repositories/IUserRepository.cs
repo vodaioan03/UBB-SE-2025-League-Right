@@ -1,5 +1,5 @@
-﻿using Duo.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Duo.Models;
 
 namespace Duo.Repositories
 {
