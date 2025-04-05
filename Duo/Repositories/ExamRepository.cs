@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Duo.Repositories;
 
-public class ExamRepository
+public class ExamRepository : IExamRepository
 {
     private readonly DatabaseConnection _databaseConnection;
 
