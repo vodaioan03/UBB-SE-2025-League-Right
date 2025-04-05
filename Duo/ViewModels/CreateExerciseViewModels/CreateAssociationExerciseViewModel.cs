@@ -16,7 +16,7 @@ using static Duo.ViewModels.CreateExerciseViewModels.CreateMultipleChoiceExercis
 
 namespace Duo.ViewModels.CreateExerciseViewModels
 {
-    partial class CreateAssociationExerciseViewModel : CreateExerciseViewModelBase
+    internal partial class CreateAssociationExerciseViewModel : CreateExerciseViewModelBase
     {
         private readonly ExerciseCreationViewModel parentViewModel;
         public ObservableCollection<Answer> LeftSideAnswers { get; set; } = new ObservableCollection<Answer>();

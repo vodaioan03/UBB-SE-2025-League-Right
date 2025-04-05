@@ -20,7 +20,7 @@ namespace Duo.ViewModels
         {
             RequestGoBack?.Invoke(this, EventArgs.Empty);
         }
-        public void RaiseErrorMessage(string title, string message)
+        public virtual void RaiseErrorMessage(string title, string message)
         {
             ShowErrorMessageRequested?.Invoke(this, (title, message));
         }

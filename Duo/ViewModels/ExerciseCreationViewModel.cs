@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Duo.ViewModels
 {
-    partial class ExerciseCreationViewModel : AdminBaseViewModel
+    internal partial class ExerciseCreationViewModel : AdminBaseViewModel
     {
         private readonly IExerciseService exerciseService;
         private object selectedExerciseContent;
