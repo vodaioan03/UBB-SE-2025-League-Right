@@ -1,6 +1,6 @@
-﻿using Duo.Models.Roadmap;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duo.Models.Roadmap;
 
 namespace Duo.Repositories
 {
