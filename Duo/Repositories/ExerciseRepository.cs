@@ -1,23 +1,22 @@
-﻿using Duo.Data;
-using Duo.Models;
-using Duo.Models.Exercises;
-using Duo.Models.Quizzes;
-using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Duo.Data;
+using Duo.Models;
+using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
+using Microsoft.Data.SqlClient;
 namespace Duo.Repositories;
 
-public class ExerciseRepository
+public class ExerciseRepository : IExerciseRepository
 {
-    private readonly DatabaseConnection _databaseConnection;
+    private readonly DatabaseConnection databaseConnection;
 
     public ExerciseRepository(DatabaseConnection databaseConnection)
     {
-        _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
+        this.databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
         private List<Exercise> MergeExercises(List<Exercise> exercises)
@@ -45,7 +44,7 @@ public class ExerciseRepository
                 switch (existingExercise)
                 {
                     case MultipleChoiceExercise existingMC when exercise is MultipleChoiceExercise newMC:
-                        //remove from the choicesthe correct choice, as it was previously added
+                        // remove from the choicesthe correct choice, as it was previously added
                         newMC.Choices.RemoveAll(c => c.IsCorrect);
                         existingMC.Choices.AddRange(newMC.Choices);
                         break;
@@ -73,15 +72,15 @@ public class ExerciseRepository
         try
         {
             var exercises = new List<Exercise>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetAllExercises";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 var type = reader.GetString(reader.GetOrdinal("Type"));
@@ -125,8 +124,8 @@ public class ExerciseRepository
 
                 exercises.Add(exercise);
             }
-            
-            return MergeExercises(exercises); 
+
+            return MergeExercises(exercises);
         }
         catch (SqlException ex)
         {
@@ -142,18 +141,18 @@ public class ExerciseRepository
         }
 
         try
-        {   
+        {
             var exercises = new List<Exercise>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetExerciseById";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@exerciseId", id);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 var type = reader.GetString(reader.GetOrdinal("Type"));
@@ -196,7 +195,7 @@ public class ExerciseRepository
 
                 exercises.Add(exercise);
             }
-            
+
             return MergeExercises(exercises)[0];
         }
         catch (SqlException ex)
@@ -215,16 +214,16 @@ public class ExerciseRepository
         try
         {
             var exercises = new List<Exercise>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetQuizByIdWithExercises";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quizId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 var type = reader.IsDBNull(reader.GetOrdinal("Type")) ? null : reader.GetString(reader.GetOrdinal("Type"));
@@ -272,7 +271,7 @@ public class ExerciseRepository
 
                 exercises.Add(exercise);
             }
-            
+
             return MergeExercises(exercises);
         }
         catch (SqlException ex)
@@ -291,16 +290,16 @@ public class ExerciseRepository
         try
         {
             var exercises = new List<Exercise>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetExamByIdWithExercises";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@examId", examId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 var type = reader.IsDBNull(reader.GetOrdinal("Type")) ? null : reader.GetString(reader.GetOrdinal("Type"));
@@ -348,7 +347,7 @@ public class ExerciseRepository
 
                 exercises.Add(exercise);
             }
-            
+
             return MergeExercises(exercises);
         }
         catch (SqlException ex)
@@ -366,15 +365,15 @@ public class ExerciseRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_AddExercise";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@type", exercise.GetType().Name);
             Debug.WriteLine(exercise.GetType().Name);
             command.Parameters.AddWithValue("@difficultyId", (int)exercise.Difficulty);
-            
+
             command.Parameters.AddWithValue("@question", exercise.Question);
             if (string.IsNullOrWhiteSpace(exercise.Question))
             {
@@ -382,13 +381,13 @@ public class ExerciseRepository
             }
             command.Parameters.AddWithValue("@correctAnswer", DBNull.Value);
             command.Parameters.AddWithValue("@flashcardAnswer", DBNull.Value);
-            
+
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
             };
             command.Parameters.Add(newIdParam);
-            
+
             switch (exercise)
             {
                 case MultipleChoiceExercise mcExercise:
@@ -413,7 +412,7 @@ public class ExerciseRepository
                 default:
                     throw new ArgumentException($"Unsupported exercise type: {exercise.GetType().Name}");
             }
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
             var newId = (int)newIdParam.Value;
@@ -456,7 +455,7 @@ public class ExerciseRepository
                     }
                     break;
             }
-            
+
             return newId;
         }
         catch (SqlException ex)
@@ -475,13 +474,13 @@ public class ExerciseRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_DeleteExercise";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@exerciseId", id);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
