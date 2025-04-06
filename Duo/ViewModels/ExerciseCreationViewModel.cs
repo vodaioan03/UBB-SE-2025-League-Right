@@ -43,6 +43,15 @@ namespace Duo.ViewModels
         public ExerciseCreationViewModel(IExerciseService exerciseService)
         {
             this.exerciseService = exerciseService;
+            CreateMultipleChoiceExerciseViewModel = new CreateMultipleChoiceExerciseViewModel(this);
+            CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
+            CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
+
+            SaveButtonCommand = new RelayCommand(CreateExercise);
+            ExerciseTypes = new ObservableCollection<string>(Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
+            Difficulties = new ObservableCollection<string>(Models.DifficultyList.DIFFICULTIES);
+            SelectedExerciseContent = "Select an exercise type.";
+            currentExerciseViewModel = CreateAssociationExerciseViewModel;
         }
 
         public ExerciseCreationViewModel()
@@ -186,6 +195,11 @@ namespace Duo.ViewModels
                     SelectedExerciseContent = new TextBlock { Text = "Select an exercise type." };
                     break;
             }
+        }
+
+        public void SetTypeForTest(string exerciseType)
+        {
+            selectedExerciseType = exerciseType;
         }
 
         public ICommand SaveButtonCommand { get; }

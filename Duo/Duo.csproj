@@ -13,6 +13,7 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+	  <SelfContained>true</SelfContained>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ViewModels\NewFolder\**" />
@@ -126,6 +127,7 @@
 	<ItemGroup>
 		<!-- Granting internal access to test project -->
 		<InternalsVisibleTo Include="DuoTesting" />
+		<InternalsVisibleTo Include="DuoUnitTesting" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
 	</ItemGroup>
 
