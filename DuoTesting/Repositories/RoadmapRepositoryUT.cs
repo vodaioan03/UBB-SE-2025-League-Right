@@ -20,5 +20,17 @@ namespace DuoTesting.Repositories
             _repository = new RoadmapRepository(DbConnection);
         }
 
+        [TestMethod]
+        public async Task AddAndGetById_ShouldReturnSameRoadmap()
+        {
+            var roadmap = new Roadmap { Name = "Test Roadmap" };
+            var newId = await _repository.AddAsync(roadmap);
+
+            var result = await _repository.GetByIdAsync(newId);
+            Assert.AreEqual("Test Roadmap", result.Name);
+
+            await _repository.DeleteAsync(newId);
+        }
+
     }
 }
