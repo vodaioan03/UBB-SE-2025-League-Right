@@ -17,8 +17,8 @@ namespace Duo.ViewModels.CreateExerciseViewModels
     partial class CreateMultipleChoiceExerciseViewModel : CreateExerciseViewModelBase
     {
         private ExerciseCreationViewModel parentViewModel;
-        private const int MINIMUM_ANSWERS = 2;
-        private const int MAXIMUM_ANSWERS = 5;
+        public const int MINIMUM_ANSWERS = 2;
+        public const int MAXIMUM_ANSWERS = 5;
 
         private string selectedAnswer = string.Empty;
 

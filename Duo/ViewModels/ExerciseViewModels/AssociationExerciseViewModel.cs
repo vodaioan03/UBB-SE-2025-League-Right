@@ -22,7 +22,7 @@ namespace Duo.ViewModels.ExerciseViewModels
             set { SetProperty(ref _userAnswers, value); }
         }
 
-        AssociationExerciseViewModel (ExerciseService exerciseService)
+        public AssociationExerciseViewModel(ExerciseService exerciseService)
         {
             _exerciseService = exerciseService;
         }
