@@ -1,20 +1,20 @@
-using Duo.Data;
-using Duo.Models.Quizzes;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Duo.Data;
+using Duo.Models.Quizzes;
+using Microsoft.Data.SqlClient;
 
 namespace Duo.Repositories;
 
-public class QuizRepository
+public class QuizRepository : IQuizRepository
 {
-    private readonly DatabaseConnection _databaseConnection;
+    private readonly DatabaseConnection databaseConnection;
 
     public QuizRepository(DatabaseConnection databaseConnection)
     {
-        _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
+        this.databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
     public async Task<List<Quiz>> GetAllAsync()
@@ -22,24 +22,23 @@ public class QuizRepository
         try
         {
             var quizzes = new List<Quiz>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetAllQuizzes";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 quizzes.Add(new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
                     reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId")),
-                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
-                ));
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))));
             }
-            
+
             return quizzes;
         }
         catch (SqlException ex)
@@ -57,25 +56,24 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetQuizById";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quizId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             if (await reader.ReadAsync())
             {
                 return new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
                     reader.IsDBNull(reader.GetOrdinal("SectionId")) ? null : reader.GetInt32(reader.GetOrdinal("SectionId")),
-                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
-                );
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber")));
             }
-            
+
             throw new KeyNotFoundException($"Quiz with ID {quizId} not found.");
         }
         catch (SqlException ex)
@@ -94,23 +92,22 @@ public class QuizRepository
         try
         {
             var quizzes = new List<Quiz>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetQuizzesBySectionId";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@sectionId", sectionId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 quizzes.Add(new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
                     sectionId,
-                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
-                ));
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))));
             }
             return quizzes;
         }
@@ -125,24 +122,23 @@ public class QuizRepository
         try
         {
             var quizzes = new List<Quiz>();
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_GetUnassignedQuizzes";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             while (await reader.ReadAsync())
             {
                 quizzes.Add(new Quiz(
                     reader.GetInt32(reader.GetOrdinal("Id")),
                     null,
-                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))
-                ));
+                    reader.IsDBNull(reader.GetOrdinal("OrderNumber")) ? null : reader.GetInt32(reader.GetOrdinal("OrderNumber"))));
             }
-            
+
             return quizzes;
         }
         catch (SqlException ex)
@@ -165,12 +161,12 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_AddQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            
+
             if (quiz.SectionId.HasValue)
             {
                 command.Parameters.AddWithValue("@sectionId", quiz.SectionId.Value);
@@ -188,13 +184,13 @@ public class QuizRepository
             {
                 command.Parameters.AddWithValue("@orderNumber", DBNull.Value);
             }
-            
+
             var newIdParam = new SqlParameter("@newId", System.Data.SqlDbType.Int)
             {
                 Direction = System.Data.ParameterDirection.Output
             };
             command.Parameters.Add(newIdParam);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
             return (int)newIdParam.Value;
@@ -224,13 +220,13 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_UpdateQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quiz.Id);
-            
+
             if (quiz.SectionId.HasValue)
             {
                 command.Parameters.AddWithValue("@sectionId", quiz.SectionId.Value);
@@ -248,7 +244,7 @@ public class QuizRepository
             {
                 command.Parameters.AddWithValue("@orderNumber", DBNull.Value);
             }
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
@@ -267,13 +263,13 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_DeleteQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quizId);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
@@ -297,14 +293,14 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_AddExerciseToQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quizId);
             command.Parameters.AddWithValue("@exerciseId", exerciseId);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
@@ -328,14 +324,14 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_RemoveExerciseFromQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quizId);
             command.Parameters.AddWithValue("@exerciseId", exerciseId);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
@@ -359,15 +355,15 @@ public class QuizRepository
 
         try
         {
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_UpdateQuiz";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@quizId", quizId);
             command.Parameters.AddWithValue("@sectionId", sectionId ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("@orderNumber", orderNumber ?? (object)DBNull.Value);
-            
+
             await connection.OpenAsync();
             await command.ExecuteNonQueryAsync();
         }
@@ -387,16 +383,16 @@ public class QuizRepository
         try
         {
             var lastOrderNumber = 0;
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_LastOrderQuizBySectionId";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@sectionId", sectionId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             if (await reader.ReadAsync())
             {
                 lastOrderNumber = reader.GetInt32(reader.GetOrdinal("LastOrderNumber"));
@@ -420,16 +416,16 @@ public class QuizRepository
         try
         {
             var countOfQuizzes = 0;
-            using var connection = await _databaseConnection.CreateConnectionAsync();
+            using var connection = await databaseConnection.CreateConnectionAsync();
             using var command = connection.CreateCommand();
-            
+
             command.CommandText = "sp_CountQuizzesBySectionId";
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@sectionId", sectionId);
-            
+
             await connection.OpenAsync();
             using var reader = await command.ExecuteReaderAsync();
-            
+
             if (await reader.ReadAsync())
             {
                 countOfQuizzes = reader.GetInt32(reader.GetOrdinal("QuizCount"));
@@ -442,4 +438,4 @@ public class QuizRepository
             throw new Exception($"Database error while retrieving quiz count for section {sectionId}: {ex.Message}", ex);
         }
     }
-} 
+}

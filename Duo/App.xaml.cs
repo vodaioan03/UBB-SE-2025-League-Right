@@ -73,6 +73,13 @@ namespace Duo
             services.AddSingleton<RoadmapRepository>();
             services.AddSingleton<RoadmapService>();
 
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IExerciseRepository, ExerciseRepository>();
+            services.AddSingleton<IExamRepository, ExamRepository>();
+            services.AddSingleton<IQuizRepository, QuizRepository>();
+            services.AddSingleton<ISectionRepository, SectionRepository>();
+            services.AddSingleton<IRoadmapRepository, RoadmapRepository>();
+
             services.AddTransient<FillInTheBlankExerciseViewModel>();
             services.AddTransient<MultipleChoiceExerciseViewModel>();
             services.AddTransient<AssociationExerciseViewModel>();
