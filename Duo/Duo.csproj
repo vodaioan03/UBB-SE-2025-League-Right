@@ -13,6 +13,7 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+	  <SelfContained>true</SelfContained>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ViewModels\NewFolder\**" />
@@ -123,6 +124,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+	<ItemGroup>
+		<!-- Granting internal access to test project -->
+		<InternalsVisibleTo Include="DuoTesting" />
+		<InternalsVisibleTo Include="DuoUnitTesting" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
+	</ItemGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
