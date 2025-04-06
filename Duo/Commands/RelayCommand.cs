@@ -10,8 +10,8 @@ namespace Duo.Commands
 
         public RelayCommand(Action execute, Func<bool> canExecute = null)
         {
-            execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            canExecute = canExecute;
+            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            this.canExecute = canExecute;
         }
 
         public event EventHandler CanExecuteChanged;
