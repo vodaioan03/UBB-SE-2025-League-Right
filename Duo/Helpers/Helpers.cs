@@ -18,7 +18,6 @@ namespace Duo.Helpers
 
                 parent = VisualTreeHelper.GetParent(parent);
             }
-
             return null;
         }
     }

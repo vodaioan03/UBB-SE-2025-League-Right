@@ -22,7 +22,7 @@ namespace DuoTesting.Tests
             // Normally this would require a visual tree, but we simulate it using the internal helper
             // so we can't really do this in UWP/WinUI easily outside a UI thread
 
-            // Act
+            // Act 
             var result = Helpers.FindParent<DummyParent>(child);
 
             // Assert
