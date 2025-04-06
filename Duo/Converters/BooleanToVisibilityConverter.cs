@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
-using System;
 
 namespace Duo.Converters
 {
@@ -20,6 +20,5 @@ namespace Duo.Converters
             throw new NotImplementedException();
         }
     }
-
 }
 
