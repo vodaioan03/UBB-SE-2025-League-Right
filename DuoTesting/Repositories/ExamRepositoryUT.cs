@@ -1,33 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Duo.Data;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Duo.Models.Quizzes;
 using Duo.Repositories;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
+using DuoTesting.Helper;
+using System.Data.Common;
 
 namespace DuoTesting.Repositories
 {
     [TestClass]
-    public class ExamRepositoryUT
+    public class ExamRepositoryUT : TestBase
     {
         private IExamRepository _repository = null!;
-        private DatabaseConnection _dbConnection = null!;
 
         [TestInitialize]
         public void Setup()
         {
-            var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                  
-                    { "DbConnection", "Server=DESKTOP-BVGO48P\\SQLEXPRESS;Database=new-league;Trusted_Connection=True;TrustServerCertificate=true;" }
-                })
-                .Build();
-
-            _dbConnection = new DatabaseConnection(config);
-            _repository = new ExamRepository(_dbConnection);
+            _repository = new ExamRepository(DbConnection);
         }
 
         [TestMethod]
@@ -61,7 +52,7 @@ namespace DuoTesting.Repositories
 
         private async Task<int> AddTestSectionAsync()
         {
-            using var conn = await _dbConnection.CreateConnectionAsync();
+            using var conn = await DbConnection.CreateConnectionAsync();
             using var cmd = conn.CreateCommand();
 
             cmd.CommandText = @"
