@@ -5,31 +5,51 @@ namespace Duo.Commands
 {
     public class RelayCommandWithParameter<T> : ICommand
     {
-        private readonly Action<T> _execute;
-        private readonly Predicate<T> _canExecute;
+        private readonly Action<T> execute;
+        private readonly Predicate<T> canExecute;
 
         public RelayCommandWithParameter(Action<T> execute, Predicate<T> canExecute = null)
         {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
+            execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            canExecute = canExecute;
         }
 
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
+            if (canExecute == null)
+            {
                 return true;
+            }
 
-            if (parameter == null && typeof(T).IsValueType)
-                return false;
+            if (parameter is T typedParameter)
+            {
+                return canExecute(typedParameter);
+            }
 
-            return _canExecute((T)parameter);
+            if (parameter == null && default(T) == null)
+            {
+                return canExecute(default);
+            }
+
+            return false;
         }
 
         public void Execute(object parameter)
         {
-            _execute((T)parameter);
+            if (parameter is T typedParameter)
+            {
+                execute(typedParameter);
+            }
+            else if (parameter == null && default(T) == null)
+            {
+                execute(default);
+            }
+            else
+            {
+                throw new ArgumentException($"Invalid parameter type. Expected {typeof(T)}.", nameof(parameter));
+            }
         }
 
         public void RaiseCanExecuteChanged()
