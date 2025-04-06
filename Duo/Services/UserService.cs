@@ -1,18 +1,18 @@
+using System;
+using System.Threading.Tasks;
 using Duo.Data;
 using Duo.Models;
 using Duo.Repositories;
-using System;
-using System.Threading.Tasks;
 
 namespace Duo.Services;
 
 public class UserService : IUserService
 {
-    private readonly UserRepository _userRepository;
+    private readonly UserRepository userRepository;
 
     public UserService(UserRepository userRepository)
     {
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
     public async Task<User> GetByIdAsync(int userId)
@@ -22,7 +22,7 @@ public class UserService : IUserService
             throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
         }
 
-        return await _userRepository.GetByIdAsync(userId);
+        return await userRepository.GetByIdAsync(userId);
     }
 
     public async Task<User> GetByUsernameAsync(string username)
@@ -32,7 +32,7 @@ public class UserService : IUserService
             throw new ArgumentException("Username cannot be null or empty.", nameof(username));
         }
 
-        return await _userRepository.GetByUsernameAsync(username);
+        return await userRepository.GetByUsernameAsync(username);
     }
 
     public async Task<int> CreateUserAsync(User user)
@@ -47,7 +47,7 @@ public class UserService : IUserService
             throw new ArgumentException("Username cannot be null or empty.", nameof(user));
         }
 
-        return await _userRepository.CreateUserAsync(user);
+        return await userRepository.CreateUserAsync(user);
     }
 
     public async Task UpdateUserSectionProgressAsync(int userId, int newNrOfSectionsCompleted, int newNrOfQuizzesInSectionCompleted)
@@ -57,7 +57,7 @@ public class UserService : IUserService
             throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
         }
 
-        await _userRepository.UpdateUserProgressAsync(userId, newNrOfSectionsCompleted, newNrOfQuizzesInSectionCompleted);
+        await userRepository.UpdateUserProgressAsync(userId, newNrOfSectionsCompleted, newNrOfQuizzesInSectionCompleted);
     }
 
     public async Task IncrementUserProgressAsync(int userId)
@@ -67,6 +67,6 @@ public class UserService : IUserService
             throw new ArgumentException("User ID must be greater than 0.", nameof(userId));
         }
 
-        await _userRepository.IncrementUserProgressAsync(userId);
+        await userRepository.IncrementUserProgressAsync(userId);
     }
 }
