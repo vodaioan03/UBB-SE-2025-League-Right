@@ -1,24 +1,24 @@
-﻿using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace Duo.Helpers
 {
     public static class Helpers
     {
-        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        public static T? FindParent<T>(DependencyObject child)
+            where T : DependencyObject
         {
-            DependencyObject parent = VisualTreeHelper.GetParent(child);
+            DependencyObject? parent = VisualTreeHelper.GetParent(child);
             while (parent != null)
             {
-                if (parent is T tParent)
-                    return tParent;
+                if (parent is T match)
+                {
+                    return match;
+                }
+
                 parent = VisualTreeHelper.GetParent(parent);
             }
+
             return null;
         }
     }
