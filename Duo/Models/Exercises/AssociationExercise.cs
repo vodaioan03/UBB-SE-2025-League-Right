@@ -24,13 +24,17 @@ public class AssociationExercise : Exercise
     public bool ValidateAnswer(List<(string, string)> userPairs)
     {
         if (userPairs == null || userPairs.Count != FirstAnswersList.Count)
+        {
             return false;
+        }
 
         foreach (var (userA, userB) in userPairs)
         {
             int index = FirstAnswersList.IndexOf(userA);
             if (index == -1 || SecondAnswersList[index] != userB)
+            {
                 return false;
+            }
         }
 
         return true;

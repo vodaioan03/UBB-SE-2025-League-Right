@@ -6,7 +6,7 @@ public class Quiz : BaseQuiz
     private const double PASSING_THRESHOLD = 75;
     public int? OrderNumber { get; set; }
 
-    public Quiz(int id, int? sectionId, int? orderNumber) 
+    public Quiz(int id, int? sectionId, int? orderNumber)
         : base(id, sectionId, MAX_EXERCISES, PASSING_THRESHOLD)
     {
         OrderNumber = orderNumber;

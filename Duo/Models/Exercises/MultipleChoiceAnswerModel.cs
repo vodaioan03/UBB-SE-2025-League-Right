@@ -7,7 +7,9 @@ public class MultipleChoiceAnswerModel
     public string Answer { get; set; }
     public bool IsCorrect { get; set; }
 
-    public MultipleChoiceAnswerModel() { }
+    public MultipleChoiceAnswerModel()
+    {
+    }
 
     public MultipleChoiceAnswerModel(string answer, bool isCorrect)
     {
@@ -17,6 +19,6 @@ public class MultipleChoiceAnswerModel
 
     public override string ToString()
     {
-        return $"{Answer}{(IsCorrect ? " (Correct)" : "")}";
+        return $"{Answer}{(IsCorrect ? " (Correct)" : string.Empty)}";
     }
 }
