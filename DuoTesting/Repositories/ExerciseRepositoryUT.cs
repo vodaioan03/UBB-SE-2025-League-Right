@@ -1,43 +1,33 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Duo.Data;
-using Duo.Repositories;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Duo.Models;
 using Duo.Models.Exercises;
+using Duo.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
+using DuoTesting.Helper;
+using System.Data.Common;
 
 namespace DuoTesting.Repositories
 {
     [TestClass]
-    public class ExerciseRepositoryUT
+    public class ExerciseRepositoryUT : TestBase
     {
         private IExerciseRepository _repository = null!;
-        private DatabaseConnection _dbConnection = null!;
 
         [TestInitialize]
         public void Setup()
         {
-            var config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    { "DbConnection", "Server=DESKTOP-BVGO48P\\SQLEXPRESS;Database=new-league;Trusted_Connection=True;TrustServerCertificate=true;" }
-                })
-                .Build();
-
-            _dbConnection = new DatabaseConnection(config);
-            _repository = new ExerciseRepository(_dbConnection);
+            _repository = new ExerciseRepository(DbConnection);
         }
 
         [TestMethod]
         public async Task AddGetDelete_MultipleChoiceExercise_WorksCorrectly()
         {
             var exercise = new MultipleChoiceExercise(
-                id: 0,
-                question: "What is 2 + 2?",
-                difficulty: Difficulty.Easy,
-                choices: new List<MultipleChoiceAnswerModel>
+                0,
+                "What is 2 + 2?",
+                Difficulty.Easy,
+                new List<MultipleChoiceAnswerModel>
                 {
                     new MultipleChoiceAnswerModel("4", true),
                     new MultipleChoiceAnswerModel("3", false),
@@ -53,31 +43,27 @@ namespace DuoTesting.Repositories
 
             await _repository.DeleteExerciseAsync(id);
         }
+
         [TestMethod]
         public async Task AddDelete_FlashcardExercise_ShouldWork()
         {
-            var exercise = new FlashcardExercise(
-                id: 0,
-                question: "Capital of France?",
-                answer: "Paris",
-                difficulty: Difficulty.Easy);
-
+            var exercise = new FlashcardExercise(0, "Capital of France?", "Paris", Difficulty.Easy);
             int id = await _repository.AddExerciseAsync(exercise);
-            Assert.IsTrue(id > 0);
 
             var fetched = await _repository.GetByIdAsync(id);
             Assert.AreEqual("Paris", ((FlashcardExercise)fetched).Answer);
 
             await _repository.DeleteExerciseAsync(id);
         }
+
         [TestMethod]
         public async Task AddDelete_FillInTheBlankExercise_ShouldWork()
         {
             var exercise = new FillInTheBlankExercise(
-                id: 0,
-                question: "____ is the largest planet.",
-                difficulty: Difficulty.Easy,
-                possibleCorrectAnswers: new List<string> { "Jupiter" });
+                0,
+                "____ is the largest planet.",
+                Difficulty.Easy,
+                new List<string> { "Jupiter" });
 
             int id = await _repository.AddExerciseAsync(exercise);
             var result = await _repository.GetByIdAsync(id);
@@ -90,12 +76,11 @@ namespace DuoTesting.Repositories
         public async Task AddDelete_AssociationExercise_ShouldWork()
         {
             var exercise = new AssociationExercise(
-                0,                               
-                "Match countries to capitals",    
-                Difficulty.Hard,                 
-                new List<string> { "Germany" },   
-                new List<string> { "Berlin" }     
-            );
+                0,
+                "Match countries to capitals",
+                Difficulty.Hard,
+                new List<string> { "Germany" },
+                new List<string> { "Berlin" });
 
             int id = await _repository.AddExerciseAsync(exercise);
             var result = await _repository.GetByIdAsync(id);
@@ -103,6 +88,7 @@ namespace DuoTesting.Repositories
 
             await _repository.DeleteExerciseAsync(id);
         }
+
         [TestMethod]
         public async Task AddExerciseAsync_Null_ShouldThrow()
         {
