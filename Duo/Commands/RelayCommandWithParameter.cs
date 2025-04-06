@@ -10,8 +10,8 @@ namespace Duo.Commands
 
         public RelayCommandWithParameter(Action<T> execute, Predicate<T> canExecute = null)
         {
-            execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            canExecute = canExecute;
+            this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            this.canExecute = canExecute;
         }
 
         public event EventHandler CanExecuteChanged;
@@ -19,20 +19,36 @@ namespace Duo.Commands
         public bool CanExecute(object parameter)
         {
             if (canExecute == null)
-            {
+                {
                 return true;
-            }
+                }
 
             if (parameter is T typedParameter)
             {
                 return canExecute(typedParameter);
             }
 
-            if (parameter == null && default(T) == null)
+            if (parameter == null)
             {
-                return canExecute(default);
+                if (default(T) == null) // Reference type
+                {
+                    return canExecute(default);
+                }
+                return false; // null passed for value type, like int
             }
 
+            try
+            {
+                object converted = Convert.ChangeType(parameter, typeof(T));
+                if (converted is T typedConverted)
+                {
+                    return canExecute(typedConverted);
+                }
+            }
+            catch
+            {
+                // swallow conversion errors
+            }
             return false;
         }
 
@@ -41,15 +57,21 @@ namespace Duo.Commands
             if (parameter is T typedParameter)
             {
                 execute(typedParameter);
+                return;
             }
-            else if (parameter == null && default(T) == null)
+
+            if (parameter == null)
             {
-                execute(default);
+                if (default(T) == null) // Reference type
+                {
+                    execute(default);
+                    return;
+                }
+
+                throw new ArgumentException($"Null parameter not allowed for value type {typeof(T)}", nameof(parameter));
             }
-            else
-            {
-                throw new ArgumentException($"Invalid parameter type. Expected {typeof(T)}.", nameof(parameter));
-            }
+
+            throw new ArgumentException($"Invalid parameter type. Expected {typeof(T)}.", nameof(parameter));
         }
 
         public void RaiseCanExecuteChanged()
