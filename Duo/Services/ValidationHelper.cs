@@ -11,7 +11,7 @@ using Duo.Models.Sections;
 
 namespace Duo.Services
 {
-    static public class ValidationHelper
+    static public class ValidationHelper // salut
     {
         static public void ValidateSection(Section section)
         {
