@@ -22,7 +22,9 @@ public class MultipleChoiceExercise : Exercise
     public bool ValidateAnswer(List<string> userAnswers)
     {
         if (userAnswers == null || userAnswers.Count == 0)
+        {
             return false;
+        }
 
         var correctAnswers = Choices.Where(a => a.IsCorrect).Select(a => a.Answer).OrderBy(a => a).ToList();
         var userSelection = userAnswers.OrderBy(a => a).ToList();
@@ -32,7 +34,7 @@ public class MultipleChoiceExercise : Exercise
 
     public override string ToString()
     {
-        var choices = string.Join(", ", Choices.Select(c => $"{c.Answer}{(c.IsCorrect ? " (Correct)" : "")}"));
+        var choices = string.Join(", ", Choices.Select(c => $"{c.Answer}{(c.IsCorrect ? " (Correct)" : string.Empty)}"));
         return $"{base.ToString()} [Multiple Choice] Choices: {choices}";
     }
 }

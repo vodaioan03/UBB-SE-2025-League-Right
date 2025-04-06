@@ -22,7 +22,9 @@ public class FillInTheBlankExercise : Exercise
     public bool ValidateAnswer(List<string> userAnswers)
     {
         if (userAnswers == null || userAnswers.Count != PossibleCorrectAnswers.Count)
+        {
             return false;
+        }
 
         for (int i = 0; i < PossibleCorrectAnswers.Count; i++)
         {

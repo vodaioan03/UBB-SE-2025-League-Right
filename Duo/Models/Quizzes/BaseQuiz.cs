@@ -7,7 +7,7 @@ public abstract class BaseQuiz
 {
     public int Id { get; set; }
     public int? SectionId { get; set; }
-    public List<Exercise> ExerciseList { get; set; } = new();
+    public List<Exercise> ExerciseList { get; set; } = new ();
     private int numberOfAnswersGiven = 0;
     private int numberOfCorrectAnswers = 0;
 
@@ -64,8 +64,8 @@ public abstract class BaseQuiz
 
     public override string ToString()
     {
-        var progress = numberOfAnswersGiven > 0 
-            ? $"Progress: {numberOfCorrectAnswers}/{numberOfAnswersGiven} ({((double)numberOfCorrectAnswers/numberOfAnswersGiven)*100:F1}%)"
+        var progress = numberOfAnswersGiven > 0
+            ? $"Progress: {numberOfCorrectAnswers}/{numberOfAnswersGiven} ({((double)numberOfCorrectAnswers / numberOfAnswersGiven) * 100:F1}%)"
             : "Not started";
         return $"Quiz {Id} (Section: {SectionId ?? 0}) - {ExerciseList.Count}/{maxExercises} exercises - {progress}";
     }

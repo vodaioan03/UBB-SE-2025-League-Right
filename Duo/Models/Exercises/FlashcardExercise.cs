@@ -7,31 +7,33 @@ namespace Duo.Models.Exercises
         public string Type { get; } = "Flashcard";
         public int TimeInSeconds { get; }
 
-        private string _answer;
+        private string answer;
         public string Answer
         {
-            get => _answer;
-            set => _answer = value;
+            get => answer;
+            set => answer = value;
         }
 
-        private TimeSpan _elapsedTime;
+        private TimeSpan elapsedTime;
         public TimeSpan ElapsedTime
         {
-            get => _elapsedTime;
-            set => _elapsedTime = value;
+            get => elapsedTime;
+            set => elapsedTime = value;
         }
 
         // Property for database repository support
         public string Sentence => Question;
-        
-        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal) 
+
+        public FlashcardExercise(int id, string question, string answer, Difficulty difficulty = Difficulty.Normal)
             : base(id, question, difficulty)
         {
             if (string.IsNullOrWhiteSpace(answer))
+            {
                 throw new ArgumentException("Answer cannot be empty", nameof(answer));
-                
-            _answer = answer;
-            
+            }
+
+            this.answer = answer;
+
             // Default time based on difficulty
             TimeInSeconds = GetDefaultTimeForDifficulty(difficulty);
         }
@@ -41,12 +43,14 @@ namespace Duo.Models.Exercises
             : base(id, sentence, difficulty)
         {
             if (string.IsNullOrWhiteSpace(answer))
+            {
                 throw new ArgumentException("Answer cannot be empty", nameof(answer));
+            }
 
-            _answer = answer;
+            this.answer = answer;
             TimeInSeconds = timeInSeconds;
         }
-        
+
         // Helper method to determine default time based on difficulty
         private int GetDefaultTimeForDifficulty(Difficulty difficulty)
         {
@@ -67,7 +71,9 @@ namespace Duo.Models.Exercises
         public bool ValidateAnswer(string userAnswer)
         {
             if (string.IsNullOrWhiteSpace(userAnswer))
+            {
                 return false;
+            }
 
             return userAnswer.Trim().Equals(Answer.Trim(), StringComparison.OrdinalIgnoreCase);
         }
@@ -77,4 +83,4 @@ namespace Duo.Models.Exercises
             return $"Id: {Id},  Difficulty: {Difficulty}, Time: {TimeInSeconds}s";
         }
     }
-} 
+}
