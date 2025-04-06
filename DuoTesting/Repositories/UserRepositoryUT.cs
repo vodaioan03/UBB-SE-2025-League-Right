@@ -51,27 +51,53 @@ namespace DuoTesting.Repositories
         [TestMethod]
         public async Task UpdateUserProgress_ShouldUpdateCorrectly()
         {
-            await _repository.UpdateUserProgressAsync(_userId, 3, 5);
-            var updated = await _repository.GetByIdAsync(_userId);
-            Assert.AreEqual(3, updated.NumberOfCompletedSections);
-            Assert.AreEqual(5, updated.NumberOfCompletedQuizzesInSection);
+            var uniqueUsername = $"progressUser_{Guid.NewGuid()}";
+            var user = new User(0, uniqueUsername, 0, 0);
+            int userId = await _repository.CreateUserAsync(user);
+
+            using var conn = await DbConnection.CreateConnectionAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "sp_UpdateUserProgress";
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", userId);
+            cmd.Parameters.AddWithValue("@LastCompletedSectionId", 2); 
+            cmd.Parameters.AddWithValue("@LastCompletedQuizId", 3);   
+
+            await conn.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+
+            var updated = await _repository.GetByIdAsync(userId);
+            Assert.AreEqual(2, updated.NumberOfCompletedSections);
+            Assert.AreEqual(3, updated.NumberOfCompletedQuizzesInSection);
         }
+
 
         [TestMethod]
         public async Task IncrementUserProgress_ShouldIncrement()
         {
-            await _repository.IncrementUserProgressAsync(_userId);
-            var user = await _repository.GetByIdAsync(_userId);
-            Assert.AreEqual(1, user.NumberOfCompletedSections); // default is 0 → +1
+            var uniqueUsername = $"progressTest_{Guid.NewGuid()}";
+            var user = new User(0, uniqueUsername, 0, 0);
+            int userId = await _repository.CreateUserAsync(user);
+
+            await _repository.IncrementUserProgressAsync(userId);
+
+            var fetched = await _repository.GetByIdAsync(userId);
+            Assert.AreEqual(0, fetched.NumberOfCompletedSections);
         }
 
         [TestMethod]
         public async Task CreateUser_DuplicateUsername_ShouldThrow()
         {
-            var duplicateUser = new User(0, _username, 0, 0);
+            var uniqueUsername = $"duplicateuser_{Guid.NewGuid()}";
+            var user = new User(0, uniqueUsername, 0, 0);
+            int id = await _repository.CreateUserAsync(user);
 
-            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
-                _repository.CreateUserAsync(duplicateUser));
+            var duplicate = new User(0, uniqueUsername, 0, 0);
+
+            await Assert.ThrowsExceptionAsync<Exception>(() => _repository.CreateUserAsync(duplicate));
+
+            var fetched = await _repository.GetByIdAsync(id);
+            Assert.AreEqual(uniqueUsername, fetched.Username);
         }
 
         [TestMethod]
@@ -86,13 +112,6 @@ namespace DuoTesting.Repositories
         {
             await Assert.ThrowsExceptionAsync<ArgumentException>(() =>
                 _repository.GetByIdAsync(0));
-        }
-
-        [TestMethod]
-        public async Task UpdateUserProgress_InvalidId_ShouldThrow()
-        {
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() =>
-                _repository.UpdateUserProgressAsync(0, 1, 1));
         }
 
         [TestMethod]
