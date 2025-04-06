@@ -10,36 +10,36 @@ namespace Duo.Services
 {
     public class RoadmapService : IRoadmapService
     {
-        private RoadmapRepository _roadmapRepository;
+        private RoadmapRepository roadmapRepository;
 
         public RoadmapService(RoadmapRepository roadmapRepository)
         {
-            _roadmapRepository = roadmapRepository;
+            this.roadmapRepository = roadmapRepository;
         }
 
         public Task<List<Roadmap>> GetAllRoadmaps()
         {
-            return _roadmapRepository.GetAllAsync();
+            return roadmapRepository.GetAllAsync();
         }
 
         public Task<Roadmap> GetRoadmapById(int roadmapId)
         {
-            return _roadmapRepository.GetByIdAsync(roadmapId);
+            return roadmapRepository.GetByIdAsync(roadmapId);
         }
 
         public Task<Roadmap> GetByName(string roadmapName)
         {
-            return _roadmapRepository.GetByNameAsync(roadmapName);
+            return roadmapRepository.GetByNameAsync(roadmapName);
         }
 
         public Task<int> AddRoadmap(Roadmap roadmap)
         {
-            return _roadmapRepository.AddAsync(roadmap);
+            return roadmapRepository.AddAsync(roadmap);
         }
 
         public Task DeleteRoadmap(Roadmap roadmap)
         {
-            return _roadmapRepository.DeleteAsync(roadmap.Id);
+            return roadmapRepository.DeleteAsync(roadmap.Id);
         }
     }
 }

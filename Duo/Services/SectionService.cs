@@ -9,36 +9,36 @@ namespace Duo.Services
 {
     public class SectionService : ISectionService
     {
-        private SectionRepository _sectionRepository;
+        private SectionRepository sectionRepository;
 
         public SectionService(SectionRepository sectionRepository)
         {
-            _sectionRepository = sectionRepository;
+            this.sectionRepository = sectionRepository;
         }
 
         public async Task<List<Section>> GetAllSections()
         {
-            return await _sectionRepository.GetAllAsync();
+            return await sectionRepository.GetAllAsync();
         }
 
         public Task<Section> GetSectionById(int sectionId)
         {
-            return _sectionRepository.GetByIdAsync(sectionId);
+            return sectionRepository.GetByIdAsync(sectionId);
         }
 
         public Task<List<Section>> GetByRoadmapId(int roadmapId)
         {
-            return _sectionRepository.GetByRoadmapIdAsync(roadmapId);
+            return sectionRepository.GetByRoadmapIdAsync(roadmapId);
         }
 
         public async Task<int> CountSectionsFromRoadmap(int roadmapId)
         {
-            return await _sectionRepository.CountByRoadmapIdAsync(roadmapId);
+            return await sectionRepository.CountByRoadmapIdAsync(roadmapId);
         }
 
         public async Task<int> LastOrderNumberFromRoadmap(int roadmapId)
         {
-            return await _sectionRepository.LastOrderNumberByRoadmapIdAsync(roadmapId);
+            return await sectionRepository.LastOrderNumberByRoadmapIdAsync(roadmapId);
         }
 
         public async Task<int> AddSection(Section section)
@@ -47,18 +47,18 @@ namespace Duo.Services
             List<Section> allSections = await GetAllSections();
             int orderNumber = allSections.Count;
             section.OrderNumber = orderNumber + 1;
-            return await _sectionRepository.AddAsync(section);
+            return await sectionRepository.AddAsync(section);
         }
 
         public Task DeleteSection(int sectionId)
         {
-            return _sectionRepository.DeleteAsync(sectionId);
+            return sectionRepository.DeleteAsync(sectionId);
         }
 
         public Task UpdateSection(Section section)
         {
             ValidationHelper.ValidateSection(section);
-            return _sectionRepository.UpdateAsync(section);
+            return sectionRepository.UpdateAsync(section);
         }
     }
 }
