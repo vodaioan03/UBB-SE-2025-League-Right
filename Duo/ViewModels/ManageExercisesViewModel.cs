@@ -1,10 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models;
-using Duo.Models.Exercises;
-using Duo.Repositories;
-using Duo.Services;
-using Duo.ViewModels.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,39 +6,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models;
+using Duo.Models.Exercises;
+using Duo.Repositories;
+using Duo.Services;
+using Duo.ViewModels.Base;
 
 namespace Duo.ViewModels
 {
-    class ManageExercisesViewModel: AdminBaseViewModel
+    partial class ManageExercisesViewModel : AdminBaseViewModel
     {
-        private readonly ExerciseService _exerciseService;
+        private readonly ExerciseService exerciseService;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
 
         public ManageExercisesViewModel()
         {
             try
             {
-                _exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
+                exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
             DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(DeleteExercise);
 
-            initializeViewModel();
+            InitializeViewModel();
             LoadExercisesAsync();
         }
 
         public ICommand DeleteExerciseCommand { get; }
 
-
         // Method to load exercises asynchronously
         private async void LoadExercisesAsync()
         {
             Exercises.Clear(); // Clear the ObservableCollection
-            var exercises = await _exerciseService.GetAllExercises();
+            var exercises = await exerciseService.GetAllExercises();
             foreach (var exercise in exercises)
             {
                 Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
@@ -52,9 +51,8 @@ namespace Duo.ViewModels
             }
         }
 
-        public void initializeViewModel()
+        public void InitializeViewModel()
         {
-            
         }
 
         public async void DeleteExercise(Exercise exercise)
@@ -62,16 +60,14 @@ namespace Duo.ViewModels
             Debug.WriteLine(exercise);
             try
             {
-                await _exerciseService.DeleteExercise(exercise.Id);
+                await exerciseService.DeleteExercise(exercise.Id);
                 LoadExercisesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
                 Debug.WriteLine(ex);
             }
-
         }
-
     }
 }

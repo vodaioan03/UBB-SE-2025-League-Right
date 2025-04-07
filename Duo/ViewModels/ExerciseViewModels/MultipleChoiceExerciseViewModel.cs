@@ -11,43 +11,50 @@ namespace Duo.ViewModels.ExerciseViewModels
 {
     public class MultipleChoiceExerciseViewModel : ViewModelBase
     {
-        private MultipleChoiceExercise? _exercise;
-        private ObservableCollection<string>? _userChoices;
-        private readonly ExerciseService _exerciseService;
+        private MultipleChoiceExercise? exercise;
+        private ObservableCollection<string>? userChoices;
+        private readonly ExerciseService exerciseService;
         public ObservableCollection<string>? UserChoices
         {
             get
             {
-                return _userChoices;
+                return userChoices;
             }
             set
             {
-                SetProperty(ref _userChoices, value);
+                SetProperty(ref userChoices, value);
             }
         }
 
-        public MultipleChoiceExerciseViewModel (ExerciseService service)
+        public MultipleChoiceExerciseViewModel(ExerciseService service)
         {
-            _exerciseService = service;
+            exerciseService = service;
         }
 
         public async Task GetExercise(int id)
         {
-            Exercise exercise = await _exerciseService.GetExerciseById(id);
+            Exercise exercise = await exerciseService.GetExerciseById(id);
             if (exercise is MultipleChoiceExercise multipleChoiceExercise)
-                _exercise = multipleChoiceExercise;
+            {
+                this.exercise = multipleChoiceExercise;
+            }
             else
+            {
                 throw new Exception("Invalid exercise type given to viewModel");
+            }
 
-            _userChoices = [];
+            userChoices =
+                [];
         }
 
         public bool VerifyIfAnswerIsCorrect()
         {
-            if (_exercise == null || _userChoices == null)
+            if (exercise == null || userChoices == null)
+            {
                 throw new InvalidOperationException("Exercise or UserAnswers is not initialized.");
+            }
 
-            return _exercise.ValidateAnswer([.. _userChoices]);
+            return exercise.ValidateAnswer([.. userChoices]);
         }
     }
 }

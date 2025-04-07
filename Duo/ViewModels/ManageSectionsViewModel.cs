@@ -1,10 +1,4 @@
-﻿using Duo.Commands;
-using Duo.Models.Exercises;
-using Duo.Models.Quizzes;
-using Duo.Models.Sections;
-using Duo.Services;
-using Duo.ViewModels.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,17 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
+using Duo.Models.Sections;
+using Duo.Services;
+using Duo.ViewModels.Base;
 
 namespace Duo.ViewModels
 {
-    internal class ManageSectionsViewModel: AdminBaseViewModel
+    internal class ManageSectionsViewModel : AdminBaseViewModel
     {
-        private readonly SectionService _sectionService;
-        private readonly QuizService _quizService;
+        private readonly SectionService sectionService;
+        private readonly QuizService quizService;
         public ObservableCollection<Section> Sections { get; set; } = new ObservableCollection<Section>();
         public ObservableCollection<Quiz> SectionQuizes { get; private set; } = new ObservableCollection<Quiz>();
 
-        private Section _selectedSection;
+        private Section selectedSection;
 
         public ICommand DeleteSectionCommand;
 
@@ -30,8 +30,8 @@ namespace Duo.ViewModels
         {
             try
             {
-                _sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
-                _quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+                sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
+                quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
             }
             catch (Exception ex)
             {
@@ -42,10 +42,10 @@ namespace Duo.ViewModels
         }
         public Section SelectedSection
         {
-            get => _selectedSection;
+            get => selectedSection;
             set
             {
-                _selectedSection = value;
+                selectedSection = value;
                 UpdateSectionQuizes(SelectedSection);
                 OnPropertyChanged();
             }
@@ -55,7 +55,7 @@ namespace Duo.ViewModels
         {
             try
             {
-                var sections = await _sectionService.GetAllSections();
+                var sections = await sectionService.GetAllSections();
                 Sections.Clear();
                 foreach (var section in sections)
                 {
@@ -65,7 +65,7 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
 
@@ -74,9 +74,11 @@ namespace Duo.ViewModels
             Debug.WriteLine("Updating quiz exercises...");
             SectionQuizes.Clear();
             if (SelectedSection == null)
+            {
                 return;
+            }
 
-            List<Quiz> quizzesOfSelectedQuiz = await _quizService.GetAllQuizzesFromSection(selectedSection.Id);
+            List<Quiz> quizzesOfSelectedQuiz = await quizService.GetAllQuizzesFromSection(selectedSection.Id);
             foreach (var quiz in quizzesOfSelectedQuiz)
             {
                 Debug.WriteLine(quiz);
@@ -95,13 +97,13 @@ namespace Duo.ViewModels
 
             try
             {
-                await _sectionService.DeleteSection(sectionToBeDeleted.Id);
+                await sectionService.DeleteSection(sectionToBeDeleted.Id);
                 Sections.Remove(sectionToBeDeleted);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
     }

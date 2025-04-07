@@ -16,39 +16,46 @@ namespace Duo.ViewModels.Roadmap
 {
     public class RoadmapQuizPreviewViewModel : ViewModelBase
     {
-        private BaseQuiz _quiz;
+        private BaseQuiz quiz;
         public BaseQuiz Quiz
-        { 
-            get => _quiz; 
-            set => SetProperty(ref _quiz, value);
+        {
+            get => quiz;
+            set => SetProperty(ref quiz, value);
         }
-        private Section _section;
-        private Visibility _isPreviewVisible;
-        private readonly QuizService _quizService;
-        private readonly SectionService _sectionService;
+        private Section section;
+        private Visibility isPreviewVisible;
+        private readonly QuizService quizService;
+        private readonly SectionService sectionService;
 
         public Visibility IsPreviewVisible
-        { 
-            get => _isPreviewVisible; 
-            set => SetProperty(ref _isPreviewVisible, value);
+        {
+            get => isPreviewVisible;
+            set => SetProperty(ref isPreviewVisible, value);
         }
 
         public string QuizOrderNumber
         {
             get
             {
-                if (_quiz == null) return "-1";
-                if (_quiz is Exam)
+                if (this.quiz == null)
+                {
+                    return "-1";
+                }
+                if (this.quiz is Exam)
+                {
                     return "Final Exam";
-                if (_quiz is Quiz quiz)
-                    return $"Quiz nr. {quiz.OrderNumber.ToString()}" ?? "-1";
+                }
+                if (this.quiz is Quiz quizInstance)
+                {
+                    return $"Quiz nr. {quizInstance.OrderNumber.ToString()}" ?? "-1";
+                }
                 return "-1";
             }
             set
             {
-                if (_quiz is Quiz quiz)
+                if (this.quiz is Quiz quizInstance)
                 {
-                    quiz.OrderNumber = int.Parse(value);
+                    quizInstance.OrderNumber = int.Parse(value);
                     OnPropertyChanged(nameof(QuizOrderNumber));
                 }
             }
@@ -56,41 +63,41 @@ namespace Duo.ViewModels.Roadmap
 
         public string SectionTitle
         {
-            get => _section?.Title ?? "Unknown Section";
+            get => section?.Title ?? "Unknown Section";
         }
-        public ICommand StartQuizCommand 
-        { 
+        public ICommand StartQuizCommand
+        {
             get;
             set;
         }
-        public ICommand BackButtonCommand 
-        { 
+        public ICommand BackButtonCommand
+        {
             get;
-            set;        
+            set;
         }
 
-        private DispatcherQueue _dispatcherQueue;
+        private DispatcherQueue dispatcherQueue;
 
         public RoadmapQuizPreviewViewModel()
         {
-            _quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
-            _sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
-            _isPreviewVisible = Visibility.Visible;
+            quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+            sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
+            isPreviewVisible = Visibility.Visible;
 
-            var mainPageViewModel= (RoadmapMainPageViewModel)App.ServiceProvider.GetService(typeof(RoadmapMainPageViewModel));
+            var mainPageViewModel = (RoadmapMainPageViewModel)App.ServiceProvider.GetService(typeof(RoadmapMainPageViewModel));
             StartQuizCommand = mainPageViewModel.StartQuizCommand;
             BackButtonCommand = new RelayCommand(() =>
             {
-                _isPreviewVisible = Visibility.Collapsed;
+                isPreviewVisible = Visibility.Collapsed;
                 OnPropertyChanged(nameof(IsPreviewVisible));
             });
 
-            _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+            dispatcherQueue = DispatcherQueue.GetForCurrentThread();
         }
 
         public async Task OpenForQuiz(int quizId, bool isExam)
         {
-            _dispatcherQueue.TryEnqueue(() =>
+            dispatcherQueue.TryEnqueue(() =>
             {
                 IsPreviewVisible = Visibility.Visible;
                 OnPropertyChanged(nameof(IsPreviewVisible));
@@ -98,19 +105,19 @@ namespace Duo.ViewModels.Roadmap
 
             if (isExam)
             {
-                _quiz = await _quizService.GetExamById(quizId);
+                quiz = await quizService.GetExamById(quizId);
             }
             else
             {
-                _quiz = await _quizService.GetQuizById(quizId);
-                Debug.WriteLine($"Opening quiz: {_quiz}");
+                quiz = await quizService.GetQuizById(quizId);
+                Debug.WriteLine($"Opening quiz: {quiz}");
             }
 
-            _section = await _sectionService.GetSectionById((int)_quiz.SectionId);
+            section = await sectionService.GetSectionById((int)quiz.SectionId);
 
-            _dispatcherQueue.TryEnqueue(() =>
+            dispatcherQueue.TryEnqueue(() =>
             {
-                Quiz = _quiz;
+                Quiz = quiz;
                 OnPropertyChanged(nameof(Quiz));
                 OnPropertyChanged(nameof(SectionTitle));
                 OnPropertyChanged(nameof(QuizOrderNumber));
@@ -118,6 +125,5 @@ namespace Duo.ViewModels.Roadmap
 
             Debug.WriteLine($"VALUE OF QUIZ: {QuizOrderNumber}, {SectionTitle}, {IsPreviewVisible}");
         }
-
     }
 }

@@ -1,55 +1,53 @@
-﻿using Duo.Commands;
-using Duo.Models.Exercises;
-using Duo.Models.Quizzes;
-using Duo.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using Duo.Commands;
+using Duo.Models.Exercises;
+using Duo.Models.Quizzes;
+using Duo.Services;
 using static Azure.Core.HttpHeader;
 
 namespace Duo.ViewModels
 {
-    internal class ManageExamsViewModel:AdminBaseViewModel
+    internal class ManageExamsViewModel : AdminBaseViewModel
     {
-
-        private readonly ExerciseService _exerciseService;
-        private readonly QuizService _quizService;
+        private readonly ExerciseService exerciseService;
+        private readonly QuizService quizService;
         public ObservableCollection<Exam> Exams { get; set; } = new ObservableCollection<Exam>();
         public ObservableCollection<Exercise> ExamExercises { get; private set; } = new ObservableCollection<Exercise>();
         public ObservableCollection<Exercise> AvailableExercises { get; private set; } = new ObservableCollection<Exercise>();
 
-
         public event Action<List<Exercise>> ShowListViewModal;
 
-        private Exam _selectedExam;
+        private Exam selectedExam;
 
         public ManageExamsViewModel()
         {
             try
             {
-                _exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
-                _quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+                exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
+                quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
             DeleteExamCommand = new RelayCommandWithParameter<Exam>(DeleteExam);
-            OpenSelectExercisesCommand = new RelayCommand(openSelectExercises);
+            OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(RemoveExerciseFromExam);
             LoadExercisesAsync();
-            initializeViewModel();
+            InitializeViewModel();
         }
 
         public Exam SelectedExam
         {
-            get => _selectedExam;
+            get => selectedExam;
             set
             {
-                _selectedExam = value;
+                selectedExam = value;
                 UpdateExamExercises(SelectedExam);
                 OnPropertyChanged();
             }
@@ -76,22 +74,21 @@ namespace Duo.ViewModels
 
             try
             {
-                await _quizService.DeleteExam(examToBeDeleted.Id);
+                await quizService.DeleteExam(examToBeDeleted.Id);
                 Exams.Remove(examToBeDeleted);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
 
-        public async void initializeViewModel()
+        public async void InitializeViewModel()
         {
-
             try
             {
-                List<Exam> exams = await _quizService.GetAllAvailableExams();
+                List<Exam> exams = await quizService.GetAllAvailableExams();
                 foreach (var exam in exams)
                 {
                     Exams.Add(exam);
@@ -101,7 +98,7 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
 
@@ -110,9 +107,11 @@ namespace Duo.ViewModels
             Debug.WriteLine("Updating exam exercises...");
             ExamExercises.Clear();
             if (SelectedExam == null)
+            {
                 return;
+            }
 
-            List<Exercise> exercisesOfSelectedQuiz = await _exerciseService.GetAllExercisesFromExam(selectedExam.Id);
+            List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromExam(selectedExam.Id);
             foreach (var exercise in exercisesOfSelectedQuiz)
             {
                 Debug.WriteLine(exercise);
@@ -120,7 +119,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public void openSelectExercises()
+        public void OpenSelectExercises()
         {
             Debug.WriteLine("Opening select exercises...");
             ShowListViewModal?.Invoke(AvailableExercises.ToList());
@@ -128,7 +127,7 @@ namespace Duo.ViewModels
         private async void LoadExercisesAsync()
         {
             AvailableExercises.Clear(); // Clear the ObservableCollection
-            var exercises = await _exerciseService.GetAllExercises();
+            var exercises = await exerciseService.GetAllExercises();
             foreach (var exercise in exercises)
             {
                 Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
@@ -146,12 +145,12 @@ namespace Duo.ViewModels
             SelectedExam.AddExercise(selectedExercise);
             try
             {
-                await _quizService.AddExerciseToQuiz(SelectedExam.Id, selectedExercise.Id);
+                await quizService.AddExerciseToQuiz(SelectedExam.Id, selectedExercise.Id);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
             UpdateExamExercises(SelectedExam);
         }
@@ -161,16 +160,15 @@ namespace Duo.ViewModels
             Debug.WriteLine("Removing exercise...");
             try
             {
-                await _quizService.RemoveExerciseFromQuiz(SelectedExam.Id, selectedExercise.Id);
+                await quizService.RemoveExerciseFromQuiz(SelectedExam.Id, selectedExercise.Id);
                 SelectedExam.RemoveExercise(selectedExercise);
                 UpdateExamExercises(SelectedExam);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, "");
+                RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
-
     }
 }
