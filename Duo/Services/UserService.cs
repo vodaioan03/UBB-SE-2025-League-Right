@@ -8,9 +8,9 @@ namespace Duo.Services;
 
 public class UserService : IUserService
 {
-    private readonly UserRepository userRepository;
+    private readonly IUserRepository userRepository;
 
-    public UserService(UserRepository userRepository)
+    public UserService(IUserRepository userRepository)
     {
         this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }

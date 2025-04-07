@@ -8,10 +8,10 @@ namespace Duo.Services
 {
     public class QuizService : IQuizService
     {
-        private readonly QuizRepository quizRepository;
-        private readonly ExamRepository examRepository;
+        private readonly IQuizRepository quizRepository;
+        private readonly IExamRepository examRepository;
 
-        public QuizService(QuizRepository quizRepository, ExamRepository examRepository)
+        public QuizService(IQuizRepository quizRepository, IExamRepository examRepository)
         {
             this.quizRepository = quizRepository;
             this.examRepository = examRepository;

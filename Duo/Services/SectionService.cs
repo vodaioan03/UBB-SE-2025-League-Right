@@ -9,9 +9,9 @@ namespace Duo.Services
 {
     public class SectionService : ISectionService
     {
-        private SectionRepository sectionRepository;
+        private ISectionRepository sectionRepository;
 
-        public SectionService(SectionRepository sectionRepository)
+        public SectionService(ISectionRepository sectionRepository)
         {
             this.sectionRepository = sectionRepository;
         }
