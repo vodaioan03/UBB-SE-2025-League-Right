@@ -10,9 +10,9 @@ namespace Duo.Services
 {
     public class RoadmapService : IRoadmapService
     {
-        private RoadmapRepository roadmapRepository;
+        private IRoadmapRepository roadmapRepository;
 
-        public RoadmapService(RoadmapRepository roadmapRepository)
+        public RoadmapService(IRoadmapRepository roadmapRepository)
         {
             this.roadmapRepository = roadmapRepository;
         }
