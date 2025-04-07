@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Duo.Data;
@@ -12,7 +12,7 @@ public class ExamRepository : IExamRepository
 
     public ExamRepository(DatabaseConnection databaseConnection)
     {
-        databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
+        this.databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
     }
 
     public async Task<List<Exam>> GetAllAsync()
