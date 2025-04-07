@@ -13,7 +13,7 @@ namespace Duo.ViewModels.ExerciseViewModels
     {
         private MultipleChoiceExercise? exercise;
         private ObservableCollection<string>? userChoices;
-        private readonly ExerciseService exerciseService;
+        private readonly IExerciseService exerciseService;
         public ObservableCollection<string>? UserChoices
         {
             get
@@ -26,7 +26,7 @@ namespace Duo.ViewModels.ExerciseViewModels
             }
         }
 
-        public MultipleChoiceExerciseViewModel(ExerciseService service)
+        public MultipleChoiceExerciseViewModel(IExerciseService service)
         {
             exerciseService = service;
         }
