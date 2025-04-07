@@ -13,38 +13,44 @@ namespace Duo.ViewModels.ExerciseViewModels
 {
     public class FillInTheBlankExerciseViewModel : ViewModelBase
     {
-        private FillInTheBlankExercise? _exercise;
-        private readonly ExerciseService _exerciseService;
-        private ObservableCollection<string>? _userAnswers;
+        private FillInTheBlankExercise? exercise;
+        private readonly ExerciseService exerciseService;
+        private ObservableCollection<string>? userAnswers;
         public ObservableCollection<string>? UserAnswers
         {
-            get { return _userAnswers; }
-            set { SetProperty(ref _userAnswers, value); }
+            get { return userAnswers; }
+            set { SetProperty(ref userAnswers, value); }
         }
 
         public FillInTheBlankExerciseViewModel(ExerciseService service)
         {
-            _exerciseService = service;
+            exerciseService = service;
         }
 
         public async Task GetExercise(int id)
         {
-            Exercise exercise = await _exerciseService.GetExerciseById(id);
+            Exercise exercise = await exerciseService.GetExerciseById(id);
             if (exercise is FillInTheBlankExercise fillInTheBlankExercise)
-                _exercise = fillInTheBlankExercise;
+            {
+                this.exercise = fillInTheBlankExercise;
+            }
             else
+            {
                 throw new Exception("Invalid exercise type given to viewModel");
+            }
 
-            _userAnswers = [.. Enumerable.Repeat("", _exercise.PossibleCorrectAnswers.Count)];
+            userAnswers =
+                [.. Enumerable.Repeat(string.Empty, this.exercise.PossibleCorrectAnswers.Count)];
         }
 
         public bool VerifyIfAnswerIsCorrect()
         {
-            if (_exercise == null || _userAnswers == null)
+            if (exercise == null || userAnswers == null)
+            {
                 throw new InvalidOperationException("Exercise or UserAnswers is not initialized.");
+            }
 
-            return _exercise.ValidateAnswer(_userAnswers.ToList());
+            return exercise.ValidateAnswer(userAnswers.ToList());
         }
-
     }
 }

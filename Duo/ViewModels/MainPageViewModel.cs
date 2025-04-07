@@ -1,20 +1,16 @@
-using Duo.ViewModels.Base;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
 using System.Diagnostics;
-using System.Security.AccessControl;
+using Duo.ViewModels.Base;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Duo.ViewModels
 {
-    public class MainPageViewModel: ViewModelBase
+    public class MainPageViewModel : ViewModelBase
     {
         public event EventHandler<Type> NavigationRequested;
 
         public MainPageViewModel()
         {
-
         }
 
         public void HandleNavigationSelectionChanged(NavigationViewSelectionChangedEventArgs args)
@@ -26,10 +22,14 @@ namespace Duo.ViewModels
                     var tag = selectedItem.Tag?.ToString();
 
                     if (string.IsNullOrEmpty(tag))
+                    {
                         return;
+                    }
 
                     if (selectedItem.MenuItems.Count > 0)
+                    {
                         return;
+                    }
 
                     Type? pageType = null;
 
@@ -52,10 +52,7 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in navigation selection: {ex.Message}");
-
             }
         }
-
     }
-
 }

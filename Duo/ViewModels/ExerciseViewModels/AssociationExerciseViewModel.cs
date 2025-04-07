@@ -12,37 +12,43 @@ namespace Duo.ViewModels.ExerciseViewModels
 {
     public class AssociationExerciseViewModel : ViewModelBase
     {
-        private readonly ExerciseService _exerciseService;
-        private AssociationExercise? _exercise;
-        private ObservableCollection<(string, string)>? _userAnswers;
+        private readonly ExerciseService exerciseService;
+        private AssociationExercise? exercise;
+        private ObservableCollection<(string, string)>? userAnswers;
 
         public ObservableCollection<(string, string)>? UserAnswers
         {
-            get { return _userAnswers; }
-            set { SetProperty(ref _userAnswers, value); }
+            get { return userAnswers; }
+            set { SetProperty(ref userAnswers, value); }
         }
 
         public AssociationExerciseViewModel(ExerciseService exerciseService)
         {
-            _exerciseService = exerciseService;
+            this.exerciseService = exerciseService;
         }
 
         public async Task GetExercise(int id)
         {
-            Exercise exercise = await _exerciseService.GetExerciseById(id);
+            Exercise exercise = await exerciseService.GetExerciseById(id);
             if (exercise is AssociationExercise associationExercise)
-                _exercise = associationExercise;
+            {
+                this.exercise = associationExercise;
+            }
             else
+            {
                 throw new Exception("Invalid exercise type given to viewModel");
+            }
 
-            _userAnswers = [];
+            userAnswers = new ObservableCollection<(string, string)>();
         }
 
         public bool VerifyIfAnswerIsCorrect()
         {
-            if (_exercise == null || _userAnswers == null)
+            if (exercise == null || userAnswers == null)
+            {
                 return false;
-            return _exercise.ValidateAnswer([.. _userAnswers]);
+            }
+            return exercise.ValidateAnswer([.. userAnswers]);
         }
     }
 }
