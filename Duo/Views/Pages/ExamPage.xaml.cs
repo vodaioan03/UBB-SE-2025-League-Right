@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -12,12 +15,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using System.Reflection.Metadata;
-using System.Diagnostics;
 using Duo.Views.Components;
 using Duo.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.ObjectModel;
 using Duo.Models.Exercises;
 using static Duo.Views.Components.AssociationExercise;
 using static Duo.Views.Components.MultipleChoiceExercise;
@@ -25,7 +25,6 @@ using static Duo.Views.Components.FillInTheBlanksExercise;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Duo.Views.Pages
 {
     /// <summary>
@@ -40,7 +39,6 @@ namespace Duo.Views.Pages
         {
             this.InitializeComponent();
         }
-
 
         public void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -60,7 +58,6 @@ namespace Duo.Views.Pages
 
         private void LoadCurrentExercise()
         {
-
             if (ViewModel != null && ViewModel.Exercises != null)
             {
                 var currentExercise = ViewModel.CurrentExercise;
@@ -104,12 +101,8 @@ namespace Duo.Views.Pages
                 else
                 {
                     ExerciseContentControl.Content = null;
-
-                    //ADD END SCREEN;
                 }
-
             }
-
         }
 
         private void AssociationControl_OnSendClicked(object sender, AssociationExerciseEventArgs e)
@@ -121,8 +114,9 @@ namespace Duo.Views.Pages
             var loadedNext = ViewModel.LoadNext();
 
             if (loadedNext)
+            {
                 LoadCurrentExercise();
-
+            }
         }
         private void MultipleChoiceControl_OnSendClicked(object sender, MultipleChoiceExerciseEventArgs e)
         {
@@ -133,7 +127,9 @@ namespace Duo.Views.Pages
             var loadedNext = ViewModel.LoadNext();
 
             if (loadedNext)
+            {
                 LoadCurrentExercise();
+            }
         }
         private void FillInTheBlanksControl_OnSendClicked(object sender, FillInTheBlanksExerciseEventArgs e)
         {
@@ -144,7 +140,9 @@ namespace Duo.Views.Pages
             var loadedNext = ViewModel.LoadNext();
 
             if (loadedNext)
+            {
                 LoadCurrentExercise();
+            }
         }
     }
 }
