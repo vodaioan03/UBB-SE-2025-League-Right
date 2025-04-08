@@ -2,7 +2,7 @@
 using Duo.Models.Exercises;
 using System.Collections.Generic;
 
-namespace DuoTesting.Helpers
+namespace DuoTesting.Helper
 {
     public class BaseQuizComparer<T> : IEqualityComparer<T> where T : BaseQuiz
     {

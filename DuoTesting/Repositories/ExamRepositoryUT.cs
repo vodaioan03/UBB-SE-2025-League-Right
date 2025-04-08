@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Duo.Models.Quizzes;
 using Duo.Repositories;
-using DuoTesting.MockClasses; 
+using DuoTesting.MockClasses;
+using DuoTesting.Helper; 
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace DuoTesting.Repositories
 {
@@ -15,20 +17,19 @@ namespace DuoTesting.Repositories
         [TestInitialize]
         public void Setup()
         {
-            _repository = new InMemoryExamRepository(); 
+            _repository = new InMemoryExamRepository();
         }
 
         [TestMethod]
         public async Task AddAndGetById_ShouldReturnSameExam()
         {
             var newExam = new Exam(0, null);
-
             var newId = await _repository.AddAsync(newExam);
-            var examFromDb = await _repository.GetByIdAsync(newId);
 
-            Assert.IsNotNull(examFromDb);
-            Assert.AreEqual(newId, examFromDb.Id);
-            Assert.IsNull(examFromDb.SectionId);
+            var expected = new Exam(newId, null);
+            var actual = await _repository.GetByIdAsync(newId);
+
+            Assert.IsTrue(new ExamComparer().Equals(expected, actual));
 
             await _repository.DeleteAsync(newId);
         }
@@ -36,12 +37,29 @@ namespace DuoTesting.Repositories
         [TestMethod]
         public async Task GetAllAsync_ShouldReturnExams()
         {
-            await _repository.AddAsync(new Exam(0, 1));
-            await _repository.AddAsync(new Exam(0, null));
+            var e1 = new Exam(0, 1);
+            var e2 = new Exam(0, null);
 
-            var exams = await _repository.GetAllAsync();
-            Assert.AreEqual(2, exams.Count);
+            var id1 = await _repository.AddAsync(e1);
+            var id2 = await _repository.AddAsync(e2);
+
+            var expected = new List<Exam>
+            {
+                new Exam(id1, 1),
+                new Exam(id2, null)
+            };
+
+            var actual = await _repository.GetAllAsync();
+
+            var comparer = new ExamComparer();
+            Assert.AreEqual(expected.Count, actual.Count, "Count mismatch.");
+
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.IsTrue(comparer.Equals(expected[i], actual[i]), $"Exam at index {i} does not match.");
+            }
         }
+
 
         [TestMethod]
         public async Task GetUnassignedAsync_ShouldReturnUnassignedExams()
@@ -60,7 +78,9 @@ namespace DuoTesting.Repositories
 
             await _repository.UpdateExamSection(examId, null);
             var updated = await _repository.GetByIdAsync(examId);
-            Assert.IsNull(updated.SectionId);
+
+            var expected = new Exam(examId, null);
+            Assert.IsTrue(new ExamComparer().Equals(expected, updated));
 
             await _repository.DeleteAsync(examId);
         }
@@ -103,8 +123,8 @@ namespace DuoTesting.Repositories
             var updatedExam = new Exam(examId, 55);
             await _repository.UpdateAsync(updatedExam);
 
-            var result = await _repository.GetByIdAsync(examId);
-            Assert.AreEqual(55, result.SectionId);
+            var actual = await _repository.GetByIdAsync(examId);
+            Assert.IsTrue(new ExamComparer().Equals(updatedExam, actual));
 
             await _repository.DeleteAsync(examId);
         }

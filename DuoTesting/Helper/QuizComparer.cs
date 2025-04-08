@@ -1,7 +1,7 @@
 ﻿using Duo.Models.Quizzes;
 using System.Collections.Generic;
 
-namespace DuoTesting.Helpers
+namespace DuoTesting.Helper
 {
     public class QuizComparer : BaseQuizComparer<Quiz>
     {
