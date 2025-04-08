@@ -2,22 +2,23 @@
 using Duo.Models;
 using Duo.Models.Exercises;
 using Duo.Repositories;
+using DuoTesting.MockClasses;
+using DuoTesting.Helpers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DuoTesting.Helper;
-using System.Data.Common;
+using System;
 
 namespace DuoTesting.Repositories
 {
     [TestClass]
-    public class ExerciseRepositoryUT : TestBase
+    public class ExerciseRepositoryUT
     {
         private IExerciseRepository _repository = null!;
 
         [TestInitialize]
         public void Setup()
         {
-            _repository = new ExerciseRepository(DbConnection);
+            _repository = new InMemoryExerciseRepository();
         }
 
         [TestMethod]
@@ -29,17 +30,16 @@ namespace DuoTesting.Repositories
                 Difficulty.Easy,
                 new List<MultipleChoiceAnswerModel>
                 {
-                    new MultipleChoiceAnswerModel("4", true),
-                    new MultipleChoiceAnswerModel("3", false),
-                    new MultipleChoiceAnswerModel("5", false)
+                    new("4", true),
+                    new("3", false),
+                    new("5", false)
                 });
 
             int id = await _repository.AddExerciseAsync(exercise);
-            Assert.IsTrue(id > 0);
+            var result = await _repository.GetByIdAsync(id);
 
-            var fromDb = await _repository.GetByIdAsync(id);
-            Assert.AreEqual("What is 2 + 2?", fromDb.Question);
-            Assert.IsInstanceOfType(fromDb, typeof(MultipleChoiceExercise));
+            var expected = new MultipleChoiceExercise(id, exercise.Question, exercise.Difficulty, exercise.Choices);
+            Assert.IsTrue(new ExerciseComparer().Equals(expected, result));
 
             await _repository.DeleteExerciseAsync(id);
         }
@@ -50,24 +50,23 @@ namespace DuoTesting.Repositories
             var exercise = new FlashcardExercise(0, "Capital of France?", "Paris", Difficulty.Easy);
             int id = await _repository.AddExerciseAsync(exercise);
 
-            var fetched = await _repository.GetByIdAsync(id);
-            Assert.AreEqual("Paris", ((FlashcardExercise)fetched).Answer);
+            var result = await _repository.GetByIdAsync(id);
+            var expected = new FlashcardExercise(id, exercise.Question, exercise.Answer, exercise.TimeInSeconds, exercise.Difficulty);
 
+            Assert.IsTrue(new ExerciseComparer().Equals(expected, result));
             await _repository.DeleteExerciseAsync(id);
         }
 
         [TestMethod]
         public async Task AddDelete_FillInTheBlankExercise_ShouldWork()
         {
-            var exercise = new FillInTheBlankExercise(
-                0,
-                "____ is the largest planet.",
-                Difficulty.Easy,
-                new List<string> { "Jupiter" });
+            var exercise = new FillInTheBlankExercise(0, "____ is the largest planet.", Difficulty.Easy, new List<string> { "Jupiter" });
 
             int id = await _repository.AddExerciseAsync(exercise);
             var result = await _repository.GetByIdAsync(id);
-            Assert.IsInstanceOfType(result, typeof(FillInTheBlankExercise));
+
+            var expected = new FillInTheBlankExercise(id, exercise.Question, exercise.Difficulty, exercise.PossibleCorrectAnswers);
+            Assert.IsTrue(new ExerciseComparer().Equals(expected, result));
 
             await _repository.DeleteExerciseAsync(id);
         }
@@ -84,7 +83,9 @@ namespace DuoTesting.Repositories
 
             int id = await _repository.AddExerciseAsync(exercise);
             var result = await _repository.GetByIdAsync(id);
-            Assert.IsInstanceOfType(result, typeof(AssociationExercise));
+
+            var expected = new AssociationExercise(id, exercise.Question, exercise.Difficulty, exercise.FirstAnswersList, exercise.SecondAnswersList);
+            Assert.IsTrue(new ExerciseComparer().Equals(expected, result));
 
             await _repository.DeleteExerciseAsync(id);
         }
