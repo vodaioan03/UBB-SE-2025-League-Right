@@ -15,7 +15,6 @@ using Microsoft.UI.Xaml.Navigation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Duo.Views.Components.CreateExerciseComponents
 {
     public sealed partial class CreateFillInTheBlankExercise : UserControl

@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Duo.Models.Exercises;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Media.Animation;
-using Duo.Models.Exercises;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 
 namespace Duo.Views.Components
 {
@@ -26,13 +26,16 @@ namespace Duo.Views.Components
     public sealed partial class FlashcardExercise : UserControl
     {
         public event EventHandler<FlashcardExerciseEventArgs> OnSendClicked;
-        private DispatcherTimer _timer;
-        private int _timerDuration; // Maximum time in seconds
-        private TimeSpan _remainingTime; // Time remaining
-        private TimeSpan _elapsedTime; // Time elapsed for statistics
-        private bool _isRunning;
-        private Models.Exercises.FlashcardExercise _exerciseData;
-        
+        private DispatcherTimer timer;
+        private int timerDuration; // Maximum time in seconds
+        private TimeSpan remainingTime; // Time remaining
+        private TimeSpan elapsedTime; // Time elapsed for statistics
+        private bool isRunning;
+        private Models.Exercises.FlashcardExercise exerciseData;
+
+        private const double OPACITY = 0.5;
+        private const string BLANK_PLACEHOLDER = "___"; // Placeholder for fill-in-the-blank
+
         // Total time for timer (in seconds) based on difficulty
         private int GetTimerDurationByDifficulty(Duo.Models.Difficulty difficulty)
         {
@@ -47,12 +50,12 @@ namespace Duo.Views.Components
                     return 30; // 30 seconds for normal
             }
         }
-        
+
         /// <summary>
         /// Raised when the exercise is completed by clicking OK
         /// </summary>
         public event EventHandler<bool> ExerciseCompleted;
-        
+
         /// <summary>
         /// Raised when the exercise is closed by clicking Close
         /// </summary>
@@ -66,7 +69,7 @@ namespace Duo.Views.Components
 
         // Topic property for category display
         public static readonly DependencyProperty TopicProperty =
-            DependencyProperty.Register(nameof(Topic), typeof(string), typeof(FlashcardExercise), 
+            DependencyProperty.Register(nameof(Topic), typeof(string), typeof(FlashcardExercise),
                 new PropertyMetadata(string.Empty, OnTopicChanged));
 
         public string Topic
@@ -77,7 +80,7 @@ namespace Duo.Views.Components
 
         // Question property
         public static readonly DependencyProperty QuestionProperty =
-            DependencyProperty.Register(nameof(Question), typeof(string), typeof(FlashcardExercise), 
+            DependencyProperty.Register(nameof(Question), typeof(string), typeof(FlashcardExercise),
                 new PropertyMetadata(string.Empty, OnQuestionChanged));
 
         public string Question
@@ -88,7 +91,7 @@ namespace Duo.Views.Components
 
         // Answer property
         public static readonly DependencyProperty AnswerProperty =
-            DependencyProperty.Register(nameof(Answer), typeof(string), typeof(FlashcardExercise), 
+            DependencyProperty.Register(nameof(Answer), typeof(string), typeof(FlashcardExercise),
                 new PropertyMetadata(string.Empty));
 
         public string Answer
@@ -110,10 +113,14 @@ namespace Duo.Views.Components
         private void UpdateTopicDisplay(string topic)
         {
             if (TopicTitle != null)
+            {
                 TopicTitle.Text = topic;
-                
+            }
+
             if (BackTopicTitle != null)
+            {
                 BackTopicTitle.Text = topic;
+            }
         }
 
         // Handle changes to the Question property
@@ -137,44 +144,50 @@ namespace Duo.Views.Components
         private void FlashcardExercise_Loaded(object sender, RoutedEventArgs e)
         {
             // Ensure timer is setup
-            if (_timer == null)
+            if (timer == null)
             {
                 SetupTimer();
             }
-            
+
             StartTimer();
-            
+
             // Set initial question parts if not already set
             if (string.IsNullOrEmpty(QuestionPart1?.Text))
             {
                 UpdateQuestionParts(Question);
             }
-            
+
             // Initially hide feedback icons until answer is evaluated
             if (RightAnswerIcon != null)
-                RightAnswerIcon.Opacity = 0.5;
-                
+            {
+                RightAnswerIcon.Opacity = OPACITY;
+            }
+
             if (WrongAnswerIcon != null)
-                WrongAnswerIcon.Opacity = 0.5;
+            {
+                WrongAnswerIcon.Opacity = OPACITY;
+            }
         }
 
         private void UpdateQuestionParts(string question)
         {
             if (QuestionPart1 == null || QuestionPart2 == null || string.IsNullOrEmpty(question))
+            {
                 return;
+            }
 
             // Set actual question text to display
             if (QuestionDisplay != null)
             {
                 QuestionDisplay.Text = question;
             }
-            
+
             // Try to create a fill-in-the-blank by analyzing the question string
-            
+
             // Check if the question already has a blank placeholder
-            if (question.Contains("___"))
+            if (question.Contains(BLANK_PLACEHOLDER))
             {
-                string[] parts = question.Split("___");
+                string[] parts = question.Split(BLANK_PLACEHOLDER);
                 if (parts.Length >= 2)
                 {
                     QuestionPart1.Text = parts[0].Trim();
@@ -182,14 +195,14 @@ namespace Duo.Views.Components
                     return;
                 }
             }
-            
+
             // No placeholder found, create a fill-in-the-blank by breaking the question
             // into two parts around the expected answer
             if (!string.IsNullOrEmpty(Answer) && question.Contains(Answer, StringComparison.OrdinalIgnoreCase))
             {
                 int answerIndex = question.IndexOf(Answer, StringComparison.OrdinalIgnoreCase);
                 QuestionPart1.Text = question.Substring(0, answerIndex).Trim();
-                
+
                 int afterAnswerIndex = answerIndex + Answer.Length;
                 if (afterAnswerIndex < question.Length)
                 {
@@ -197,60 +210,59 @@ namespace Duo.Views.Components
                 }
                 else
                 {
-                    QuestionPart2.Text = "";
+                    QuestionPart2.Text = string.Empty;
                 }
-                
                 return;
             }
 
             // Default fallback if we can't determine how to split
             QuestionPart1.Text = "Fill in the answer";
-            QuestionPart2.Text = "";
+            QuestionPart2.Text = string.Empty;
         }
 
         private void SetupTimer()
         {
             // Get duration in seconds for this difficulty
-            _timerDuration = GetTimerDurationByDifficulty(_exerciseData?.Difficulty ?? Duo.Models.Difficulty.Normal);
-            
+            timerDuration = GetTimerDurationByDifficulty(exerciseData?.Difficulty ?? Duo.Models.Difficulty.Normal);
+
             // Initialize remaining time to full duration
-            _remainingTime = TimeSpan.FromSeconds(_timerDuration);
-            _elapsedTime = TimeSpan.Zero;
+            remainingTime = TimeSpan.FromSeconds(timerDuration);
+            elapsedTime = TimeSpan.Zero;
 
             // Set up timer text to show max time
             if (TimerText != null)
             {
-                TimerText.Text = string.Format("00:{0:00}", _timerDuration);
+                TimerText.Text = string.Format("00:{0:00}", timerDuration);
             }
 
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
-            _timer.Tick += Timer_Tick;
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
         }
 
         private void Timer_Tick(object sender, object e)
         {
-            if (_remainingTime.TotalSeconds > 0)
+            if (remainingTime.TotalSeconds > 0)
             {
                 // Decrease remaining time by 1 second
-                _remainingTime = _remainingTime.Subtract(TimeSpan.FromSeconds(1));
-                
+                remainingTime = remainingTime.Subtract(TimeSpan.FromSeconds(1));
+
                 // Increase elapsed time for statistics
-                _elapsedTime = _elapsedTime.Add(TimeSpan.FromSeconds(1));
-                
+                elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(1));
+
                 // Update timer display with remaining time
                 if (TimerText != null)
                 {
-                    int seconds = (int)_remainingTime.TotalSeconds;
+                    int seconds = (int)remainingTime.TotalSeconds;
                     TimerText.Text = string.Format("00:{0:00}", seconds);
                 }
-                
+
                 // Calculate progress as ratio of elapsed time to total duration
-                double progress = 1.0 - (_remainingTime.TotalSeconds / _timerDuration);
+                double progress = 1.0 - (remainingTime.TotalSeconds / timerDuration);
                 UpdateTimerVisual(progress);
-                
+
                 // If time is up, automatically flip the card
-                if (_remainingTime.TotalSeconds <= 0)
+                if (remainingTime.TotalSeconds <= 0)
                 {
                     PerformCardFlip();
                 }
@@ -267,65 +279,77 @@ namespace Duo.Views.Components
 
         private void UpdateTimerVisual(double progress)
         {
-            try 
+            try
             {
                 // Define colors
                 SolidColorBrush redBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
                 SolidColorBrush orangeBrush = new SolidColorBrush(Microsoft.UI.Colors.Orange);
                 SolidColorBrush blackBrush = new SolidColorBrush(Microsoft.UI.Colors.Black);
-                
+
                 // Change color based on remaining time
                 if (progress > 0.75)
                 {
                     // Red for last 25% of time
                     if (TimerArc != null)
+                    {
                         TimerArc.Fill = redBrush;
-                        
+                    }
+
                     if (TimerText != null)
+                    {
                         TimerText.Foreground = redBrush;
+                    }
                 }
                 else if (progress > 0.5)
                 {
                     // Orange for 50-75% of time
                     if (TimerArc != null)
+                    {
                         TimerArc.Fill = orangeBrush;
-                        
+                    }
+
                     if (TimerText != null)
+                    {
                         TimerText.Foreground = orangeBrush;
+                    }
                 }
                 else
                 {
                     // Default black for 0-50% of time
                     if (TimerArc != null)
+                    {
                         TimerArc.Fill = blackBrush;
-                        
+                    }
+
                     if (TimerText != null)
+                    {
                         TimerText.Foreground = blackBrush;
+                    }
                 }
-                
+
                 // Calculate the angle for the arc
                 double angle = progress * 360;
                 double radians = (angle - 90) * Math.PI / 180.0;
                 double radius = 15.0;
-                double endX = 20 + radius * Math.Cos(radians);
-                double endY = 20 + radius * Math.Sin(radians);
+                double endX = 20 + (radius * Math.Cos(radians));
+                double endY = 20 + (radius * Math.Sin(radians));
 
                 // Create SVG path for arc
                 string arcFlag = angle > 180 ? "1" : "0";
                 string pathData = $"M 20,20 L 20,5 A {radius},{radius} 0 {arcFlag} 1 {endX},{endY} z";
-                
+
                 // Update the timer arc path
                 if (TimerArc != null)
                 {
                     var pathGeometry = new PathGeometry();
                     var figure = new PathFigure();
                     figure.StartPoint = new Point(20, 20);
-                    
+
                     // Create segment for the straight line
                     var lineSegment = new LineSegment();
                     lineSegment.Point = new Point(20, 5);
                     figure.Segments.Add(lineSegment);
-                    
+
                     // Create arc segment
                     var arcSegment = new ArcSegment();
                     arcSegment.Point = new Point(endX, endY);
@@ -333,11 +357,11 @@ namespace Duo.Views.Components
                     arcSegment.SweepDirection = SweepDirection.Clockwise;
                     arcSegment.IsLargeArc = angle > 180;
                     figure.Segments.Add(arcSegment);
-                    
+
                     // Complete the path
                     figure.IsClosed = true;
                     pathGeometry.Figures.Add(figure);
-                    
+
                     TimerArc.Data = pathGeometry;
                 }
             }
@@ -350,17 +374,17 @@ namespace Duo.Views.Components
 
         private void StartTimer()
         {
-            if (_timer != null && !_timer.IsEnabled)
+            if (timer != null && !timer.IsEnabled)
             {
-                _timer.Start();
+                timer.Start();
             }
         }
 
         private void StopTimer()
         {
-            if (_timer != null && _timer.IsEnabled)
+            if (timer != null && timer.IsEnabled)
             {
-                _timer.Stop();
+                timer.Stop();
             }
         }
 
@@ -369,22 +393,21 @@ namespace Duo.Views.Components
             try
             {
                 StopTimer();
-                
                 // Reset times
-                _elapsedTime = TimeSpan.Zero;
-                _remainingTime = TimeSpan.FromSeconds(_timerDuration);
-                
+                elapsedTime = TimeSpan.Zero;
+                remainingTime = TimeSpan.FromSeconds(timerDuration);
+
                 if (TimerText != null)
                 {
-                    TimerText.Text = string.Format("00:{0:00}", _timerDuration);
+                    TimerText.Text = string.Format("00:{0:00}", timerDuration);
                     TimerText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
                 }
-                
+
                 if (TimerArc != null)
                 {
                     TimerArc.Fill = new SolidColorBrush(Microsoft.UI.Colors.Black);
                 }
-                    
+
                 UpdateTimerVisual(0);
             }
             catch (Exception ex)
@@ -395,40 +418,45 @@ namespace Duo.Views.Components
 
         public void Initialize(Models.Exercises.FlashcardExercise exercise)
         {
-            _exerciseData = exercise;
-            
+            exerciseData = exercise;
+
             // Set topic, question and answer from the model
             Question = exercise.Question;
             Answer = exercise.Answer;
-            
+
             // Reset the UI state
             FrontSide.Visibility = Visibility.Visible;
             BackSide.Visibility = Visibility.Collapsed;
-            
+
             // Clear the user input
             if (FillInGapInput != null)
+            {
                 FillInGapInput.Text = string.Empty;
-            
+            }
+
             // Reset feedback icons
             if (RightAnswerIcon != null)
-                RightAnswerIcon.Opacity = 0.5;
-                
+            {
+                RightAnswerIcon.Opacity = OPACITY;
+            }
+
             if (WrongAnswerIcon != null)
-                WrongAnswerIcon.Opacity = 0.5;
-            
+            {
+                WrongAnswerIcon.Opacity = OPACITY;
+            }
+
             // Reset the timer with the appropriate duration for this exercise's difficulty
             ResetTimer();
-            
+
             // Setup timer fresh to ensure proper difficulty-based duration
             SetupTimer();
-            
+
             // Start the timer
             StartTimer();
-            
+
             // Update difficulty info on UI if needed
             UpdateDifficultyIndicator(exercise.Difficulty);
         }
-
 
         // Common method for flipping the card to avoid code duplication
         private void PerformCardFlip()
@@ -437,22 +465,24 @@ namespace Duo.Views.Components
             OnSendClicked?.Invoke(this, new FlashcardExerciseEventArgs(contentPairs));
 
             // Store elapsed time in the exercise data
-            if (_exerciseData != null)
+            if (exerciseData != null)
             {
-                _exerciseData.ElapsedTime = _elapsedTime;
+                exerciseData.ElapsedTime = elapsedTime;
             }
-            
+
             // Check if the user's answer matches the correct answer
             bool isCorrect = IsAnswerCorrect();
-            
+
             // Update the feedback icons
             if (RightAnswerIcon != null)
+            {
                 RightAnswerIcon.Opacity = isCorrect ? 1.0 : 0.3;
-                
+            }
+
             if (WrongAnswerIcon != null)
             {
                 WrongAnswerIcon.Opacity = isCorrect ? 0.3 : 1.0;
-                
+
                 // Make the X red when answer is incorrect
                 if (!isCorrect)
                 {
@@ -462,7 +492,7 @@ namespace Duo.Views.Components
                     {
                         wrongPath.Stroke = new SolidColorBrush(Microsoft.UI.Colors.Red);
                     }
-                    
+
                     // Find the ellipse and update its stroke color
                     var wrongEllipse = WrongAnswerIcon.Children.OfType<Ellipse>().FirstOrDefault();
                     if (wrongEllipse != null)
@@ -471,13 +501,13 @@ namespace Duo.Views.Components
                     }
                 }
             }
-            
+
             // Update OK button color based on correctness
             var okButton = this.FindName("OkButton") as Button;
             if (okButton != null)
             {
                 okButton.Background = new SolidColorBrush(
-                    isCorrect ? 
+                    isCorrect ?
                     Microsoft.UI.ColorHelper.FromArgb(255, 102, 204, 102) : // #66CC66 (green)
                     Microsoft.UI.Colors.Red);
             }
@@ -491,7 +521,7 @@ namespace Duo.Views.Components
         {
             // Stop the timer
             StopTimer();
-            
+
             // Perform the flip
             PerformCardFlip();
         }
@@ -499,8 +529,10 @@ namespace Duo.Views.Components
         private bool IsAnswerCorrect()
         {
             if (string.IsNullOrEmpty(UserAnswer) || string.IsNullOrEmpty(Answer))
+            {
                 return false;
-                
+            }
+
             // Simple case-insensitive comparison
             return UserAnswer.Trim().Equals(Answer.Trim(), StringComparison.OrdinalIgnoreCase);
         }
@@ -508,10 +540,10 @@ namespace Duo.Views.Components
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             StopTimer();
-            
-            if (_exerciseData != null)
+
+            if (exerciseData != null)
             {
-                _exerciseData.ElapsedTime = _elapsedTime;
+                exerciseData.ElapsedTime = elapsedTime;
             }
 
             // Notify listeners that the card was closed
@@ -521,15 +553,14 @@ namespace Duo.Views.Components
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             StopTimer();
-            
-            if (_exerciseData != null)
+
+            if (exerciseData != null)
             {
-                _exerciseData.ElapsedTime = _elapsedTime;
+                exerciseData.ElapsedTime = elapsedTime;
             }
 
             // Notify listeners that the card was completed
             ExerciseCompleted?.Invoke(this, IsAnswerCorrect());
-            
         }
 
         public void Reset()
@@ -537,18 +568,24 @@ namespace Duo.Views.Components
             // Reset UI state
             FrontSide.Visibility = Visibility.Visible;
             BackSide.Visibility = Visibility.Collapsed;
-            
+
             // Clear user input
             if (FillInGapInput != null)
+            {
                 FillInGapInput.Text = string.Empty;
-            
+            }
+
             // Reset feedback icons
             if (RightAnswerIcon != null)
+            {
                 RightAnswerIcon.Opacity = 0.5;
-                
+            }
+
             if (WrongAnswerIcon != null)
+            {
                 WrongAnswerIcon.Opacity = 0.5;
-            
+            }
+
             // Reset timer
             ResetTimer();
             StartTimer();
@@ -556,7 +593,7 @@ namespace Duo.Views.Components
 
         public TimeSpan GetElapsedTime()
         {
-            return _elapsedTime;
+            return elapsedTime;
         }
 
         // Update UI to show difficulty level
@@ -564,9 +601,9 @@ namespace Duo.Views.Components
         {
             // Get duration in seconds for this difficulty
             int seconds = GetTimerDurationByDifficulty(difficulty);
-            _timerDuration = seconds;
-            _remainingTime = TimeSpan.FromSeconds(seconds);
-            
+            timerDuration = seconds;
+            remainingTime = TimeSpan.FromSeconds(seconds);
+
             // Update timer text to show maximum time
             if (TimerText != null)
             {
@@ -574,13 +611,13 @@ namespace Duo.Views.Components
                 // Ensure timer text has default color
                 TimerText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
             }
-            
+
             // Ensure timer arc has default color
             if (TimerArc != null)
             {
                 TimerArc.Fill = new SolidColorBrush(Microsoft.UI.Colors.Black);
             }
-            
+
             try
             {
                 // Update difficulty text
@@ -589,7 +626,7 @@ namespace Duo.Views.Components
                 {
                     difficultyText.Text = difficulty.ToString();
                 }
-                
+
                 // Update difficulty bars visibility
                 var difficultyBars = this.FindName("DifficultyBars") as StackPanel;
                 if (difficultyBars != null && difficultyBars.Children.Count >= 3)
@@ -598,16 +635,16 @@ namespace Duo.Views.Components
                     var easyBar = difficultyBars.Children[0] as Rectangle;
                     var normalBar = difficultyBars.Children[1] as Rectangle;
                     var hardBar = difficultyBars.Children[2] as Rectangle;
-                    
+
                     if (easyBar != null && normalBar != null && hardBar != null)
                     {
                         // Reset all bars
                         easyBar.Opacity = 0.3;
                         normalBar.Opacity = 0.3;
                         hardBar.Opacity = 0.3;
-                        
+
                         // Highlight appropriate bars based on difficulty
-                        switch(difficulty)
+                        switch (difficulty)
                         {
                             case Duo.Models.Difficulty.Easy:
                                 easyBar.Opacity = 1.0;
@@ -630,8 +667,6 @@ namespace Duo.Views.Components
                 System.Diagnostics.Debug.WriteLine($"Error updating difficulty indicator: {ex.Message}");
             }
         }
-
-
     }
 
     public class FlashcardExerciseEventArgs : EventArgs
@@ -643,4 +678,4 @@ namespace Duo.Views.Components
             ContentPairs = contentPairs;
         }
     }
-} 
+}
