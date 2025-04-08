@@ -1,10 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Duo.Services;
 using Duo.Repositories;
 using Duo.Models;
 using Duo.Models.Exercises;
-using DuoTesting.Helper;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
@@ -12,103 +11,90 @@ using System.ComponentModel.DataAnnotations;
 namespace DuoTesting.Services
 {
     [TestClass]
-    public class ExerciseServiceUT : TestBase
+    public class ExerciseServiceUT
     {
         private ExerciseService _service = null!;
-        private ExerciseRepository _repository = null!;
+        private Mock<IExerciseRepository> _mockRepo = null!;
         private int _createdExerciseId;
 
         [TestInitialize]
         public void Setup()
         {
-            base.BaseSetup();
-            _repository = new ExerciseRepository(DbConnection);
-            _service = new ExerciseService(_repository);
-        }
-
-        [TestCleanup]
-        public async Task Cleanup()
-        {
-            if (_createdExerciseId > 0)
-            {
-                await _service.DeleteExercise(_createdExerciseId);
-            }
+            _mockRepo = new Mock<IExerciseRepository>();
+            _service = new ExerciseService(_mockRepo.Object);
         }
 
         private Exercise CreateSampleExercise()
         {
             return new FlashcardExercise(0, "What is the capital of Norway?", "Oslo", Difficulty.Easy);
-
         }
 
         [TestMethod]
         public async Task CreateExercise_ShouldAddExercise()
         {
             var exercise = CreateSampleExercise();
+            _mockRepo.Setup(r => r.AddExerciseAsync(exercise)).ReturnsAsync(1);
+
             await _service.CreateExercise(exercise);
 
-            var all = await _service.GetAllExercises();
-            var added = all.Find(e => e.Question == exercise.Question);
-            Assert.IsNotNull(added);
-
-            _createdExerciseId = added.Id;
+            _mockRepo.Verify(r => r.AddExerciseAsync(exercise), Times.Once);
         }
 
         [TestMethod]
         public async Task GetAllExercises_ShouldReturnList()
         {
-            var list = await _service.GetAllExercises();
-            Assert.IsNotNull(list);
-            Assert.IsInstanceOfType(list, typeof(List<Exercise>));
+            var exercises = new List<Exercise> { CreateSampleExercise() };
+            _mockRepo.Setup(r => r.GetAllExercisesAsync()).ReturnsAsync(exercises);
+
+            var result = await _service.GetAllExercises();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
         }
 
         [TestMethod]
         public async Task GetExerciseById_ShouldReturnCorrect()
         {
             var exercise = CreateSampleExercise();
-            await _service.CreateExercise(exercise);
+            _mockRepo.Setup(r => r.GetByIdAsync(42)).ReturnsAsync(exercise);
 
-            var all = await _service.GetAllExercises();
-            var added = all.Find(e => e.Question == exercise.Question);
-            Assert.IsNotNull(added);
+            var result = await _service.GetExerciseById(42);
 
-            _createdExerciseId = added.Id;
-
-            var fetched = await _service.GetExerciseById(_createdExerciseId);
-            Assert.AreEqual("What is the capital of Norway?", fetched.Question);
+            Assert.AreEqual("What is the capital of Norway?", result.Question);
         }
 
         [TestMethod]
         public async Task DeleteExercise_ShouldRemoveExercise()
         {
-            var exercise = CreateSampleExercise();
-            await _service.CreateExercise(exercise);
+            _mockRepo.Setup(r => r.DeleteExerciseAsync(42)).Returns(Task.CompletedTask);
 
-            var all = await _service.GetAllExercises();
-            var added = all.Find(e => e.Question == exercise.Question);
-            Assert.IsNotNull(added);
+            await _service.DeleteExercise(42);
 
-            _createdExerciseId = added.Id;
-
-            await _service.DeleteExercise(_createdExerciseId);
-
-            var after = await _service.GetAllExercises();
-            Assert.IsNull(after.Find(e => e.Id == _createdExerciseId));
-            _createdExerciseId = 0;
+            _mockRepo.Verify(r => r.DeleteExerciseAsync(42), Times.Once);
         }
 
         [TestMethod]
         public async Task GetAllExercisesFromQuiz_ShouldReturn()
         {
+            var exercises = new List<Exercise> { CreateSampleExercise() };
+            _mockRepo.Setup(r => r.GetQuizExercisesAsync(1)).ReturnsAsync(exercises);
+
             var result = await _service.GetAllExercisesFromQuiz(1);
+
             Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
         }
 
         [TestMethod]
         public async Task GetAllExercisesFromExam_ShouldReturn()
         {
+            var exercises = new List<Exercise> { CreateSampleExercise() };
+            _mockRepo.Setup(r => r.GetExamExercisesAsync(1)).ReturnsAsync(exercises);
+
             var result = await _service.GetAllExercisesFromExam(1);
+
             Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
         }
 
         [TestMethod]
@@ -123,9 +109,7 @@ namespace DuoTesting.Services
         private class InvalidExercise : Exercise
         {
             public InvalidExercise(int id, string question, Difficulty difficulty)
-                : base(id, question, difficulty)
-            {
-            }
+                : base(id, question, difficulty) { }
         }
     }
 }
