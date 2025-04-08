@@ -11,9 +11,9 @@ namespace Duo.Views.Components
     public sealed partial class Timer : UserControl
     {
         // Core timer components
-        private DispatcherTimer _timer;     // UI updates
-        private Stopwatch _stopwatch;       // Time tracking
-        private bool _isRunning;            // Current state
+        private DispatcherTimer timer;     // UI updates
+        private Stopwatch stopwatch;       // Time tracking
+        private bool isRunning;            // Current state
 
         /// <summary>
         /// Fires on each timer update with current elapsed time.
@@ -26,12 +26,12 @@ namespace Duo.Views.Components
         public Timer()
         {
             this.InitializeComponent();
-            
-            _stopwatch = new Stopwatch();
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(100);
-            _timer.Tick += Timer_Tick;
-            _isRunning = false;
+
+            stopwatch = new Stopwatch();
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Tick += Timer_Tick;
+            isRunning = false;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Duo.Views.Components
         private void Timer_Tick(object sender, object e)
         {
             UpdateTime();
-            TimerTick?.Invoke(this, _stopwatch.Elapsed);
+            TimerTick?.Invoke(this, stopwatch.Elapsed);
         }
 
         /// <summary>
@@ -48,11 +48,11 @@ namespace Duo.Views.Components
         /// </summary>
         public void Start()
         {
-            if (!_isRunning)
+            if (!isRunning)
             {
-                _stopwatch.Start();  // Start timing
-                _timer.Start();      // Start UI updates
-                _isRunning = true;
+                stopwatch.Start();  // Start timing
+                timer.Start();      // Start UI updates
+                isRunning = true;
             }
         }
 
@@ -61,11 +61,11 @@ namespace Duo.Views.Components
         /// </summary>
         public void Stop()
         {
-            if (_isRunning)
+            if (isRunning)
             {
-                _stopwatch.Stop();  // Pause timing
-                _timer.Stop();      // Stop UI updates
-                _isRunning = false;
+                stopwatch.Stop();  // Pause timing
+                timer.Stop();      // Stop UI updates
+                isRunning = false;
             }
         }
 
@@ -74,9 +74,9 @@ namespace Duo.Views.Components
         /// </summary>
         public void Reset()
         {
-            Stop();                 
-            _stopwatch.Reset();     
-            UpdateTime();           
+            Stop();
+            stopwatch.Reset();
+            UpdateTime();
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Duo.Views.Components
         /// </summary>
         public TimeSpan GetElapsedTime()
         {
-            return _stopwatch.Elapsed;
+            return stopwatch.Elapsed;
         }
 
         /// <summary>
@@ -92,11 +92,11 @@ namespace Duo.Views.Components
         /// </summary>
         private void UpdateTime()
         {
-            TimeSpan elapsed = _stopwatch.Elapsed;
-            string formattedTime = string.Format("{0:00}:{1:00}", 
-                elapsed.Minutes, 
+            TimeSpan elapsed = stopwatch.Elapsed;
+            string formattedTime = string.Format("{0:00}:{1:00}",
+                elapsed.Minutes,
                 elapsed.Seconds);
             TimerDisplay.Text = formattedTime;
         }
     }
-} 
+}
