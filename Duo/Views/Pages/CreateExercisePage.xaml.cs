@@ -1,4 +1,7 @@
 using System;
+using System.Threading.Tasks;
+using System.Reflection.Metadata;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,16 +15,12 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using System.Reflection.Metadata;
-using System.Diagnostics;
 using Duo.Views.Components;
 using Duo.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Duo.Views.Pages
 {
     /// <summary>
@@ -29,7 +28,6 @@ namespace Duo.Views.Pages
     /// </summary>
     public sealed partial class CreateExercisePage : Page
     {
-
         public CreateExercisePage()
         {
             this.InitializeComponent();
@@ -37,12 +35,10 @@ namespace Duo.Views.Pages
             ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
         }
 
-
         private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
         {
             await ShowErrorMessage(e.Title, e.Message);
         }
-
 
         private async Task ShowErrorMessage(string title, string message)
         {
@@ -56,7 +52,6 @@ namespace Duo.Views.Pages
 
             await dialog.ShowAsync();
         }
-
 
         public void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -81,10 +76,6 @@ namespace Duo.Views.Pages
                 this.Frame.GoBack();
             }
         }
-
-
-
-
     }
 }
 

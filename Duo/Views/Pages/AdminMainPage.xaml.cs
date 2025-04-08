@@ -14,7 +14,6 @@ namespace Duo.Views.Pages
             this.InitializeComponent();
 
             // Subscribe to modal events
-
             ManageSectionsCard.AddButtonClicked += CreateSection_Click;
             ManageExercisesCard.AddButtonClicked += CreateExercise_Click;
             ManageQuizesCard.AddButtonClicked += CreateQuiz_Click;
@@ -24,7 +23,6 @@ namespace Duo.Views.Pages
             ManageExercisesCard.ManageButtonClicked += OpenManageExercisesPage_Click;
             ManageQuizesCard.ManageButtonClicked += OpenManageQuizesPage_Click;
             ManageExamsCard.ManageButtonClicked += OpenManageExamsPage_Click;
-
         }
 
         private void CreateSection_Click(object sender, EventArgs e)
@@ -63,6 +61,5 @@ namespace Duo.Views.Pages
         {
             Frame.Navigate(typeof(ManageExamsPage));
         }
-
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -12,11 +13,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Duo.Views.Pages
 {
     /// <summary>
@@ -33,7 +32,6 @@ namespace Duo.Views.Pages
         {
             await ShowErrorMessage(e.Title, e.Message);
         }
-
 
         private async Task ShowErrorMessage(string title, string message)
         {
@@ -55,6 +53,5 @@ namespace Duo.Views.Pages
                 this.Frame.GoBack();
             }
         }
-
     }
 }

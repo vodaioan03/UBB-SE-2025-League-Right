@@ -1,20 +1,20 @@
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
 using Duo.Models.Quizzes;
 
 namespace Duo.Views.Pages
 {
     public sealed partial class EndQuizPage : Page
     {
-        private readonly Quiz _quiz;
-        private readonly TimeSpan _timeTaken;
+        private readonly Quiz quiz;
+        private readonly TimeSpan timeTaken;
 
         public EndQuizPage(Quiz quiz, TimeSpan timeTaken)
         {
             this.InitializeComponent();
-            _quiz = quiz;
-            _timeTaken = timeTaken;
+            quiz = quiz;
+            timeTaken = timeTaken;
 
             DisplayResults();
         }
@@ -35,10 +35,8 @@ namespace Duo.Views.Pages
             int correctAnswers = 8;
             int totalQuestions = 10;
             double scorePercentage = ((double)correctAnswers / totalQuestions) * 100;
-            
             // Display score
             ScoreTextBlock.Text = $"{correctAnswers}/{totalQuestions} ({scorePercentage:F1}%)";
-            
             // Display a sample time (3 minutes and 45 seconds)
             TimeTextBlock.Text = "3m 45s";
 
@@ -51,16 +49,16 @@ namespace Duo.Views.Pages
         private void DisplayResults()
         {
             // Calculate score percentage
-            double scorePercentage = ((double)_quiz.GetNumberOfCorrectAnswers() / _quiz.GetNumberOfAnswersGiven()) * 100;
-            
+            double scorePercentage = ((double)quiz.GetNumberOfCorrectAnswers() / quiz.GetNumberOfAnswersGiven()) * 100;
+
             // Display score
-            ScoreTextBlock.Text = $"{_quiz.GetNumberOfCorrectAnswers()}/{_quiz.GetNumberOfAnswersGiven()} ({scorePercentage:F1}%)";
-            
+            ScoreTextBlock.Text = $"{quiz.GetNumberOfCorrectAnswers()}/{quiz.GetNumberOfAnswersGiven()} ({scorePercentage:F1}%)";
+
             // Display time taken
-            TimeTextBlock.Text = $"{_timeTaken.Minutes}m {_timeTaken.Seconds}s";
+            TimeTextBlock.Text = $"{timeTaken.Minutes}m {timeTaken.Seconds}s";
 
             // Set feedback message based on score
-            if (scorePercentage >= _quiz.GetPassingThreshold())
+            if (scorePercentage >= quiz.GetPassingThreshold())
             {
                 FeedbackTextBlock.Text = "Great job! You've passed the quiz!";
                 FeedbackTextBlock.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Green);
@@ -93,4 +91,4 @@ namespace Duo.Views.Pages
             }
         }
     }
-} 
+}
