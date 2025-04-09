@@ -44,7 +44,7 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
             }
             LoadExercisesAsync();
-            SaveButtonCommand = new RelayCommand(CreateExam);
+            SaveButtonCommand = new RelayCommand(() => _ = CreateExam());
             OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
         }
@@ -102,25 +102,29 @@ namespace Duo.ViewModels
             Debug.WriteLine("Removing exercise...");
         }
 
-        public async void CreateExam()
+        public async Task CreateExam()
         {
-            Debug.WriteLine("Creating exam...");
-            Exam newExam = new Exam(0, null);
-            foreach (var exercise in SelectedExercises)
-            {
-                newExam.AddExercise(exercise);
-            }
             try
             {
+                Debug.WriteLine("Creating exam...");
+                Exam newExam = new Exam(0, null);
+
+                foreach (var exercise in SelectedExercises)
+                {
+                    newExam.AddExercise(exercise);
+                }
+
                 int examId = await quizService.CreateExam(newExam);
                 // await quizService.AddExercisesToExam(examId, newExam.ExerciseList);
+                Debug.WriteLine(newExam);
+
+                GoBack();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Debug.WriteLine($"Error during CreateExam: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
-            Debug.WriteLine(newExam);
-            GoBack();
         }
     }
 }
