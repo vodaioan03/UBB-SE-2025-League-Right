@@ -38,7 +38,7 @@ namespace Duo.ViewModels
             {
                 Debug.WriteLine(ex);
             }
-            DeleteQuizCommand = new RelayCommandWithParameter<Quiz>(DeleteQuiz);
+            DeleteQuizCommand = new RelayCommandWithParameter<Quiz>(quiz => _ = DeleteQuiz(quiz));
             OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(RemoveExerciseFromQuiz);
             LoadExercisesAsync();
@@ -60,34 +60,35 @@ namespace Duo.ViewModels
         public ICommand OpenSelectExercisesCommand { get; }
         public ICommand RemoveExerciseFromQuizCommand { get; }
 
-        public async void DeleteQuiz(Quiz quizToBeDeleted)
+        public async Task DeleteQuiz(Quiz quizToBeDeleted)
         {
-            Debug.WriteLine("Deleting quiz...");
-
-            if (quizToBeDeleted == SelectedQuiz)
-            {
-                SelectedQuiz = null;
-                UpdateQuizExercises(SelectedQuiz);
-            }
-
-            foreach (var exercise in quizToBeDeleted.ExerciseList)
-            {
-                AvailableExercises.Add(exercise);
-            }
-
             try
             {
+                Debug.WriteLine("Deleting quiz...");
+
+                if (quizToBeDeleted == SelectedQuiz)
+                {
+                    SelectedQuiz = null;
+                    await UpdateQuizExercises(SelectedQuiz);
+                }
+
+                foreach (var exercise in quizToBeDeleted.ExerciseList)
+                {
+                    AvailableExercises.Add(exercise);
+                }
+
                 await quizService.DeleteQuiz(quizToBeDeleted.Id);
                 Quizes.Remove(quizToBeDeleted);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Error during DeleteQuiz: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
                 RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
 
-        public async void InitializeViewModel()
+        public async Task InitializeViewModel()
         {
             try
             {
@@ -105,20 +106,31 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void UpdateQuizExercises(Quiz selectedQuiz)
+        public async Task UpdateQuizExercises(Quiz selectedQuiz)
         {
-            Debug.WriteLine("Updating quiz exercises...");
-            QuizExercises.Clear();
-            if (SelectedQuiz == null)
+            try
             {
-                return;
-            }
+                Debug.WriteLine("Updating quiz exercises...");
+                QuizExercises.Clear();
 
-            List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
-            foreach (var exercise in exercisesOfSelectedQuiz)
+                if (selectedQuiz == null)
+                {
+                    Debug.WriteLine("No quiz selected. Skipping update.");
+                    return;
+                }
+
+                List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
+
+                foreach (var exercise in exercisesOfSelectedQuiz)
+                {
+                    Debug.WriteLine(exercise);
+                    QuizExercises.Add(exercise);
+                }
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine(exercise);
-                QuizExercises.Add(exercise);
+                Debug.WriteLine($"Error during UpdateQuizExercises: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
         }
 
@@ -155,7 +167,7 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, string.Empty);
             }
-            UpdateQuizExercises(SelectedQuiz);
+            await UpdateQuizExercises(SelectedQuiz);
         }
 
         public async void RemoveExerciseFromQuiz(Exercise selectedExercise)
@@ -165,7 +177,7 @@ namespace Duo.ViewModels
             {
                 await quizService.RemoveExerciseFromQuiz(SelectedQuiz.Id, selectedExercise.Id);
                 SelectedQuiz.RemoveExercise(selectedExercise);
-                UpdateQuizExercises(SelectedQuiz);
+                await UpdateQuizExercises(SelectedQuiz);
             }
             catch (Exception ex)
             {
