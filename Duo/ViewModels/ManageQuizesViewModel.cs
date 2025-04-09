@@ -39,8 +39,8 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
             }
             DeleteQuizCommand = new RelayCommandWithParameter<Quiz>(quiz => _ = DeleteQuiz(quiz));
-            OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
-            RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(RemoveExerciseFromQuiz);
+            OpenSelectExercisesCommand = new RelayCommand(() => _ = OpenSelectExercises());
+            RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(exercise => _ = RemoveExerciseFromQuiz(exercise));
             LoadExercisesAsync();
             InitializeViewModel();
         }
@@ -134,43 +134,58 @@ namespace Duo.ViewModels
             }
         }
 
-        public void OpenSelectExercises()
+        public async Task OpenSelectExercises()
         {
             Debug.WriteLine("Opening select exercises...");
             ShowListViewModal?.Invoke(AvailableExercises.ToList());
         }
-        private async void LoadExercisesAsync()
+        private async Task LoadExercisesAsync()
         {
-            AvailableExercises.Clear(); // Clear the ObservableCollection
-            var exercises = await exerciseService.GetAllExercises();
-            foreach (var exercise in exercises)
-            {
-                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
-                AvailableExercises.Add(exercise);
-            }
-        }
-        public async void AddExercise(Exercise selectedExercise)
-        {
-            Debug.WriteLine("Adding exercise...");
-            if (SelectedQuiz == null)
-            {
-                Debug.WriteLine("No quiz selected.");
-                return;
-            }
-            SelectedQuiz.AddExercise(selectedExercise);
             try
             {
-                await quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
+                AvailableExercises.Clear(); // Clear the ObservableCollection
+
+                var exercises = await exerciseService.GetAllExercises();
+
+                foreach (var exercise in exercises)
+                {
+                    Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                    AvailableExercises.Add(exercise);
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, string.Empty);
+                Debug.WriteLine($"Error during LoadExercisesAsync: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
-            await UpdateQuizExercises(SelectedQuiz);
         }
 
-        public async void RemoveExerciseFromQuiz(Exercise selectedExercise)
+        public async Task AddExercise(Exercise selectedExercise)
+        {
+            try
+            {
+                Debug.WriteLine("Adding exercise...");
+
+                if (SelectedQuiz == null)
+                {
+                    Debug.WriteLine("No quiz selected.");
+                    return;
+                }
+
+                SelectedQuiz.AddExercise(selectedExercise);
+
+                await quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
+                await UpdateQuizExercises(SelectedQuiz);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error while adding exercise: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
+                RaiseErrorMessage(ex.Message, string.Empty);
+            }
+        }
+
+        public async Task RemoveExerciseFromQuiz(Exercise selectedExercise)
         {
             Debug.WriteLine("Removing exercise...");
             try
