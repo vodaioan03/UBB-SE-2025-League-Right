@@ -55,15 +55,21 @@ namespace Duo.ViewModels
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
         }
 
-        private async void LoadExercisesAsync()
+        private async Task LoadExercisesAsync()
         {
-            Exercises.Clear(); // Clear the ObservableCollection
-            var exercises = await exerciseService.GetAllExercises();
-
-            foreach (var exercise in exercises)
+            try
             {
-                // Add each exercise to the ObservableCollection
-                Exercises.Add(exercise);
+                Exercises.Clear();
+                var exercises = await exerciseService.GetAllExercises();
+                foreach (var exercise in exercises)
+                {
+                    // Add each exercise to the ObservableCollection
+                    Exercises.Add(exercise);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading exercises: {ex.Message}");
             }
         }
 
