@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Duo.Models.Quizzes;
 using Duo.ViewModels.Roadmap;
 using Duo.Views.Pages;
@@ -39,7 +40,7 @@ namespace Duo.Views.Components
             }
         }
 
-        public async void Load(int quizId, bool isExam)
+        public async Task Load(int quizId, bool isExam)
         {
             await ViewModel.OpenForQuiz(quizId, isExam);
         }
