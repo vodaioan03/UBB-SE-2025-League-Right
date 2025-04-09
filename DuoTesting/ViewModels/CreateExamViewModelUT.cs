@@ -134,7 +134,7 @@ namespace DuoTesting.ViewModels
 
             try
             {
-                vm.CreateExam();
+                await vm.CreateExam();
                 await Task.Delay(100); // wait for async operation
 
                 var output = stringWriter.ToString();

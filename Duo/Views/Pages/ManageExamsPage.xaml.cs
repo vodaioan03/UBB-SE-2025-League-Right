@@ -85,7 +85,7 @@ namespace Duo.Views.Pages
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
             {
-                ViewModel.AddExercise(selectedExercise);
+                await ViewModel.AddExercise(selectedExercise);
             }
         }
     }
