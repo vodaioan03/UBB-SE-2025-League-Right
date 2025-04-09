@@ -1,25 +1,24 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Threading.Tasks;
 using System.Data.Common;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
 
 namespace Duo.Data;
 
 public class DatabaseConnection
 {
-    private readonly string _connectionString;
+    private readonly string connectionString;
 
     // INFO: best approach is to return a new connection each time
-    private SqlConnection _connection;
+    private SqlConnection connection;
 
     public DatabaseConnection(IConfiguration configuration)
     {
-
-        _connectionString = configuration["DbConnection"];
-
-        try {
-            _connection = new SqlConnection(_connectionString);
+        connectionString = configuration["DbConnection"];
+        try
+        {
+            connection = new SqlConnection(connectionString);
         }
         catch (Exception ex)
         {
@@ -29,23 +28,23 @@ public class DatabaseConnection
 
     public SqlConnection CreateConnection()
     {
-        return new SqlConnection(_connectionString);
+        return new SqlConnection(connectionString);
     }
 
     public async Task<SqlConnection> CreateConnectionAsync()
     {
-        var connection = new SqlConnection(_connectionString);
+        var connection = new SqlConnection(connectionString);
         return connection;
     }
 
     public SqlConnection GetConnection()
     {
-        return _connection;
+        return connection;
     }
 
     public void Dispose()
     {
-        _connection?.Close();
-        _connection?.Dispose();
+        connection?.Close();
+        connection?.Dispose();
     }
 }

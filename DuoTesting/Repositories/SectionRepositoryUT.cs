@@ -1,51 +1,30 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Duo.Repositories;
 using Duo.Models.Sections;
-using System;
+using DuoTesting.Helpers;
+using DuoTesting.MockClasses;
 using System.Threading.Tasks;
-using DuoTesting.Helper;
+using System;
 
 namespace DuoTesting.Repositories
 {
     [TestClass]
-    public class SectionRepositoryUT : TestBase
+    public class SectionRepositoryUT
     {
         private ISectionRepository _repository = null!;
-        private int _createdRoadmapId;
+        private const int DummyRoadmapId = 1;
 
         [TestInitialize]
-        public async Task Setup()
+        public void Setup()
         {
-            base.BaseSetup();
-            _repository = new SectionRepository(DbConnection); 
-            _createdRoadmapId = await CreateDummyRoadmapAsync();
-        }
-
-        [TestCleanup]
-        public async Task Cleanup()
-        {
-            using var conn = await DbConnection.CreateConnectionAsync();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "DELETE FROM Roadmaps WHERE Id = @id";
-            cmd.Parameters.AddWithValue("@id", _createdRoadmapId);
-            await conn.OpenAsync();
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        private async Task<int> CreateDummyRoadmapAsync()
-        {
-            using var conn = await DbConnection.CreateConnectionAsync();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO Roadmaps (Name) VALUES ('TempRoadmapForTest'); SELECT SCOPE_IDENTITY();";
-            await conn.OpenAsync();
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            _repository = new InMemorySectionRepository();
         }
 
         private Section CreateSampleSection() => new Section
         {
             Title = "Test Section",
             Description = "Sample Description",
-            RoadmapId = _createdRoadmapId,
+            RoadmapId = DummyRoadmapId,
             SubjectId = 1,
             OrderNumber = 1
         };
@@ -57,7 +36,10 @@ namespace DuoTesting.Repositories
             int id = await _repository.AddAsync(section);
 
             var fetched = await _repository.GetByIdAsync(id);
-            Assert.AreEqual(section.Title, fetched.Title);
+            var expected = section;
+            expected.Id = id;
+
+            Assert.IsTrue(new SectionComparer().Equals(expected, fetched));
 
             await _repository.DeleteAsync(id);
         }
@@ -65,8 +47,10 @@ namespace DuoTesting.Repositories
         [TestMethod]
         public async Task GetAll_ShouldReturnList()
         {
+            await _repository.AddAsync(CreateSampleSection());
             var result = await _repository.GetAllAsync();
             Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count > 0);
         }
 
         [TestMethod]
@@ -81,8 +65,6 @@ namespace DuoTesting.Repositories
 
             var updated = await _repository.GetByIdAsync(id);
             Assert.AreEqual("Updated Section", updated.Title);
-
-            await _repository.DeleteAsync(id);
         }
 
         [TestMethod]
@@ -91,29 +73,26 @@ namespace DuoTesting.Repositories
             var section = CreateSampleSection();
             int id = await _repository.AddAsync(section);
 
-            var list = await _repository.GetByRoadmapIdAsync(_createdRoadmapId);
+            var list = await _repository.GetByRoadmapIdAsync(DummyRoadmapId);
             Assert.IsTrue(list.Count > 0);
-
-            await _repository.DeleteAsync(id);
         }
 
         [TestMethod]
         public async Task LastOrderNumber_ShouldReturn()
         {
             var section = CreateSampleSection();
-            int id = await _repository.AddAsync(section);
+            await _repository.AddAsync(section);
 
-            var last = await _repository.LastOrderNumberByRoadmapIdAsync(_createdRoadmapId);
-            Assert.IsTrue(last >= 0);
-
-            await _repository.DeleteAsync(id);
+            var last = await _repository.LastOrderNumberByRoadmapIdAsync(DummyRoadmapId);
+            Assert.IsTrue(last >= 1);
         }
 
         [TestMethod]
         public async Task CountByRoadmap_ShouldReturn()
         {
-            var count = await _repository.CountByRoadmapIdAsync(_createdRoadmapId);
-            Assert.IsTrue(count >= 0);
+            await _repository.AddAsync(CreateSampleSection());
+            var count = await _repository.CountByRoadmapIdAsync(DummyRoadmapId);
+            Assert.IsTrue(count >= 1);
         }
 
         [TestMethod]

@@ -1,13 +1,13 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Duo.Models;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Duo.Views.Components.Modals
 {
@@ -16,7 +16,7 @@ namespace Duo.Views.Components.Modals
         public event EventHandler<ExamCreatedEventArgs> ExamCreated;
         public event EventHandler ModalClosed;
 
-        private readonly List<Exercise> _availableExercises;
+        private readonly List<Exercise> availableExercises;
         public ObservableCollection<Exercise> SelectedExercises { get; private set; }
 
         private const int MAX_EXERCISES = 25; // From Exam class
@@ -27,7 +27,7 @@ namespace Duo.Views.Components.Modals
             this.InitializeComponent();
 
             // Initialize available exercises using helper method
-            _availableExercises = CreateSampleExercises();
+            availableExercises = CreateSampleExercises();
 
             SelectedExercises = new ObservableCollection<Exercise>();
             ExerciseList.ItemsSource = SelectedExercises;
@@ -92,7 +92,7 @@ namespace Duo.Views.Components.Modals
 
             var listView = new ListView
             {
-                ItemsSource = _availableExercises.Where(ex => !SelectedExercises.Contains(ex)).ToList(),
+                ItemsSource = availableExercises.Where(ex => !SelectedExercises.Contains(ex)).ToList(),
                 SelectionMode = ListViewSelectionMode.Single,
                 MaxHeight = 300,
                 ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]

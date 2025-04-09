@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml.Documents;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Duo.Views.Components
 {
     public sealed partial class QuizAdminButton : UserControl
@@ -24,7 +23,7 @@ namespace Duo.Views.Components
         public event RoutedEventHandler Click;
 
         public static readonly DependencyProperty TextProperty =
-           DependencyProperty.Register(nameof(Text), typeof(string), typeof(QuizAdminButton), new PropertyMetadata(""));
+           DependencyProperty.Register(nameof(Text), typeof(string), typeof(QuizAdminButton), new PropertyMetadata(string.Empty));
 
         public QuizAdminButton()
         {

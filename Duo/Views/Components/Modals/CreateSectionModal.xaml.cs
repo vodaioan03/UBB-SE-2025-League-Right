@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Duo.Models.Quizzes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.ObjectModel;
-using Duo.Models.Quizzes;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Duo.Views.Components.Modals
 {
@@ -13,8 +13,8 @@ namespace Duo.Views.Components.Modals
         public event EventHandler<SectionCreatedEventArgs> SectionCreated;
         public event EventHandler ModalClosed;
 
-        private readonly List<Quiz> _availableQuizzes;
-        private readonly List<Exam> _availableExams;
+        private readonly List<Quiz> availableQuizzes;
+        private readonly List<Exam> availableExams;
         public ObservableCollection<Quiz> UnassignedQuizzes { get; private set; }
         public ObservableCollection<Exam> SelectedExam { get; private set; }
 
@@ -23,7 +23,7 @@ namespace Duo.Views.Components.Modals
             this.InitializeComponent();
 
             // Initialize hardcoded available quizzes
-            _availableQuizzes = new List<Quiz>
+            availableQuizzes = new List<Quiz>
             {
                 new Quiz(1, null, null) { /* Add some exercises if needed */ },
                 new Quiz(2, null, null) { /* Add some exercises if needed */ },
@@ -33,7 +33,7 @@ namespace Duo.Views.Components.Modals
             };
 
             // Initialize hardcoded available exams
-            _availableExams = new List<Exam>
+            availableExams = new List<Exam>
             {
                 new Exam(1, null) { /* Add some exercises if needed */ },
                 new Exam(2, null) { /* Add some exercises if needed */ },
@@ -98,7 +98,7 @@ namespace Duo.Views.Components.Modals
 
         private async void AddExamButton_Click(object sender, RoutedEventArgs e)
         {
-            var availableExamsToAdd = _availableExams
+            var availableExamsToAdd = availableExams
                 .Where(e => !SelectedExam.Any(se => se.Id == e.Id))
                 .ToList();
 
@@ -149,7 +149,7 @@ namespace Duo.Views.Components.Modals
 
         private async void AddQuizButton_Click(object sender, RoutedEventArgs e)
         {
-            var availableQuizzesToAdd = _availableQuizzes
+            var availableQuizzesToAdd = availableQuizzes
                 .Where(q => !UnassignedQuizzes.Any(uq => uq.Id == q.Id))
                 .ToList();
 

@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Duo.Models.Exercises;
 using Duo.Models.Quizzes;
 using Duo.Views.Components.Modals;
@@ -8,18 +14,11 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Duo.Views.Pages
 {
     /// <summary>
@@ -38,7 +37,6 @@ namespace Duo.Views.Pages
         {
             await ShowErrorMessage(e.Title, e.Message);
         }
-
 
         private async Task ShowErrorMessage(string title, string message)
         {
@@ -90,7 +88,9 @@ namespace Duo.Views.Pages
 
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
+            {
                 ViewModel.AddExercise(selectedExercise);
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

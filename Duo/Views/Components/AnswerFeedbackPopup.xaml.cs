@@ -7,8 +7,8 @@ namespace Duo.Views.Components
 {
     public sealed partial class AnswerFeedbackPopup : ContentDialog
     {
-        private readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.Green);
-        private readonly SolidColorBrush RedBrush = new SolidColorBrush(Colors.Red);
+        private readonly SolidColorBrush greenBrush = new SolidColorBrush(Colors.Green);
+        private readonly SolidColorBrush redBrush = new SolidColorBrush(Colors.Red);
 
         public AnswerFeedbackPopup()
         {
@@ -18,22 +18,22 @@ namespace Duo.Views.Components
         public void ShowCorrectAnswer(string correctAnswer)
         {
             FeedbackIcon.Glyph = "\uE73E"; // Checkmark icon
-            FeedbackIcon.Foreground = GreenBrush;
+            FeedbackIcon.Foreground = greenBrush;
             FeedbackMessage.Text = "Correct! Well done!";
-            FeedbackMessage.Foreground = GreenBrush;
+            FeedbackMessage.Foreground = greenBrush;
             CorrectAnswerText.Text = correctAnswer;
-            CloseButton.Background = GreenBrush;
+            CloseButton.Background = greenBrush;
             CloseButton.Foreground = new SolidColorBrush(Colors.White);
         }
 
         public void ShowWrongAnswer(string correctAnswer)
         {
             FeedbackIcon.Glyph = "\uE783"; // X icon
-            FeedbackIcon.Foreground = RedBrush;
+            FeedbackIcon.Foreground = redBrush;
             FeedbackMessage.Text = "Incorrect. Keep trying!";
-            FeedbackMessage.Foreground = RedBrush;
+            FeedbackMessage.Foreground = redBrush;
             CorrectAnswerText.Text = correctAnswer;
-            CloseButton.Background = RedBrush;
+            CloseButton.Background = redBrush;
             CloseButton.Foreground = new SolidColorBrush(Colors.White);
         }
 
@@ -42,4 +42,4 @@ namespace Duo.Views.Components
             Hide();
         }
     }
-} 
+}

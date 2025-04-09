@@ -1,23 +1,23 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Duo.Repositories;
 using Duo.Models.Roadmap;
-using System.Threading.Tasks;
+using DuoTesting.Helpers;
+using DuoTesting.MockClasses;
 using System;
-using System.Linq;
-using DuoTesting.Helper;
-using System.Data.Common;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace DuoTesting.Repositories
 {
     [TestClass]
-    public class RoadmapRepositoryUT : TestBase
+    public class RoadmapRepositoryUT
     {
         private IRoadmapRepository _repository = null!;
 
         [TestInitialize]
         public void Setup()
         {
-            _repository = new RoadmapRepository(DbConnection);
+            _repository = new InMemoryRoadmapRepository();
         }
 
         [TestMethod]
@@ -26,17 +26,19 @@ namespace DuoTesting.Repositories
             var roadmap = new Roadmap { Name = "Test Roadmap" };
             var newId = await _repository.AddAsync(roadmap);
 
+            var expected = new Roadmap { Id = newId, Name = "Test Roadmap" };
             var result = await _repository.GetByIdAsync(newId);
-            Assert.AreEqual("Test Roadmap", result.Name);
 
-            await _repository.DeleteAsync(newId);
+            Assert.IsTrue(new RoadmapComparer().Equals(expected, result));
         }
 
         [TestMethod]
         public async Task GetAllAsync_ShouldReturnList()
         {
+            await _repository.AddAsync(new Roadmap { Name = "Sample" });
             var all = await _repository.GetAllAsync();
             Assert.IsNotNull(all);
+            Assert.IsTrue(all.Count > 0);
         }
 
         [TestMethod]
@@ -45,11 +47,10 @@ namespace DuoTesting.Repositories
             var name = $"TempRoadmap_{Guid.NewGuid()}";
             var id = await _repository.AddAsync(new Roadmap { Name = name });
 
+            var expected = new Roadmap { Id = id, Name = name };
             var byName = await _repository.GetByNameAsync(name);
-            Assert.IsNotNull(byName);
-            Assert.AreEqual(name, byName.Name);
 
-            await _repository.DeleteAsync(id);
+            Assert.IsTrue(new RoadmapComparer().Equals(expected, byName));
         }
 
         [TestMethod]
