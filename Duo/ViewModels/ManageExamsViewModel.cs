@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Windows.Input;
 using Duo.Commands;
@@ -35,7 +36,7 @@ namespace Duo.ViewModels
             {
                 Debug.WriteLine(ex);
             }
-            DeleteExamCommand = new RelayCommandWithParameter<Exam>(DeleteExam);
+            DeleteExamCommand = new RelayCommandWithParameter<Exam>(exam => _ = DeleteExam(exam));
             OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(RemoveExerciseFromExam);
             LoadExercisesAsync();
@@ -57,7 +58,7 @@ namespace Duo.ViewModels
         public ICommand OpenSelectExercisesCommand { get; }
         public ICommand RemoveExerciseFromQuizCommand { get; }
 
-        public async void DeleteExam(Exam examToBeDeleted)
+        public async Task DeleteExam(Exam examToBeDeleted)
         {
             Debug.WriteLine("Deleting quiz...");
 
@@ -84,7 +85,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void InitializeViewModel()
+        public async Task InitializeViewModel()
         {
             try
             {
@@ -102,20 +103,31 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void UpdateExamExercises(Exam selectedExam)
+        public async Task UpdateExamExercises(Exam selectedExam)
         {
-            Debug.WriteLine("Updating exam exercises...");
-            ExamExercises.Clear();
-            if (SelectedExam == null)
+            try
             {
-                return;
-            }
+                Debug.WriteLine("Updating exam exercises...");
+                ExamExercises.Clear();
 
-            List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromExam(selectedExam.Id);
-            foreach (var exercise in exercisesOfSelectedQuiz)
+                if (selectedExam == null)
+                {
+                    Debug.WriteLine("No exam selected. Skipping update.");
+                    return;
+                }
+
+                List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromExam(selectedExam.Id);
+
+                foreach (var exercise in exercisesOfSelectedQuiz)
+                {
+                    Debug.WriteLine(exercise);
+                    ExamExercises.Add(exercise);
+                }
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine(exercise);
-                ExamExercises.Add(exercise);
+                Debug.WriteLine($"Error during UpdateExamExercises: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
         }
 
