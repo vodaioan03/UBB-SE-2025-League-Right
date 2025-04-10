@@ -5,7 +5,9 @@ using Duo.Models.Quizzes;
 using Duo.Services;
 using Duo.ViewModels;
 using Moq;
+using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace DuoTesting.ViewModels
 {

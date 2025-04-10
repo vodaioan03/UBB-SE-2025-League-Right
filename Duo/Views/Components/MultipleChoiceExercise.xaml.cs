@@ -77,7 +77,6 @@ namespace Duo.Views.Components
         private void Option_Click(object sender, RoutedEventArgs e)
         {
             var clickedButton = sender as Button;
-  
             if (selectedButtons.Contains(clickedButton))
             {
                 SetDefaultButtonStyles(clickedButton);
