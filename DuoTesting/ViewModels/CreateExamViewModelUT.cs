@@ -10,6 +10,7 @@ using Duo.ViewModels;
 using Duo.Models;
 using System.Diagnostics;
 using Duo;
+using System.IO;
 
 namespace DuoTesting.ViewModels
 {

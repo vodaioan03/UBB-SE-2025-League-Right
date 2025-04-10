@@ -7,6 +7,8 @@ using Duo.Models;
 using Duo.Models.Quizzes;
 using System.Diagnostics;
 using Duo.Models.Sections;
+using System.IO;
+using System;
 
 
 namespace DuoTesting.ViewModels

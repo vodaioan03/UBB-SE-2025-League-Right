@@ -8,11 +8,11 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="43660b93-fa95-401e-b6f2-8ee6907f7bdd"
+    Name="52cc35ba-de46-487a-83d2-3b634d89ecf7"
     Publisher="CN=Asus"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="43660b93-fa95-401e-b6f2-8ee6907f7bdd" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="52cc35ba-de46-487a-83d2-3b634d89ecf7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Duo</DisplayName>

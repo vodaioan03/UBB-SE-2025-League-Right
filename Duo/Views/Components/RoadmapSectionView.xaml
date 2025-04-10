@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="Duo.Views.Components.RoadmapSectionView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Duo.Views.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Duo.Models.Exercises"
+    xmlns:quizmodels="using:Duo.Models.Quizzes"
+    xmlns:viewmodel="using:Duo.ViewModels.Roadmap"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <!-- Drop shadow effect for cards -->
+        <ThemeShadow x:Name="SharedShadow"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="32,24,32,48">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Section Header -->
+            <Grid Grid.Row="0"
+                  Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Text="{Binding Section.Title}"
+                    Style="{ThemeResource TitleLargeTextBlockStyle}"
+                    FontWeight="SemiBold"
+                    Margin="0"/>
+
+                <!-- Additional controls can be added here in the future -->
+            </Grid>
+
+            <!-- Roadmap Content -->
+            <Grid Grid.Row="1">
+                <Border
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Shadow="{StaticResource SharedShadow}"
+                    Translation="0,0,24">
+
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Disabled"
+                        Padding="24,20">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="32">
+                            <!-- Quiz Items -->
+                            <ItemsControl
+                                ItemsSource="{Binding QuizButtonTemplates, Mode=OneWay}"
+                                Margin="0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"
+                                                    Spacing="32"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:QuizRoadmapButton
+                                            QuizId="{Binding Quiz.Id}"
+                                            IsExam="False"
+                                            ButtonClick="Quiz_Click"
+                                            QuizStatus="{Binding QuizStatus}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Exam Button -->
+                            <local:QuizRoadmapButton
+                                ButtonClick="Quiz_Click"
+                                QuizId="{Binding ExamButtonTemplate.Quiz.Id}"
+                                IsExam="True"
+                                QuizStatus="{Binding ExamButtonTemplate.QuizStatus}"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+
+</UserControl>
