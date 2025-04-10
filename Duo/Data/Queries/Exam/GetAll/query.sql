@@ -1,7 +1,0 @@
-CREATE OR ALTER PROCEDURE sp_GetAllExams
-AS
-BEGIN
-    SELECT *
-    FROM Exams
-    ORDER BY SectionId;
-END; 
