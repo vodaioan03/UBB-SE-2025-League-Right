@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Duo.Commands;
+using Duo.Helpers;
 using Duo.Models.Exercises;
 using Duo.Services;
 using Duo.ViewModels.Base;
@@ -20,6 +21,7 @@ namespace Duo.ViewModels
     internal partial class ExerciseCreationViewModel : AdminBaseViewModel
     {
         private readonly IExerciseService exerciseService;
+        private readonly IExerciseViewFactory exerciseViewFactory;
         private object selectedExerciseContent;
 
         private string questionText = string.Empty;
@@ -40,14 +42,15 @@ namespace Duo.ViewModels
         public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; }
         public CreateFlashcardExerciseViewModel CreateFlashcardExerciseViewModel { get; } = new ();
 
-        public ExerciseCreationViewModel(IExerciseService exerciseService)
+        public ExerciseCreationViewModel(IExerciseService exerciseService, IExerciseViewFactory exerciseViewFactory)
         {
             this.exerciseService = exerciseService;
+            this.exerciseViewFactory = exerciseViewFactory;
             CreateMultipleChoiceExerciseViewModel = new CreateMultipleChoiceExerciseViewModel(this);
             CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
-            SaveButtonCommand = new RelayCommand(CreateExercise);
+            SaveButtonCommand = new RelayCommand(() => _ = CreateExercise());
             ExerciseTypes = new ObservableCollection<string>(Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
             Difficulties = new ObservableCollection<string>(Models.DifficultyList.DIFFICULTIES);
             SelectedExerciseContent = "Select an exercise type.";
@@ -59,6 +62,7 @@ namespace Duo.ViewModels
             try
             {
                 exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
+                exerciseViewFactory = (IExerciseViewFactory)App.ServiceProvider.GetService(typeof(IExerciseViewFactory));
             }
             catch (Exception ex)
             {
@@ -69,7 +73,8 @@ namespace Duo.ViewModels
             CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
-            SaveButtonCommand = new RelayCommand(CreateExercise);
+            SaveButtonCommand = new RelayCommand(() => _ = CreateExercise());
+
             /*ExerciseTypes = new ObservableCollection<string>
             {
                 "Association",
@@ -172,24 +177,23 @@ namespace Duo.ViewModels
         {
             Debug.WriteLine(exerciseType);
 
+            // Use the factory to create the appropriate exercise view
+            SelectedExerciseContent = exerciseViewFactory.CreateExerciseView(exerciseType);
+
+            // Depending on the exercise type, set the CurrentExerciseViewModel
             switch (exerciseType)
             {
                 case "Association":
-                    SelectedExerciseContent = new CreateAssociationExercise();
                     CurrentExerciseViewModel = CreateAssociationExerciseViewModel;
                     break;
                 case "Fill in the blank":
-                    SelectedExerciseContent = new CreateFillInTheBlankExercise();
                     CurrentExerciseViewModel = CreateFillInTheBlankExerciseViewModel;
                     break;
                 case "Multiple Choice":
-                    SelectedExerciseContent = new CreateMultipleChoiceExercise();
                     CurrentExerciseViewModel = CreateMultipleChoiceExerciseViewModel;
                     break;
                 case "Flashcard":
-                    SelectedExerciseContent = new CreateFlashcardExercise();
                     CurrentExerciseViewModel = CreateFlashcardExerciseViewModel;
-                    // You can set Flashcard content here, or leave it as null
                     break;
                 default:
                     SelectedExerciseContent = new TextBlock { Text = "Select an exercise type." };
@@ -204,29 +208,29 @@ namespace Duo.ViewModels
 
         public ICommand SaveButtonCommand { get; }
 
-        public void CreateExercise()
+        public async Task CreateExercise()
         {
             Debug.WriteLine(SelectedExerciseType);
             switch (SelectedExerciseType)
             {
                 case "Multiple Choice":
-                    CreateMultipleChoiceExercise();
+                    await CreateMultipleChoiceExercise();
                     break;
                 case "Association":
-                    CreateAssocitationExercise();
+                    await CreateAssocitationExercise();
                     break;
                 case "Flashcard":
-                    CreateFlashcardExercise();
+                    await CreateFlashcardExercise();
                     break;
                 case "Fill in the blank":
-                    CreateFillInTheBlankExercise();
+                    await CreateFillInTheBlankExercise();
                     break;
                 default:
                     break;
             }
         }
 
-        public async void CreateMultipleChoiceExercise()
+        public async Task CreateMultipleChoiceExercise()
         {
             try
             {
@@ -244,7 +248,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void CreateAssocitationExercise()
+        public async Task CreateAssocitationExercise()
         {
             try
             {
@@ -262,7 +266,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void CreateFlashcardExercise()
+        public async Task CreateFlashcardExercise()
         {
             try
             {
@@ -280,7 +284,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void CreateFillInTheBlankExercise()
+        public async Task CreateFillInTheBlankExercise()
         {
             try
             {

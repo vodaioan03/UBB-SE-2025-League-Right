@@ -38,9 +38,9 @@ namespace Duo.ViewModels
             {
                 Debug.WriteLine(ex);
             }
-            DeleteQuizCommand = new RelayCommandWithParameter<Quiz>(DeleteQuiz);
-            OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
-            RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(RemoveExerciseFromQuiz);
+            DeleteQuizCommand = new RelayCommandWithParameter<Quiz>(quiz => _ = DeleteQuiz(quiz));
+            OpenSelectExercisesCommand = new RelayCommand(() => _ = OpenSelectExercises());
+            RemoveExerciseFromQuizCommand = new RelayCommandWithParameter<Exercise>(exercise => _ = RemoveExerciseFromQuiz(exercise));
             LoadExercisesAsync();
             InitializeViewModel();
         }
@@ -60,34 +60,35 @@ namespace Duo.ViewModels
         public ICommand OpenSelectExercisesCommand { get; }
         public ICommand RemoveExerciseFromQuizCommand { get; }
 
-        public async void DeleteQuiz(Quiz quizToBeDeleted)
+        public async Task DeleteQuiz(Quiz quizToBeDeleted)
         {
-            Debug.WriteLine("Deleting quiz...");
-
-            if (quizToBeDeleted == SelectedQuiz)
-            {
-                SelectedQuiz = null;
-                UpdateQuizExercises(SelectedQuiz);
-            }
-
-            foreach (var exercise in quizToBeDeleted.ExerciseList)
-            {
-                AvailableExercises.Add(exercise);
-            }
-
             try
             {
+                Debug.WriteLine("Deleting quiz...");
+
+                if (quizToBeDeleted == SelectedQuiz)
+                {
+                    SelectedQuiz = null;
+                    await UpdateQuizExercises(SelectedQuiz);
+                }
+
+                foreach (var exercise in quizToBeDeleted.ExerciseList)
+                {
+                    AvailableExercises.Add(exercise);
+                }
+
                 await quizService.DeleteQuiz(quizToBeDeleted.Id);
                 Quizes.Remove(quizToBeDeleted);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"Error during DeleteQuiz: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
                 RaiseErrorMessage(ex.Message, string.Empty);
             }
         }
 
-        public async void InitializeViewModel()
+        public async Task InitializeViewModel()
         {
             try
             {
@@ -105,67 +106,93 @@ namespace Duo.ViewModels
             }
         }
 
-        public async void UpdateQuizExercises(Quiz selectedQuiz)
+        public async Task UpdateQuizExercises(Quiz selectedQuiz)
         {
-            Debug.WriteLine("Updating quiz exercises...");
-            QuizExercises.Clear();
-            if (SelectedQuiz == null)
+            try
             {
-                return;
-            }
+                Debug.WriteLine("Updating quiz exercises...");
+                QuizExercises.Clear();
 
-            List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
-            foreach (var exercise in exercisesOfSelectedQuiz)
+                if (selectedQuiz == null)
+                {
+                    Debug.WriteLine("No quiz selected. Skipping update.");
+                    return;
+                }
+
+                List<Exercise> exercisesOfSelectedQuiz = await exerciseService.GetAllExercisesFromQuiz(selectedQuiz.Id);
+
+                foreach (var exercise in exercisesOfSelectedQuiz)
+                {
+                    Debug.WriteLine(exercise);
+                    QuizExercises.Add(exercise);
+                }
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine(exercise);
-                QuizExercises.Add(exercise);
+                Debug.WriteLine($"Error during UpdateQuizExercises: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
         }
 
-        public void OpenSelectExercises()
+        public async Task OpenSelectExercises()
         {
             Debug.WriteLine("Opening select exercises...");
             ShowListViewModal?.Invoke(AvailableExercises.ToList());
         }
-        private async void LoadExercisesAsync()
+        private async Task LoadExercisesAsync()
         {
-            AvailableExercises.Clear(); // Clear the ObservableCollection
-            var exercises = await exerciseService.GetAllExercises();
-            foreach (var exercise in exercises)
-            {
-                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
-                AvailableExercises.Add(exercise);
-            }
-        }
-        public async void AddExercise(Exercise selectedExercise)
-        {
-            Debug.WriteLine("Adding exercise...");
-            if (SelectedQuiz == null)
-            {
-                Debug.WriteLine("No quiz selected.");
-                return;
-            }
-            SelectedQuiz.AddExercise(selectedExercise);
             try
             {
-                await quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
+                AvailableExercises.Clear(); // Clear the ObservableCollection
+
+                var exercises = await exerciseService.GetAllExercises();
+
+                foreach (var exercise in exercises)
+                {
+                    Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                    AvailableExercises.Add(exercise);
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
-                RaiseErrorMessage(ex.Message, string.Empty);
+                Debug.WriteLine($"Error during LoadExercisesAsync: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
-            UpdateQuizExercises(SelectedQuiz);
         }
 
-        public async void RemoveExerciseFromQuiz(Exercise selectedExercise)
+        public async Task AddExercise(Exercise selectedExercise)
+        {
+            try
+            {
+                Debug.WriteLine("Adding exercise...");
+
+                if (SelectedQuiz == null)
+                {
+                    Debug.WriteLine("No quiz selected.");
+                    return;
+                }
+
+                SelectedQuiz.AddExercise(selectedExercise);
+
+                await quizService.AddExerciseToQuiz(SelectedQuiz.Id, selectedExercise.Id);
+                await UpdateQuizExercises(SelectedQuiz);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error while adding exercise: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
+                RaiseErrorMessage(ex.Message, string.Empty);
+            }
+        }
+
+        public async Task RemoveExerciseFromQuiz(Exercise selectedExercise)
         {
             Debug.WriteLine("Removing exercise...");
             try
             {
                 await quizService.RemoveExerciseFromQuiz(SelectedQuiz.Id, selectedExercise.Id);
                 SelectedQuiz.RemoveExercise(selectedExercise);
-                UpdateQuizExercises(SelectedQuiz);
+                await UpdateQuizExercises(SelectedQuiz);
             }
             catch (Exception ex)
             {

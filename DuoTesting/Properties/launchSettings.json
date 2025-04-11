@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DuoTesting (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "DuoTesting (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

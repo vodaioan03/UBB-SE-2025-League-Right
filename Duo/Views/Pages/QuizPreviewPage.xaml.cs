@@ -46,7 +46,7 @@ namespace Duo.Views.Pages
                 bool isExam = parameters.Item2;
                 Debug.WriteLine($"idfk {quizId} {isExam}");
 
-                QuizPreview.Load(quizId, isExam);
+                await QuizPreview.Load(quizId, isExam);
 
                 Debug.WriteLine($"QuizPreviewPage received QuizId: {quizId}");
             }

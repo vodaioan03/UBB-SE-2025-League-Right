@@ -5,7 +5,9 @@ using Duo.Models.Quizzes;
 using Duo.Services;
 using Duo.ViewModels;
 using Moq;
+using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace DuoTesting.ViewModels
 {
@@ -119,26 +121,12 @@ namespace DuoTesting.ViewModels
             vm.AddExercise(e1);
             vm.AddExercise(e2);
 
-            mockQuizService.Setup(q => q.CreateExam(It.IsAny<Exam>())).ReturnsAsync(123); // mock returning an exam ID
+            mockQuizService.Setup(q => q.CreateQuiz(It.IsAny<Quiz>())).ReturnsAsync(123); // mock returning a quiz ID
 
-            //redirect Debug output to check it here
-            var stringWriter = new StringWriter();
-            var listener = new TextWriterTraceListener(stringWriter);
-            Trace.Listeners.Add(listener);
+            await vm.CreateQuiz(); 
 
-            try
-            {
-                vm.CreateQuiz();
-                await Task.Delay(100); // wait for async operation
-
-                var output = stringWriter.ToString();
-                Assert.IsTrue(output.Contains("Quiz 0 (Section: 1) - 2/10 exercises - Not started - Order: 0"));
-            }
-            finally
-            {
-                Trace.Listeners.Remove(listener);
-                listener.Dispose();
-            }
+            // Assert
+            mockQuizService.Verify(service => service.CreateQuiz(It.Is<Quiz>(e => e.ExerciseList.Count == 2)), Times.Once, "CreateQuiz was not called with the expected exam.");
         }
     }
 }

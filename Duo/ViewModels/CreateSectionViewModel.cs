@@ -48,7 +48,8 @@ namespace Duo.ViewModels
             }
             OpenSelectQuizesCommand = new RelayCommand(OpenSelectQuizes);
             OpenSelectExamsCommand = new RelayCommand(OpenSelectExams);
-            SaveButtonCommand = new RelayCommand(CreateSection);
+            SaveButtonCommand = new RelayCommand(() => _ = CreateSection());
+
             RemoveQuizCommand = new RelayCommandWithParameter<Quiz>(RemoveSelectedQuiz);
             GetQuizesAsync();
             GetExamAsync();
@@ -85,24 +86,42 @@ namespace Duo.ViewModels
             ShowListViewModalExams?.Invoke(GetAvailableExams());
         }
 
-        public async void GetQuizesAsync()
+        public async Task GetQuizesAsync()
         {
-            Quizes.Clear(); // Clear the ObservableCollection
-            List<Quiz> quizes = await quizService.GetAllQuizzesFromSection(1);
-            foreach (var quiz in quizes)
+            try
             {
-                Debug.WriteLine(quiz); // Add each quiz to the ObservableCollection
-                Quizes.Add(quiz);
+                Quizes.Clear(); // Clear the ObservableCollection
+                List<Quiz> quizes = await quizService.GetAllQuizzesFromSection(1);
+
+                foreach (var quiz in quizes)
+                {
+                    Debug.WriteLine(quiz); // Add each quiz to the ObservableCollection
+                    Quizes.Add(quiz);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error during GetQuizesAsync: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
         }
 
-        public async void GetExamAsync()
+        public async Task GetExamAsync()
         {
-            Quizes.Clear(); // Clear the ObservableCollection
-            Exam exam = await quizService.GetExamFromSection(1);
-            if (exam != null)
+            try
             {
-                Exams.Add(exam);
+                Quizes.Clear(); // Clear the ObservableCollection
+                Exam exam = await quizService.GetExamFromSection(1);
+
+                if (exam != null)
+                {
+                    Exams.Add(exam);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error during GetExamAsync: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
             }
         }
 
@@ -144,7 +163,7 @@ namespace Duo.ViewModels
             SelectedExams.Add(newExam);
         }
 
-        public async void CreateSection()
+        public async Task CreateSection()
         {
             try
             {

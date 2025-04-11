@@ -50,20 +50,27 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
             }
             LoadExercisesAsync();
-            SaveButtonCommand = new RelayCommand(CreateQuiz);
+            SaveButtonCommand = new RelayCommand(() => _ = CreateQuiz());
+
             OpenSelectExercisesCommand = new RelayCommand(OpenSelectExercises);
             RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
         }
 
-        private async void LoadExercisesAsync()
+        private async Task LoadExercisesAsync()
         {
-            Exercises.Clear(); // Clear the ObservableCollection
-            var exercises = await exerciseService.GetAllExercises();
-
-            foreach (var exercise in exercises)
+            try
             {
-                // Add each exercise to the ObservableCollection
-                Exercises.Add(exercise);
+                Exercises.Clear();
+                var exercises = await exerciseService.GetAllExercises();
+                foreach (var exercise in exercises)
+                {
+                    // Add each exercise to the ObservableCollection
+                    Exercises.Add(exercise);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading exercises: {ex.Message}");
             }
         }
 
@@ -104,26 +111,30 @@ namespace Duo.ViewModels
             Debug.WriteLine("Removing exercise...");
         }
 
-        public async void CreateQuiz()
+        public async Task CreateQuiz()
         {
-            Debug.WriteLine("Creating quiz...");
-            Quiz newQuiz = new Quiz(0, 1, null);
-            foreach (var exercise in SelectedExercises)
-            {
-                newQuiz.AddExercise(exercise);
-            }
             try
             {
+                Debug.WriteLine("Creating quiz...");
+                Quiz newQuiz = new Quiz(0, 1, null);
+
+                foreach (var exercise in SelectedExercises)
+                {
+                    newQuiz.AddExercise(exercise);
+                }
+
                 int quizId = await quizService.CreateQuiz(newQuiz);
                 await quizService.AddExercisesToQuiz(quizId, newQuiz.ExerciseList);
+
                 GoBack();
+                Debug.WriteLine(newQuiz);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Debug.WriteLine($"Error during CreateQuiz: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
                 RaiseErrorMessage(ex.Message, string.Empty);
             }
-            Debug.WriteLine(newQuiz);
         }
     }
 }
