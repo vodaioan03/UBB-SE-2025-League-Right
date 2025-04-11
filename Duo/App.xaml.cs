@@ -23,6 +23,7 @@ using Duo.ViewModels;
 using Duo.ViewModels.Roadmap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Duo.Helpers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -75,6 +76,8 @@ namespace Duo
 
             services.AddSingleton<RoadmapRepository>();
             services.AddSingleton<RoadmapService>();
+
+            services.AddSingleton<IExerciseViewFactory, ExerciseViewFactory>();
 
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IExerciseRepository, ExerciseRepository>();

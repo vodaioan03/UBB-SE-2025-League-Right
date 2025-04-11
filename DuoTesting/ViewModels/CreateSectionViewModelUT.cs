@@ -81,7 +81,6 @@ namespace DuoTesting.ViewModels
             var vm = new CreateSectionViewModel();
 
             await vm.GetQuizesAsync();
-            await Task.Delay(100); // wait for async loading
 
             // Assert
             Assert.AreEqual(2, vm.Quizes.Count);
@@ -93,7 +92,7 @@ namespace DuoTesting.ViewModels
             // Act
             var vm = new CreateSectionViewModel();
             await vm.GetExamAsync();
-            await Task.Delay(100); // wait for async loading
+
             // Assert
             Assert.AreEqual(2, vm.Exams.Count);
         }
@@ -123,7 +122,6 @@ namespace DuoTesting.ViewModels
             // Arrange
             var vm = new CreateSectionViewModel();
             await vm.GetExamAsync();
-            await Task.Delay(100); // wait for async loading
             var exam1 = vm.Exams[0];
             var exam2 = vm.Exams[1];
             List<Exam> result = new List<Exam>();
@@ -233,30 +231,15 @@ namespace DuoTesting.ViewModels
             vm.SelectedQuizes.Add(vm.Quizes[1]);
             vm.SelectedExams.Add(vm.Exams[0]);
 
-            
-            //check for message exam was created
-            //redirect Debug output to check it here
-            var stringWriter = new StringWriter();
-            var listener = new TextWriterTraceListener(stringWriter);
-            Trace.Listeners.Add(listener);
+            mockSectionService.Setup(q => q.AddSection(It.IsAny<Section>())).ReturnsAsync(123); // mock returning a quiz ID
 
-            try
-            {
-                // Act
-                await vm.CreateSection();
-                // Assert
+            await vm.CreateSection();
 
-                await Task.Delay(100); // wait for async operation
-
-                var output = stringWriter.ToString();
-                Assert.IsTrue(output.Contains("Section created"));
-            }
-            finally
-            {
-                Trace.Listeners.Remove(listener);
-                listener.Dispose();
-            }
-
+            mockSectionService.Verify(service => service.AddSection(It.Is<Section>(e => e.Exam.ExerciseList.Count == 2)), Times.Once, "CreateQuiz was not called with the expected exam.");
+            mockExerciseService.Verify(service => service.GetAllExercisesFromQuiz(It.IsAny<int>()), Times.Exactly(2), "Expected GetAllExercisesFromQuiz to be called twice.");
+            mockExerciseService.Verify(service => service.GetAllExercisesFromExam(It.IsAny<int>()), Times.Once, "Expected GetAllExercisesFromExam to be called once.");
+            mockSectionService.Verify(service => service.AddSection(It.IsAny<Section>()), Times.Once, "Expected AddSection to be called once.");
+            mockQuizService.Verify(service => service.UpdateQuiz(It.IsAny<Quiz>()), Times.Exactly(2), "Expected UpdateQuiz to be called twice.");
         }
 
 
