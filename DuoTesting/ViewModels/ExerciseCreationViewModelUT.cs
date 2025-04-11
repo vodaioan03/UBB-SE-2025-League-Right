@@ -17,6 +17,9 @@ using DuoTesting.Helper;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting.AppContainer;
+using Duo.Helpers;
+using Microsoft.UI.Xaml;
+using Windows.UI.Core;
 
 namespace DuoTesting.ViewModels
 {
@@ -24,111 +27,100 @@ namespace DuoTesting.ViewModels
     [TestClass]
     public class ExerciseCreationViewModelTests
     {
-        private Mock<IExerciseService> mockExerciseService;
-        private ExerciseCreationViewModel viewModel;
+        private Mock<IExerciseService> _mockExerciseService;
+        private Mock<IExerciseViewFactory> _mockExerciseViewFactory;
+        private ExerciseCreationViewModel _viewModel;
+        private MainWindow _window;
 
         [TestInitialize]
-        public void SetUp()
+        public void Initialize()
         {
-            // Initialize the mock services
-            mockExerciseService = new Mock<IExerciseService>();
-            // Create the ViewModel with mocked service
-            viewModel = new ExerciseCreationViewModel(mockExerciseService.Object);
-        }
+            // Mock the IExerciseService
+            _mockExerciseService = new Mock<IExerciseService>();
 
-        [TestMethod]
-        public async Task CreateExercise_ShouldCallCreateExercise_WhenMultipleChoiceIsSelected()
-        {
-            // Arrange: Set up necessary data for Multiple Choice exercise
-            viewModel.SelectedExerciseType = "Multiple Choice";
-            viewModel.SelectedDifficulty = "Easy";
-            viewModel.QuestionText = "What is 2 + 2?";
+            // Mock the IExerciseViewFactory
+            _mockExerciseViewFactory = new Mock<IExerciseViewFactory>();
 
-            mockExerciseService.Setup(service => service.CreateExercise(It.IsAny<Exercise>()))
-                .Returns(Task.CompletedTask); // Mocking the service method
-
-            // Act: Call the CreateExercise method
-            viewModel.CreateExercise();
-
-            // Assert: Verify CreateExercise is called for MultipleChoiceExercise
-            mockExerciseService.Verify(service => service.CreateExercise(It.IsAny<Exercise>()), Times.Once);
+            // Instantiate the ViewModel with mocked services
+            _viewModel = new ExerciseCreationViewModel(_mockExerciseService.Object, _mockExerciseViewFactory.Object);
         }
 
         [UITestMethod]
-        public async Task CreateExercise_ShouldCallCreateExercise_WhenAssociationIsSelected()
+        public void UpdateExerciseContent_ShouldSetSelectedExerciseContent_WhenExerciseTypeIsAssociation()
         {
-            // Arrange: Set up necessary data for Association exercise
-            viewModel.SelectedExerciseType = "Association";
-            viewModel.SelectedDifficulty = "Normal";
-            viewModel.QuestionText = "Match the pairs";
+            // Arrange
+            var mockAssociationExerciseView = new CreateAssociationExercise();
+            _mockExerciseViewFactory
+                .Setup(factory => factory.CreateExerciseView("Association"))
+                .Returns(mockAssociationExerciseView);
 
-            mockExerciseService.Setup(service => service.CreateExercise(It.IsAny<Exercise>()))
-                .Returns(Task.CompletedTask); // Mocking the service method
+            // Act
+            _viewModel.SelectedExerciseType = "Association";
 
-            // Act: Call the CreateExercise method
-            await viewModel.CreateExercise();
-
-            // Assert: Verify CreateExercise is called for AssociationExercise
-            mockExerciseService.Verify(service => service.CreateExercise(It.IsAny<Exercise>()), Times.Once);
+            // Assert
+            Assert.IsInstanceOfType(_viewModel.SelectedExerciseContent, typeof(CreateAssociationExercise));
+            _mockExerciseViewFactory.Verify(factory => factory.CreateExerciseView("Association"), Times.Once);
         }
 
         [UITestMethod]
-        public async Task CreateExercise_ShouldCallCreateExercise_WhenFlashcardIsSelected()
+        public void UpdateExerciseContent_ShouldSetSelectedExerciseContent_WhenExerciseTypeIsFillInTheBlank()
         {
-            // Arrange: Set up necessary data for Flashcard exercise
-            viewModel.SelectedExerciseType = "Flashcard";
-            viewModel.SelectedDifficulty = "Hard";
-            viewModel.QuestionText = "What is the capital of France?";
+            // Arrange
+            var mockFillInTheBlankExerciseView = new CreateFillInTheBlankExercise();
+            _mockExerciseViewFactory
+                .Setup(factory => factory.CreateExerciseView("Fill in the blank"))
+                .Returns(mockFillInTheBlankExerciseView);
 
-            mockExerciseService.Setup(service => service.CreateExercise(It.IsAny<Exercise>()))
-                .Returns(Task.CompletedTask); // Mocking the service method
+            // Act
+            _viewModel.SelectedExerciseType = "Fill in the blank";
 
-            // Act: Call the CreateExercise method
-            await viewModel.CreateExercise();
-
-            // Assert: Verify CreateExercise is called for FlashcardExercise
-            mockExerciseService.Verify(service => service.CreateExercise(It.IsAny<Exercise>()), Times.Once);
+            // Assert
+            Assert.IsInstanceOfType(_viewModel.SelectedExerciseContent, typeof(CreateFillInTheBlankExercise));
+            _mockExerciseViewFactory.Verify(factory => factory.CreateExerciseView("Fill in the blank"), Times.Once);
         }
 
         [UITestMethod]
-        public async Task CreateExercise_ShouldCallCreateExercise_WhenFillInTheBlankIsSelected()
+        public void UpdateExerciseContent_ShouldSetSelectedExerciseContent_WhenExerciseTypeIsMultipleChoice()
         {
-            // Arrange: Set up necessary data for Fill in the Blank exercise
-            viewModel.SelectedExerciseType = "Fill in the blank";
-            viewModel.SelectedDifficulty = "Easy";
-            viewModel.QuestionText = "The capital of Japan is ____.";
+            // Arrange
+            var mockMultipleChoiceExerciseView = new CreateMultipleChoiceExercise();
+            _mockExerciseViewFactory
+                .Setup(factory => factory.CreateExerciseView("Multiple Choice"))
+                .Returns(mockMultipleChoiceExerciseView);
 
-            mockExerciseService.Setup(service => service.CreateExercise(It.IsAny<Exercise>()))
-                .Returns(Task.CompletedTask); // Mocking the service method
+            // Act
+            _viewModel.SelectedExerciseType = "Multiple Choice";
 
-            // Act: Call the CreateExercise method
-            await viewModel.CreateExercise();
-
-            // Assert: Verify CreateExercise is called for FillInTheBlankExercise
-            mockExerciseService.Verify(service => service.CreateExercise(It.IsAny<Exercise>()), Times.Once);
+            // Assert
+            Assert.IsInstanceOfType(_viewModel.SelectedExerciseContent, typeof(CreateMultipleChoiceExercise));
+            _mockExerciseViewFactory.Verify(factory => factory.CreateExerciseView("Multiple Choice"), Times.Once);
         }
 
-        [TestMethod]
-        public async Task CreateExercise_ShouldHandleError_WhenServiceFails()
+        [UITestMethod]
+        public void UpdateExerciseContent_ShouldSetSelectedExerciseContent_WhenExerciseTypeIsFlashcard()
         {
-            // Arrange: Set up the service to throw an exception
-            viewModel.SelectedExerciseType = "Multiple Choice";
-            viewModel.SelectedDifficulty = "Normal";
-            viewModel.QuestionText = "What is 2 + 2?";
+            // Arrange
+            var mockFlashcardExerciseView = new CreateFlashcardExercise();
+            _mockExerciseViewFactory
+                .Setup(factory => factory.CreateExerciseView("Flashcard"))
+                .Returns(mockFlashcardExerciseView);
 
-            mockExerciseService.Setup(service => service.CreateExercise(It.IsAny<Exercise>()))
-                .ThrowsAsync(new Exception("Error creating exercise"));
+            // Act
+            _viewModel.SelectedExerciseType = "Flashcard";
 
-            // Act & Assert: Verify that an exception is handled gracefully
-            await Assert.ThrowsExceptionAsync<Exception>(() => viewModel.CreateExercise());
+            // Assert
+            Assert.IsInstanceOfType(_viewModel.SelectedExerciseContent, typeof(CreateFlashcardExercise));
+            _mockExerciseViewFactory.Verify(factory => factory.CreateExerciseView("Flashcard"), Times.Once);
         }
+
 
         [TestMethod]
         public void Constructor_ShouldInitialize_Properties()
         {
             IExerciseService exerciseService = new Mock<IExerciseService>().Object;
+            IExerciseViewFactory exerciseViewFactory = new Mock<IExerciseViewFactory>().Object;
 
-            var vm = new ExerciseCreationViewModel(exerciseService);
+            var vm = new ExerciseCreationViewModel(exerciseService, exerciseViewFactory);
 
             // Verify that ExerciseTypes and Difficulties are populated
             Assert.IsNotNull(vm.ExerciseTypes);
