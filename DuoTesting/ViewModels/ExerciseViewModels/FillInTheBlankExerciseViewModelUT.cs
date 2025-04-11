@@ -3,6 +3,7 @@ using Duo.Models.Exercises;
 using Duo.Services;
 using Duo.ViewModels.ExerciseViewModels;
 using Moq;
+using System;
 using System.Collections.ObjectModel;
 
 namespace DuoTesting.ViewModels.ExerciseViewModels
