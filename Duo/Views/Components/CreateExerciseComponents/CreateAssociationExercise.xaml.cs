@@ -25,7 +25,6 @@ namespace Duo.Views.Components.CreateExerciseComponents
         {
             this.InitializeComponent();
         }
-
     }
 }
 
