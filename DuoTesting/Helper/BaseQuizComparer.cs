@@ -1,7 +1,6 @@
 ﻿using Duo.Models.Quizzes;
 using Duo.Models.Exercises;
 using System.Collections.Generic;
-using System;
 
 namespace DuoTesting.Helper
 {

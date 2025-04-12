@@ -1,6 +1,5 @@
 ﻿using Duo.Models.Quizzes;
 using Duo.Repositories;
-using System.Linq;
 
 namespace DuoTesting.MockClasses
 {

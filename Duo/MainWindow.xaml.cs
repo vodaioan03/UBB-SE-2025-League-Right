@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.UI.Windowing;
-using Microsoft.UI;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -13,12 +12,14 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Microsoft.UI;
+using System.Diagnostics;
+using Microsoft.UI.Windowing;
 using Windows.Graphics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
+
 namespace Duo
 {
     /// <summary>
@@ -26,7 +27,8 @@ namespace Duo
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        private AppWindow appWindow;
+
+        private AppWindow _appWindow;
 
         public MainWindow()
         {
@@ -47,6 +49,8 @@ namespace Duo
 
                     titleBar.ButtonBackgroundColor = Colors.Transparent;
                     titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+
+
                 }
             }
             catch (Exception ex)
@@ -55,9 +59,9 @@ namespace Duo
             }
         }
 
-        private void SetDefaultScreenSizeSettings()
+        private void setDefaultScreenSizeSettings()
         {
-            var displayArea = DisplayArea.GetFromWindowId(appWindow.Id, DisplayAreaFallback.Primary);
+            var displayArea = DisplayArea.GetFromWindowId(_appWindow.Id, DisplayAreaFallback.Primary);
 
             int desiredWidth = 1200;
             int desiredHeight = 700;
@@ -65,11 +69,12 @@ namespace Duo
             var centerX = (displayArea.WorkArea.Width - desiredWidth) / 2;
             var centerY = (displayArea.WorkArea.Height - desiredHeight) / 2;
 
-            appWindow.MoveAndResize(new RectInt32(
+            _appWindow.MoveAndResize(new RectInt32(
                     centerX,
                     centerY,
                     desiredWidth,
                     desiredHeight));
         }
+
     }
 }
