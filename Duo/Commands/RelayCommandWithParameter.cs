@@ -34,7 +34,7 @@ namespace Duo.Commands
                 {
                     return canExecute(default);
                 }
-                return false; // null passed for value type, like int
+                return false;
             }
 
             try
