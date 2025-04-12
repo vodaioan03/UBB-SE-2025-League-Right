@@ -5,7 +5,6 @@ using Duo.Models.Quizzes;
 using Duo.Services;
 using Duo.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting.AppContainer;
 using Moq;
 using System;
 
