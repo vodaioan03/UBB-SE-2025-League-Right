@@ -30,7 +30,7 @@ namespace Duo.Commands
 
             if (parameter == null)
             {
-                if (default(T) == null) // Reference type
+                if (default(T) == null)
                 {
                     return canExecute(default);
                 }
@@ -62,7 +62,7 @@ namespace Duo.Commands
 
             if (parameter == null)
             {
-                if (default(T) == null) // Reference type
+                if (default(T) == null)
                 {
                     execute(default);
                     return;

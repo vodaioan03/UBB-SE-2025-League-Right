@@ -15,7 +15,7 @@ namespace Duo.ViewModels.Roadmap
 {
     public class RoadmapSectionViewModel : ViewModelBase
     {
-        private SectionService sectionService;
+        private ISectionService sectionService;
 
         private int sectionId;
         private Section section;
@@ -67,7 +67,7 @@ namespace Duo.ViewModels.Roadmap
 
         public RoadmapSectionViewModel()
         {
-            sectionService = (SectionService)(App.ServiceProvider.GetService(typeof(SectionService)));
+            sectionService = (ISectionService)(App.ServiceProvider.GetService(typeof(ISectionService)));
 
             var mainPageViewModel = (RoadmapMainPageViewModel)(App.ServiceProvider.GetService(typeof(RoadmapMainPageViewModel)));
             OpenQuizPreviewCommand = mainPageViewModel.OpenQuizPreviewCommand;
@@ -80,7 +80,7 @@ namespace Duo.ViewModels.Roadmap
             this.sectionId = sectionId;
             section = await sectionService.GetSectionById(this.sectionId);
 
-            QuizService quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+            IQuizService quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService));
             section.Quizzes = await quizService.GetAllQuizzesFromSection(this.sectionId);
             section.Exam = await quizService.GetExamFromSection(this.sectionId);
 

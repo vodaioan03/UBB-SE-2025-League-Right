@@ -15,8 +15,8 @@ namespace Duo.ViewModels
 {
     public class QuizExamViewModel : ViewModelBase
     {
-        private readonly ExerciseService exerciseService;
-        private readonly QuizService quizService;
+        private readonly IExerciseService exerciseService;
+        private readonly IQuizService quizService;
         private int quizId;
         private int examId;
         private Quiz currentQuiz;
@@ -155,7 +155,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public QuizExamViewModel(ExerciseService exerciseService)
+        public QuizExamViewModel(IExerciseService exerciseService)
         {
             this.exerciseService = exerciseService;
         }
@@ -164,8 +164,8 @@ namespace Duo.ViewModels
         {
             try
             {
-                exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
-                quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+                exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
+                quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService));
             }
             catch (Exception ex)
             {

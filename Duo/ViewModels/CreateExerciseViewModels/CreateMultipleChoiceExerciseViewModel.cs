@@ -107,7 +107,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 get => isCorrect;
                 set
                 {
-                    if (isCorrect != value) // Prevent unnecessary updates
+                    if (isCorrect != value)
                     {
                         isCorrect = value;
                         OnPropertyChanged(nameof(isCorrect));

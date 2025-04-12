@@ -2,30 +2,23 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Duo;
 using Duo.Commands;
 using Duo.Models;
 using Duo.Models.Quizzes;
 using Duo.Models.Sections;
 using Duo.Services;
 using Duo.ViewModels.Base;
-using Duo.ViewModels.Roadmap;
-using Duo.Views.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Duo.ViewModels.Roadmap
 {
     public class RoadmapMainPageViewModel : ViewModelBase
     {
-        private RoadmapService roadmapService;
+        private IRoadmapService roadmapService;
         private Duo.Models.Roadmap.Roadmap roadmap;
 
-        private UserService userService;
+        private IUserService userService;
         private User user;
 
         private BaseQuiz selectedQuiz;
@@ -42,8 +35,8 @@ namespace Duo.ViewModels.Roadmap
 
         public RoadmapMainPageViewModel()
         {
-            roadmapService = (RoadmapService)App.ServiceProvider.GetService(typeof(RoadmapService));
-            userService = (UserService)App.ServiceProvider.GetService(typeof(UserService));
+            roadmapService = (IRoadmapService)App.ServiceProvider.GetService(typeof(IRoadmapService));
+            userService = (IUserService)App.ServiceProvider.GetService(typeof(IUserService));
 
             StartQuizCommand = new RelayCommand(() => _ = StartQuiz());
             OpenQuizPreviewCommand = new RelayCommandWithParameter<Tuple<int, bool>>(tuple => _ = OpenQuizPreview(tuple));
@@ -54,7 +47,7 @@ namespace Duo.ViewModels.Roadmap
             roadmap = await roadmapService.GetRoadmapById(1);
             user = await userService.GetByIdAsync(1);
 
-            SectionService sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
+            ISectionService sectionService = (ISectionService)App.ServiceProvider.GetService(typeof(ISectionService));
             List<Section> sections = (List<Section>)await sectionService.GetByRoadmapId(1);
 
             sectionViewModels = new ObservableCollection<RoadmapSectionViewModel>();
