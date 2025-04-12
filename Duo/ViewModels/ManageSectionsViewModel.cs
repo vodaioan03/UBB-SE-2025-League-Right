@@ -17,8 +17,8 @@ namespace Duo.ViewModels
 {
     internal class ManageSectionsViewModel : AdminBaseViewModel
     {
-        private readonly SectionService sectionService;
-        private readonly QuizService quizService;
+        private readonly ISectionService sectionService;
+        private readonly IQuizService quizService;
         public ObservableCollection<Section> Sections { get; set; } = new ObservableCollection<Section>();
         public ObservableCollection<Quiz> SectionQuizes { get; private set; } = new ObservableCollection<Quiz>();
 
@@ -30,8 +30,8 @@ namespace Duo.ViewModels
         {
             try
             {
-                sectionService = (SectionService)App.ServiceProvider.GetService(typeof(SectionService));
-                quizService = (QuizService)App.ServiceProvider.GetService(typeof(QuizService));
+                sectionService = (ISectionService)App.ServiceProvider.GetService(typeof(ISectionService));
+                quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService));
             }
             catch (Exception ex)
             {

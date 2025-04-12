@@ -17,14 +17,14 @@ namespace Duo.ViewModels
 {
     partial class ManageExercisesViewModel : AdminBaseViewModel
     {
-        private readonly ExerciseService exerciseService;
+        private readonly IExerciseService exerciseService;
         public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
 
         public ManageExercisesViewModel()
         {
             try
             {
-                exerciseService = (ExerciseService)App.ServiceProvider.GetService(typeof(ExerciseService));
+                exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
             }
             catch (Exception ex)
             {
