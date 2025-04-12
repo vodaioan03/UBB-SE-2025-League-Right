@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+        <Configuration>
+          <CodeCoverage>
+            <!-- Match assembly file paths -->
+            <ModulePaths>
+              <Exclude>
+                <!-- Exclude test assemblies -->
+                <ModulePath>.*\\[Tt]est[s]?\\..*</ModulePath>
+                <!-- Exclude WinUI 3 UI files -->
+                <ModulePath>.*\\Views\\.*\.dll$</ModulePath>
+                <ModulePath>.*\\Controls\\.*\.dll$</ModulePath>
+                <ModulePath>.*\\Pages\\.*\.dll$</ModulePath>
+              </Exclude>
+            </ModulePaths>
+
+            <!-- Match by class attribute -->
+            <Attributes>
+              <Exclude>
+                <!-- Don't count code with these attributes -->
+                <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+                <Attribute>^Microsoft\.UI\.Xaml\.Data\.BindableAttribute$</Attribute>
+              </Exclude>
+            </Attributes>
+
+            <!-- Match by namespace -->
+            <Functions>
+              <Exclude>
+                <Function>^Duo\.Views\..*</Function>
+                <Function>^Duo\.Data\..*</Function>
+                <Function>^Duo\.App</Function>
+                <Function>^Duo\.MainWindow</Function>
+                <Function>^Duo\.Helpers\..*</Function>
+                <Function>^Duo\.Repositories\..*</Function>
+                <Function>^Microsoft\.UI\.Xaml\..*</Function>
+              </Exclude>
+            </Functions>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
