@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Duo.Commands;
+using Duo.Helpers;
 using Duo.Models.Exercises;
 using Duo.Services;
 using Duo.ViewModels.Base;
@@ -20,6 +21,7 @@ namespace Duo.ViewModels
     internal partial class ExerciseCreationViewModel : AdminBaseViewModel
     {
         private readonly IExerciseService exerciseService;
+        private readonly IExerciseViewFactory exerciseViewFactory;
         private object selectedExerciseContent;
 
         private string questionText = string.Empty;
@@ -40,9 +42,10 @@ namespace Duo.ViewModels
         public CreateMultipleChoiceExerciseViewModel CreateMultipleChoiceExerciseViewModel { get; }
         public CreateFlashcardExerciseViewModel CreateFlashcardExerciseViewModel { get; } = new ();
 
-        public ExerciseCreationViewModel(IExerciseService exerciseService)
+        public ExerciseCreationViewModel(IExerciseService exerciseService, IExerciseViewFactory exerciseViewFactory)
         {
             this.exerciseService = exerciseService;
+            this.exerciseViewFactory = exerciseViewFactory;
             CreateMultipleChoiceExerciseViewModel = new CreateMultipleChoiceExerciseViewModel(this);
             CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
@@ -59,6 +62,7 @@ namespace Duo.ViewModels
             try
             {
                 exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
+                exerciseViewFactory = (IExerciseViewFactory)App.ServiceProvider.GetService(typeof(IExerciseViewFactory));
             }
             catch (Exception ex)
             {
@@ -173,24 +177,23 @@ namespace Duo.ViewModels
         {
             Debug.WriteLine(exerciseType);
 
+            // Use the factory to create the appropriate exercise view
+            SelectedExerciseContent = exerciseViewFactory.CreateExerciseView(exerciseType);
+
+            // Depending on the exercise type, set the CurrentExerciseViewModel
             switch (exerciseType)
             {
                 case "Association":
-                    SelectedExerciseContent = new CreateAssociationExercise();
                     CurrentExerciseViewModel = CreateAssociationExerciseViewModel;
                     break;
                 case "Fill in the blank":
-                    SelectedExerciseContent = new CreateFillInTheBlankExercise();
                     CurrentExerciseViewModel = CreateFillInTheBlankExerciseViewModel;
                     break;
                 case "Multiple Choice":
-                    SelectedExerciseContent = new CreateMultipleChoiceExercise();
                     CurrentExerciseViewModel = CreateMultipleChoiceExerciseViewModel;
                     break;
                 case "Flashcard":
-                    SelectedExerciseContent = new CreateFlashcardExercise();
                     CurrentExerciseViewModel = CreateFlashcardExerciseViewModel;
-                    // You can set Flashcard content here, or leave it as null
                     break;
                 default:
                     SelectedExerciseContent = new TextBlock { Text = "Select an exercise type." };

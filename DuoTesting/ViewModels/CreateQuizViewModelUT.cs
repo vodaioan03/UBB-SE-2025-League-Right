@@ -123,7 +123,7 @@ namespace DuoTesting.ViewModels
 
             mockQuizService.Setup(q => q.CreateQuiz(It.IsAny<Quiz>())).ReturnsAsync(123); // mock returning a quiz ID
 
-            await vm.CreateQuiz(); 
+            await vm.CreateQuiz();
 
             // Assert
             mockQuizService.Verify(service => service.CreateQuiz(It.Is<Quiz>(e => e.ExerciseList.Count == 2)), Times.Once, "CreateQuiz was not called with the expected exam.");

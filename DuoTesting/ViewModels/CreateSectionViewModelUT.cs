@@ -122,6 +122,7 @@ namespace DuoTesting.ViewModels
             // Arrange
             var vm = new CreateSectionViewModel();
             await vm.GetExamAsync();
+            Debug.WriteLine("Exams count: " + vm.Exams.Count);
             var exam1 = vm.Exams[0];
             var exam2 = vm.Exams[1];
             List<Exam> result = new List<Exam>();
