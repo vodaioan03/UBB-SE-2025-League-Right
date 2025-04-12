@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using static Duo.ViewModels.CreateExerciseViewModels.CreateFillInTheBlankExerciseViewModel;
 using Duo.Models.Exercises;
-using Duo.Helpers;
 
 namespace DuoTesting.ViewModels.CreateExerciseViewModels
 {
@@ -22,8 +21,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             var viewModel = new CreateFillInTheBlankExerciseViewModel(parentViewModel.Object);
             int initialCount = viewModel.Answers.Count;
             // Act using the AddNewAnswerCommand
@@ -38,8 +36,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             parentViewModel.Setup(p => p.RaiseErrorMessage(It.IsAny<string>(), It.IsAny<string>()));
             var viewModel = new CreateFillInTheBlankExerciseViewModel(parentViewModel.Object);
             // Fill the answers to the maximum
@@ -58,8 +55,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             var viewModel = new CreateFillInTheBlankExerciseViewModel(parentViewModel.Object);
             viewModel.Answers.Add(new Answer("Answer1"));
             viewModel.Answers.Add(new Answer("Answer2"));
@@ -75,8 +71,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             var viewModel = new CreateFillInTheBlankExerciseViewModel(parentViewModel.Object);
             string question = "What is the capital of France?";
             Difficulty difficulty = Difficulty.Easy;

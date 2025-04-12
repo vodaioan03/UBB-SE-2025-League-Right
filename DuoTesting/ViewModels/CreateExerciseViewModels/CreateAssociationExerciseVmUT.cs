@@ -11,7 +11,6 @@ using System.Diagnostics;
 using static Duo.ViewModels.CreateExerciseViewModels.CreateAssociationExerciseViewModel;
 using Duo.Models;
 using Duo.Models.Exercises;
-using Duo.Helpers;
 
 namespace DuoTesting.ViewModels.CreateExerciseViewModels
 {
@@ -23,8 +22,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             var viewModel = new CreateAssociationExerciseViewModel(parentViewModel.Object);
             int initialLeftCount = viewModel.LeftSideAnswers.Count;
             int initialRightCount = viewModel.RightSideAnswers.Count;
@@ -42,8 +40,8 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             parentViewModel.Setup(p => p.RaiseErrorMessage(It.IsAny<string>(), It.IsAny<string>()));
 
             var viewModel = new CreateAssociationExerciseViewModel(parentViewModel.Object);
@@ -67,8 +65,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             var viewModel = new CreateAssociationExerciseViewModel(parentViewModel.Object);
             viewModel.LeftSideAnswers.Add(new Answer("Answer 1"));
             viewModel.LeftSideAnswers.Add(new Answer("Answer 2"));
@@ -93,8 +90,7 @@ namespace DuoTesting.ViewModels.CreateExerciseViewModels
         {
             // Arrange
             var exerciseService = new Mock<IExerciseService>();
-            var exerciseViewFactory = new Mock<IExerciseViewFactory>();
-            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object, exerciseViewFactory.Object);
+            var parentViewModel = new Mock<ExerciseCreationViewModel>(exerciseService.Object);
             var viewModel = new CreateAssociationExerciseViewModel(parentViewModel.Object);
 
             string question = "Sample Question";

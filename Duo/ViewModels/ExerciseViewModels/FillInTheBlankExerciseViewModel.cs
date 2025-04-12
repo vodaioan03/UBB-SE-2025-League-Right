@@ -14,7 +14,7 @@ namespace Duo.ViewModels.ExerciseViewModels
     public class FillInTheBlankExerciseViewModel : ViewModelBase
     {
         private FillInTheBlankExercise? exercise;
-        private readonly IExerciseService exerciseService;
+        private readonly ExerciseService exerciseService;
         private ObservableCollection<string>? userAnswers;
         public ObservableCollection<string>? UserAnswers
         {
@@ -22,7 +22,7 @@ namespace Duo.ViewModels.ExerciseViewModels
             set { SetProperty(ref userAnswers, value); }
         }
 
-        public FillInTheBlankExerciseViewModel(IExerciseService service)
+        public FillInTheBlankExerciseViewModel(ExerciseService service)
         {
             exerciseService = service;
         }

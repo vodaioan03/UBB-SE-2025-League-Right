@@ -12,7 +12,7 @@ namespace Duo.ViewModels.ExerciseViewModels
 {
     public class AssociationExerciseViewModel : ViewModelBase
     {
-        private readonly IExerciseService exerciseService;
+        private readonly ExerciseService exerciseService;
         private AssociationExercise? exercise;
         private ObservableCollection<(string, string)>? userAnswers;
 
@@ -22,7 +22,7 @@ namespace Duo.ViewModels.ExerciseViewModels
             set { SetProperty(ref userAnswers, value); }
         }
 
-        public AssociationExerciseViewModel(IExerciseService exerciseService)
+        public AssociationExerciseViewModel(ExerciseService exerciseService)
         {
             this.exerciseService = exerciseService;
         }
