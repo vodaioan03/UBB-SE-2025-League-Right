@@ -45,8 +45,8 @@ namespace Duo.ViewModels.Roadmap
             roadmapService = (RoadmapService)App.ServiceProvider.GetService(typeof(RoadmapService));
             userService = (UserService)App.ServiceProvider.GetService(typeof(UserService));
 
-            StartQuizCommand = new RelayCommand(() => _ = StartQuiz());
-            OpenQuizPreviewCommand = new RelayCommandWithParameter<Tuple<int, bool>>(tuple => _ = OpenQuizPreview(tuple));
+            StartQuizCommand = new RelayCommand(StartQuiz);
+            OpenQuizPreviewCommand = new RelayCommandWithParameter<Tuple<int, bool>>(OpenQuizPreview);
         }
 
         public async Task SetupViewModel()
@@ -85,31 +85,16 @@ namespace Duo.ViewModels.Roadmap
             OnPropertyChanged(nameof(SectionViewModels));
         }
 
-        private async Task OpenQuizPreview(Tuple<int, bool> args)
+        private async void OpenQuizPreview(Tuple<int, bool> args)
         {
-            try
-            {
-                Debug.WriteLine($"Opening quiz with ID: {args.Item1}");
+            Debug.WriteLine($"Opening quiz with ID: {args.Item1}");
 
-                var quizPreviewViewModel = (RoadmapQuizPreviewViewModel)App.ServiceProvider.GetService(typeof(RoadmapQuizPreviewViewModel));
-
-                if (quizPreviewViewModel == null)
-                {
-                    Debug.WriteLine("Failed to resolve RoadmapQuizPreviewViewModel from service provider.");
-                    return;
-                }
-
-                await quizPreviewViewModel.OpenForQuiz(args.Item1, args.Item2);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error during OpenQuizPreview: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
-            }
+            var quizPreviewViewModel = (RoadmapQuizPreviewViewModel)App.ServiceProvider.GetService(typeof(RoadmapQuizPreviewViewModel));
+            await quizPreviewViewModel.OpenForQuiz(args.Item1, args.Item2);
         }
 
         // MAYBE MAKE THIS OBSOLETE
-        private async Task StartQuiz()
+        private void StartQuiz()
         {
             Console.WriteLine($"Starting quiz with ID: {selectedQuiz?.Id}");
             // Navigation logic goes here

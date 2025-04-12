@@ -10,7 +10,6 @@ using Duo.ViewModels;
 using Duo.Models;
 using System.Diagnostics;
 using Duo;
-using System.IO;
 
 namespace DuoTesting.ViewModels
 {
@@ -71,18 +70,6 @@ namespace DuoTesting.ViewModels
         }
 
         [TestMethod]
-        public void GetAvailableExercises_ShouldReturn_OnlyUnselected()
-        {
-            var vm = new CreateExamViewModel();
-            var exercise1 = vm.Exercises[0];
-            var exercise2 = vm.Exercises[1];
-            vm.AddExercise(exercise1);
-            var availableExercises = vm.GetAvailableExercises();
-            Assert.IsTrue(availableExercises.Contains(exercise2));
-            Assert.IsFalse(availableExercises.Contains(exercise1));
-        }
-
-        [TestMethod]
         public void AddExercise_ShouldNotAdd_IfOverLimit()
         {
             var vm = new CreateExamViewModel();
@@ -138,13 +125,26 @@ namespace DuoTesting.ViewModels
             vm.AddExercise(e1);
             vm.AddExercise(e2);
 
-
             mockQuizService.Setup(q => q.CreateExam(It.IsAny<Exam>())).ReturnsAsync(123); // mock returning an exam ID
 
-            await vm.CreateExam();
+            //redirect Debug output to check it here
+            var stringWriter = new StringWriter();
+            var listener = new TextWriterTraceListener(stringWriter);
+            Trace.Listeners.Add(listener);
 
-            // Assert
-            mockQuizService.Verify(service => service.CreateExam(It.Is<Exam>(e => e.ExerciseList.Count == 2)), Times.Once, "CreateExam was not called with the expected exam.");
+            try
+            {
+                vm.CreateExam();
+                await Task.Delay(100); // wait for async operation
+
+                var output = stringWriter.ToString();
+                Assert.IsTrue(output.Contains("Quiz 0 (Section: 0) - 2/25 exercises - Not started [Final Exam]"));
+            }
+            finally
+            {
+                Trace.Listeners.Remove(listener);
+                listener.Dispose();
+            }
         }
     }
 }

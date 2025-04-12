@@ -38,7 +38,7 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
             }
             LoadSectionsAsync();
-            DeleteSectionCommand = new RelayCommandWithParameter<Section>(section => _ = DeleteSection(section));
+            DeleteSectionCommand = new RelayCommandWithParameter<Section>(DeleteSection);
         }
         public Section SelectedSection
         {
@@ -51,7 +51,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async Task LoadSectionsAsync()
+        public async void LoadSectionsAsync()
         {
             try
             {
@@ -69,52 +69,40 @@ namespace Duo.ViewModels
             }
         }
 
-        public async Task UpdateSectionQuizes(Section selectedSection)
+        public async void UpdateSectionQuizes(Section selectedSection)
         {
-            try
+            Debug.WriteLine("Updating quiz exercises...");
+            SectionQuizes.Clear();
+            if (SelectedSection == null)
             {
-                Debug.WriteLine("Updating quiz exercises...");
-                SectionQuizes.Clear();
-
-                if (selectedSection == null)
-                {
-                    Debug.WriteLine("No section selected. Skipping update.");
-                    return;
-                }
-
-                List<Quiz> quizzesOfSelectedQuiz = await quizService.GetAllQuizzesFromSection(selectedSection.Id);
-
-                foreach (var quiz in quizzesOfSelectedQuiz)
-                {
-                    Debug.WriteLine(quiz);
-                    SectionQuizes.Add(quiz);
-                }
+                return;
             }
-            catch (Exception ex)
+
+            List<Quiz> quizzesOfSelectedQuiz = await quizService.GetAllQuizzesFromSection(selectedSection.Id);
+            foreach (var quiz in quizzesOfSelectedQuiz)
             {
-                Debug.WriteLine($"Error during UpdateSectionQuizes: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine(quiz);
+                SectionQuizes.Add(quiz);
             }
         }
 
-        public async Task DeleteSection(Section sectionToBeDeleted)
+        public async void DeleteSection(Section sectionToBeDeleted)
         {
+            Debug.WriteLine("Deleting section...");
+
+            if (sectionToBeDeleted == SelectedSection)
+            {
+                SelectedSection = null;
+            }
+
             try
             {
-                Debug.WriteLine("Deleting section...");
-
-                if (sectionToBeDeleted == SelectedSection)
-                {
-                    SelectedSection = null;
-                }
-
                 await sectionService.DeleteSection(sectionToBeDeleted.Id);
                 Sections.Remove(sectionToBeDeleted);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error during DeleteSection: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
+                Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, string.Empty);
             }
         }

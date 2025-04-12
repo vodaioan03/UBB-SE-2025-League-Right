@@ -50,7 +50,7 @@ namespace Duo.ViewModels
             CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
-            SaveButtonCommand = new RelayCommand(() => _ = CreateExercise());
+            SaveButtonCommand = new RelayCommand(CreateExercise);
             ExerciseTypes = new ObservableCollection<string>(Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
             Difficulties = new ObservableCollection<string>(Models.DifficultyList.DIFFICULTIES);
             SelectedExerciseContent = "Select an exercise type.";
@@ -73,8 +73,7 @@ namespace Duo.ViewModels
             CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
-            SaveButtonCommand = new RelayCommand(() => _ = CreateExercise());
-
+            SaveButtonCommand = new RelayCommand(CreateExercise);
             /*ExerciseTypes = new ObservableCollection<string>
             {
                 "Association",
@@ -208,29 +207,29 @@ namespace Duo.ViewModels
 
         public ICommand SaveButtonCommand { get; }
 
-        public async Task CreateExercise()
+        public void CreateExercise()
         {
             Debug.WriteLine(SelectedExerciseType);
             switch (SelectedExerciseType)
             {
                 case "Multiple Choice":
-                    await CreateMultipleChoiceExercise();
+                    CreateMultipleChoiceExercise();
                     break;
                 case "Association":
-                    await CreateAssocitationExercise();
+                    CreateAssocitationExercise();
                     break;
                 case "Flashcard":
-                    await CreateFlashcardExercise();
+                    CreateFlashcardExercise();
                     break;
                 case "Fill in the blank":
-                    await CreateFillInTheBlankExercise();
+                    CreateFillInTheBlankExercise();
                     break;
                 default:
                     break;
             }
         }
 
-        public async Task CreateMultipleChoiceExercise()
+        public async void CreateMultipleChoiceExercise()
         {
             try
             {
@@ -248,7 +247,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async Task CreateAssocitationExercise()
+        public async void CreateAssocitationExercise()
         {
             try
             {
@@ -266,7 +265,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async Task CreateFlashcardExercise()
+        public async void CreateFlashcardExercise()
         {
             try
             {
@@ -284,7 +283,7 @@ namespace Duo.ViewModels
             }
         }
 
-        public async Task CreateFillInTheBlankExercise()
+        public async void CreateFillInTheBlankExercise()
         {
             try
             {

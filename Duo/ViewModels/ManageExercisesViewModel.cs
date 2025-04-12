@@ -31,7 +31,7 @@ namespace Duo.ViewModels
                 Debug.WriteLine(ex);
                 RaiseErrorMessage(ex.Message, string.Empty);
             }
-            DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(exercise => _ = DeleteExercise(exercise));
+            DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(DeleteExercise);
 
             InitializeViewModel();
             LoadExercisesAsync();
@@ -40,25 +40,14 @@ namespace Duo.ViewModels
         public ICommand DeleteExerciseCommand { get; }
 
         // Method to load exercises asynchronously
-        private async Task LoadExercisesAsync()
+        private async void LoadExercisesAsync()
         {
-            try
+            Exercises.Clear(); // Clear the ObservableCollection
+            var exercises = await exerciseService.GetAllExercises();
+            foreach (var exercise in exercises)
             {
-                Exercises.Clear(); // Clear the ObservableCollection
-
-                var exercises = await exerciseService.GetAllExercises();
-
-                foreach (var exercise in exercises)
-                {
-                    Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
-                    Exercises.Add(exercise);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error during LoadExercisesAsync: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
-                // Optional: RaiseErrorMessage("Failed to load exercises.", ex.Message);
+                Debug.WriteLine(exercise); // Add each exercise to the ObservableCollection
+                Exercises.Add(exercise);
             }
         }
 
@@ -66,13 +55,13 @@ namespace Duo.ViewModels
         {
         }
 
-        public async Task DeleteExercise(Exercise exercise)
+        public async void DeleteExercise(Exercise exercise)
         {
             Debug.WriteLine(exercise);
             try
             {
                 await exerciseService.DeleteExercise(exercise.Id);
-                await LoadExercisesAsync();
+                LoadExercisesAsync();
             }
             catch (Exception ex)
             {
