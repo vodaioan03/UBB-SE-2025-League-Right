@@ -117,7 +117,6 @@ namespace Duo.ViewModels
                 int examId = await quizService.CreateExam(newExam);
                 // await quizService.AddExercisesToExam(examId, newExam.ExerciseList);
                 Debug.WriteLine(newExam);
-
                 GoBack();
             }
             catch (Exception ex)
