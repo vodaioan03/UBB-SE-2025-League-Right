@@ -78,7 +78,7 @@ namespace DuoTesting.ViewModels
             // Act
             var vm = new CreateSectionViewModel();
 
-            await vm.GetQuizesAsync();
+            vm.GetQuizesAsync();
             await Task.Delay(100); // wait for async loading
 
             // Assert
@@ -90,7 +90,7 @@ namespace DuoTesting.ViewModels
         {
             // Act
             var vm = new CreateSectionViewModel();
-            await vm.GetExamAsync();
+            vm.GetExamAsync();
             await Task.Delay(100); // wait for async loading
             // Assert
             Assert.AreEqual(2, vm.Exams.Count);
@@ -98,11 +98,11 @@ namespace DuoTesting.ViewModels
 
 
         [TestMethod]
-        public async Task OpenSelectQuizes_ShouldInvokeShowListViewModalQuizes()
+        public void OpenSelectQuizes_ShouldInvokeShowListViewModalQuizes()
         {
             // Arrange
             var vm = new CreateSectionViewModel();
-            await vm.GetQuizesAsync();
+            vm.GetQuizesAsync();
             var quiz1 = vm.Quizes[0];
             var quiz2 = vm.Quizes[1];
             List<Quiz> result = new List<Quiz>();
@@ -120,7 +120,7 @@ namespace DuoTesting.ViewModels
         {
             // Arrange
             var vm = new CreateSectionViewModel();
-            await vm.GetExamAsync();
+            vm.GetExamAsync();
             await Task.Delay(100); // wait for async loading
             var exam1 = vm.Exams[0];
             var exam2 = vm.Exams[1];
@@ -171,11 +171,11 @@ namespace DuoTesting.ViewModels
         }
 
         [TestMethod]
-        public async Task RemoveSelectedQuiz_ShouldRemoveQuizFromSelectedQuizes()
+        public void RemoveSelectedQuiz_ShouldRemoveQuizFromSelectedQuizes()
         {
             // Arrange
             var vm = new CreateSectionViewModel();
-            await vm.GetQuizesAsync();
+            vm.GetQuizesAsync();
             var quiz1 = vm.Quizes[0];
             var quiz2 = vm.Quizes[1];
             vm.SelectedQuizes.Add(quiz1);
@@ -188,11 +188,11 @@ namespace DuoTesting.ViewModels
         }
 
         [TestMethod]
-        public async Task AddQuiz_ShouldAddQuizToSelectedQuizes()
+        public void AddQuiz_ShouldAddQuizToSelectedQuizes()
         {
             // Arrange
             var vm = new CreateSectionViewModel();
-            await vm.GetQuizesAsync();
+            vm.GetQuizesAsync();
             var quiz1 = vm.Quizes[0];
             var quiz2 = vm.Quizes[1];
             // Act
@@ -204,11 +204,11 @@ namespace DuoTesting.ViewModels
         }
 
         [TestMethod]
-        public async Task AddExam_ShouldAddExamToSelectedExams()
+        public void AddExam_ShouldAddExamToSelectedExams()
         {
             // Arrange
             var vm = new CreateSectionViewModel();
-            await vm.GetExamAsync();
+            vm.GetExamAsync();
             var exam1 = vm.Exams[0];
             var exam2 = vm.Exams[1];
             // Act
@@ -225,7 +225,7 @@ namespace DuoTesting.ViewModels
         {
             // Arrange
             var vm = new CreateSectionViewModel();
-            await vm.GetQuizesAsync();
+            vm.GetQuizesAsync();
             vm.SubjectText = "Math";
             vm.SelectedQuizes.Add(vm.Quizes[0]);
             vm.SelectedQuizes.Add(vm.Quizes[1]);
@@ -241,7 +241,7 @@ namespace DuoTesting.ViewModels
             try
             {
                 // Act
-                await vm.CreateSection();
+                vm.CreateSection();
                 // Assert
 
                 await Task.Delay(100); // wait for async operation

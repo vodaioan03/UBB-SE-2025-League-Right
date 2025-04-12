@@ -128,7 +128,7 @@ namespace DuoTesting.ViewModels
 
             try
             {
-                await vm.CreateQuiz();
+                vm.CreateQuiz();
                 await Task.Delay(100); // wait for async operation
 
                 var output = stringWriter.ToString();
