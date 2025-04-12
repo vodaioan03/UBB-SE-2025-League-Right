@@ -16,6 +16,9 @@ using System.ComponentModel.DataAnnotations;
 using DuoTesting.Helper;
 using System.Diagnostics;
 using System.IO;
+using Duo.Helpers;
+using Microsoft.UI.Xaml;
+using Windows.UI.Core;
 
 namespace DuoTesting.ViewModels
 {
@@ -24,12 +27,14 @@ namespace DuoTesting.ViewModels
     public class ExerciseCreationViewModelTests
     {
 
+
         [TestMethod]
         public void Constructor_ShouldInitialize_Properties()
         {
             IExerciseService exerciseService = new Mock<IExerciseService>().Object;
+            IExerciseViewFactory exerciseViewFactory = new Mock<IExerciseViewFactory>().Object;
 
-            var vm = new ExerciseCreationViewModel(exerciseService);
+            var vm = new ExerciseCreationViewModel(exerciseService, exerciseViewFactory);
 
             // Verify that ExerciseTypes and Difficulties are populated
             Assert.IsNotNull(vm.ExerciseTypes);
