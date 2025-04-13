@@ -112,5 +112,41 @@ namespace DuoTesting.Repositories
             Assert.AreEqual(5, updated.SectionId);
             Assert.AreEqual(3, updated.OrderNumber);
         }
+
+        [TestMethod]
+        public async Task GetByIdAsync_InvalidId_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() => _repository.GetByIdAsync(-999));
+        }
+
+        [TestMethod]
+        public async Task UpdateAsync_QuizNotInList_ShouldThrow()
+        {
+            var fakeQuiz = new Quiz(999, 1, 1);
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() => _repository.UpdateAsync(fakeQuiz));
+        }
+
+        [TestMethod]
+        public async Task AddExerciseToQuiz_InvalidQuizId_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => _repository.AddExerciseToQuiz(-1, 99));
+        }
+
+        [TestMethod]
+        public async Task UpdateQuizSection_QuizNotFound_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => _repository.UpdateQuizSection(-1, 5, 5));
+        }
+
+        [TestMethod]
+        public async Task GetBySectionIdAsync_ShouldReturnQuizzes()
+        {
+            await _repository.AddAsync(new Quiz(0, 123, 1));
+            await _repository.AddAsync(new Quiz(0, 123, 2));
+
+            var list = await _repository.GetBySectionIdAsync(123);
+            Assert.AreEqual(2, list.Count);
+        }
+
     }
 }

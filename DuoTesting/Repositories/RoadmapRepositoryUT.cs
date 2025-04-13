@@ -87,5 +87,31 @@ namespace DuoTesting.Repositories
 
             await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() => _repository.GetByIdAsync(id));
         }
+
+        [TestMethod]
+        public async Task GetByNameAsync_NotFound_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.GetByNameAsync("DoesNotExist123"));
+        }
+
+        [TestMethod]
+        public async Task DeleteAsync_NotFound_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.DeleteAsync(999));
+        }
+
+        [TestMethod]
+        public async Task ClearAll_ShouldEmptyRepository()
+        {
+            var repo = new InMemoryRoadmapRepository();
+            var id = await repo.AddAsync(new Roadmap { Name = "Clearable" });
+
+            repo.ClearAll();
+
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() => repo.GetByIdAsync(id));
+        }
+
     }
 }
