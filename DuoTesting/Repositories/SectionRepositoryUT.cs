@@ -50,8 +50,10 @@ namespace DuoTesting.Repositories
             await _repository.AddAsync(CreateSampleSection());
             var result = await _repository.GetAllAsync();
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Count > 0);
+            Assert.IsTrue(result.Count > 0); 
+            _ = result[0]; 
         }
+
 
         [TestMethod]
         public async Task Update_ShouldChangeData()
@@ -109,5 +111,79 @@ namespace DuoTesting.Repositories
         {
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => _repository.DeleteAsync(0));
         }
+
+        [TestMethod]
+        public async Task GetByIdAsync_Nonexistent_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.GetByIdAsync(999));
+        }
+
+        [TestMethod]
+        public async Task Update_Nonexistent_ShouldThrow()
+        {
+            var fake = CreateSampleSection();
+            fake.Id = 999;
+
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.UpdateAsync(fake));
+        }
+
+        [TestMethod]
+        public async Task Delete_Nonexistent_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.DeleteAsync(999));
+        }
+
+        [TestMethod]
+        public async Task GetByRoadmapId_Empty_ShouldReturnEmptyList()
+        {
+            var result = await _repository.GetByRoadmapIdAsync(999); 
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestMethod]
+        public async Task Add_WhitespaceTitle_ShouldThrow()
+        {
+            var section = CreateSampleSection();
+            section.Title = "   ";
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => _repository.AddAsync(section));
+        }
+
+        [TestMethod]
+        public async Task LastOrderNumber_NoSections_ShouldReturnZero()
+        {
+            var result = await _repository.LastOrderNumberByRoadmapIdAsync(999);
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod]
+        public async Task CountByRoadmap_NoSections_ShouldReturnZero()
+        {
+            var count = await _repository.CountByRoadmapIdAsync(999);
+            Assert.AreEqual(0, count);
+        }
+        [TestMethod]
+        public async Task LastOrderNumber_SectionWithoutOrder_ShouldBeSkipped()
+        {
+            var section = new Section
+            {
+                Title = "NoOrder",
+                Description = "None",
+                RoadmapId = DummyRoadmapId,
+                SubjectId = 1,
+                OrderNumber = null 
+            };
+
+            await _repository.AddAsync(section);
+            var result = await _repository.LastOrderNumberByRoadmapIdAsync(DummyRoadmapId);
+
+            Assert.AreEqual(0, result); 
+        }
+
+
+
     }
 }

@@ -15,6 +15,9 @@ namespace DuoTesting.MockClasses
 
         public Task<int> CreateUserAsync(User user)
         {
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
             if (_usernames.Contains(user.Username))
                 throw new Exception("Username already exists.");
 
@@ -28,6 +31,8 @@ namespace DuoTesting.MockClasses
             _usernames.Add(newUser.Username);
             return Task.FromResult(newUser.Id);
         }
+
+
 
         public Task<User> GetByUsernameAsync(string username)
         {

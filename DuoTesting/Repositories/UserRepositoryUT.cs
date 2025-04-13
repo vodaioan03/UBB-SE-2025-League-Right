@@ -96,5 +96,28 @@ namespace DuoTesting.Repositories
             await Assert.ThrowsExceptionAsync<ArgumentException>(() =>
                 _repository.IncrementUserProgressAsync(0));
         }
+        [TestMethod]
+        public async Task UpdateUserProgress_NonexistentUser_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.UpdateUserProgressAsync(9999, 1, 2));
+        }
+
+
+        [TestMethod]
+        public async Task GetById_NonexistentId_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() =>
+                _repository.GetByIdAsync(999));
+        }
+
+        [TestMethod]
+        public async Task CreateUser_Null_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() =>
+                _repository.CreateUserAsync(null!));
+        }
+
+
     }
 }
