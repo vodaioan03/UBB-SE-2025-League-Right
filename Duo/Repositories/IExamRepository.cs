@@ -16,5 +16,6 @@ namespace Duo.Repositories
         Task AddExerciseToExam(int examId, int exerciseId);
         Task RemoveExerciseFromExam(int examId, int exerciseId);
         Task UpdateExamSection(int examId, int? sectionId);
+        IReadOnlyCollection<int> GetExercisesForExam(int examId);
     }
 }

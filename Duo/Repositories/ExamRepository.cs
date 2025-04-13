@@ -353,4 +353,9 @@ public class ExamRepository : IExamRepository
             throw new Exception($"Database error while updating exam section: {ex.Message}", ex);
         }
     }
+
+    public IReadOnlyCollection<int> GetExercisesForExam(int examId)
+    {
+        throw new NotImplementedException();
+    }
 }

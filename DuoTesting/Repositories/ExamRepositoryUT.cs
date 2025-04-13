@@ -128,5 +128,89 @@ namespace DuoTesting.Repositories
 
             await _repository.DeleteAsync(examId);
         }
+
+        [TestMethod]
+        public async Task GetByIdAsync_NonExistent_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(async () =>
+            {
+                await _repository.GetByIdAsync(-1);
+            });
+        }
+
+        [TestMethod]
+        public async Task AddExerciseToExam_NonExistentExam_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(async () =>
+            {
+                await _repository.AddExerciseToExam(-123, 99);
+            });
+        }
+
+        [TestMethod]
+        public async Task RemoveExerciseFromExam_NonExistentExam_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(async () =>
+            {
+                await _repository.RemoveExerciseFromExam(-999, 88);
+            });
+        }
+
+        [TestMethod]
+        public async Task UpdateExamSection_NonExistent_ShouldThrow()
+        {
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(async () =>
+            {
+                await _repository.UpdateExamSection(-1, 123);
+            });
+        }
+
+        [TestMethod]
+        public async Task UpdateAsync_NonExistent_ShouldThrow()
+        {
+            var exam = new Exam(9999, 1);
+            await Assert.ThrowsExceptionAsync<KeyNotFoundException>(async () =>
+            {
+                await _repository.UpdateAsync(exam);
+            });
+        }
+
+        [TestMethod]
+        public async Task GetExercisesForExam_ShouldReturnAddedExercises()
+        {
+            int examId = await _repository.AddAsync(new Exam(0, null));
+            await _repository.AddExerciseToExam(examId, 101);
+            await _repository.AddExerciseToExam(examId, 202);
+
+            var result = _repository.GetExercisesForExam(examId);
+
+            CollectionAssert.AreEquivalent(new List<int> { 101, 202 }, result.ToList());
+        }
+
+        [TestMethod]
+        public void GetExercisesForExam_NonExistent_ShouldThrow()
+        {
+            Assert.ThrowsException<KeyNotFoundException>(() =>
+            {
+                _repository.GetExercisesForExam(-42);
+            });
+        }
+
+
+        [TestMethod]
+        public void ClearAll_ShouldResetRepository()
+        {
+            var inMemory = new InMemoryExamRepository();
+            var idTask = inMemory.AddAsync(new Exam(0, 1));
+            idTask.Wait();
+
+            inMemory.ClearAll();
+
+            Assert.ThrowsException<KeyNotFoundException>(() =>
+            {
+                inMemory.GetExercisesForExam(idTask.Result);
+            });
+        }
+
     }
 }
